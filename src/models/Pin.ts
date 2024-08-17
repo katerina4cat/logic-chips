@@ -11,6 +11,7 @@ export class Pin {
   id: number
   @observable
   accessor pos: Pos
+  isSource: boolean
 
   // Связанные проводами пины
   @observable
@@ -46,14 +47,21 @@ export class Pin {
     id: number,
     title?: string,
     type: number = 1,
-    input: boolean = false,
+    isSource: boolean = false,
     pos: Pos = new Pos()
   ) {
     this.type = type
     this.title = title || ''
     this.id = id
     this.pos = pos
-    if (input) this.selfStates = new Array(this.type).fill(STATE.LOW)
-    makeObservable(this)
+    this.isSource = isSource
+    if (this.isSource) this.selfStates = new Array(this.type).fill(STATE.LOW)
   }
+}
+
+export interface ISavePin {
+  title: string
+  y: number
+  id: number
+  type: number
 }
