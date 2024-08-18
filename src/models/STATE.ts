@@ -35,3 +35,8 @@ export const mergeState = (base: STATE, adding: STATE) => {
   if (adding === STATE.UNDEFINED && base !== STATE.UNDEFINED) return base
   return STATE.ERROR
 }
+
+export const mergeStates = (base: STATE[], adding: STATE[]) => {
+  if (base.length !== adding.length) throw 'Размер базовых и добавляемых состояний различен!'
+  return base.map((baseState, i) => mergeState(baseState, adding[i]))
+}

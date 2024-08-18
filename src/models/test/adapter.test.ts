@@ -1,7 +1,7 @@
 import { expect, test } from 'vitest'
 import { Pin } from '../Pin'
 import { STATE } from '../STATE'
-import { sleep, ton } from './common'
+import { ton } from './common'
 import { ADAPTERChip } from '../DefaultChips/ADAPTER'
 import { Pos } from '../common/Pos'
 import { runInAction } from 'mobx'

@@ -68,7 +68,7 @@ export class ADAPTERChip extends Chip {
   addInput = (pin: Pin) => {
     const buff = new Pin(this.inputsID, pin.title, pin.type)
     this.inputsID += 1
-    buff.linkNewPin(pin)
+    buff.linkPin(pin)
     this.inputs.push(buff)
     reaction(() => buff.totalStates, this.calculateLogic)
   }

@@ -14,13 +14,12 @@ const pins = {
   outEgh: new Pin(4, 'INPUT8', 8)
 }
 
-pins.inEgh2.linkNewPin(pins.inEgh3)
+pins.inEgh2.linkPin(pins.inEgh3)
 for (let i = 0; i < 7; i++) pins.inEgh3.selfStates[i] = STATE.UNDEFINED
 pins.inEgh3.selfStates[7] = pins.inOne.totalStates[0]
 
-
 test(`Add one`, async () => {
-  pins.outOne.linkNewPin(pins.inOne)
+  pins.outOne.linkPin(pins.inOne)
   await sleep(100)
   expect(
     pins.outOne.totalStates,
@@ -35,7 +34,7 @@ test(`Change one`, async () => {
 })
 
 test(`Add second`, async () => {
-  pins.outOne.linkNewPin(pins.inTwo)
+  pins.outOne.linkPin(pins.inTwo)
   await sleep(100)
   expect(pins.outOne.totalStates).toStrictEqual([STATE.ERROR])
 })
@@ -59,7 +58,7 @@ test(`Change First`, async () => {
 })
 
 test(`Composite adding`, async () => {
-  pins.outEgh.linkNewPin(pins.inEgh)
+  pins.outEgh.linkPin(pins.inEgh)
 
   await sleep(100)
   expect(pins.outEgh.totalStates).toStrictEqual([
@@ -92,7 +91,7 @@ test(`Change composite`, async () => {
 })
 
 test(`Change composite`, async () => {
-  pins.outEgh.linkNewPin(pins.inEgh2)
+  pins.outEgh.linkPin(pins.inEgh2)
 
   await sleep(100)
   expect(pins.outEgh.totalStates).toStrictEqual([

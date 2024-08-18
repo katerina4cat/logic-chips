@@ -37,11 +37,13 @@ const checks = {
   NOT: new NOTChip(1, new Pos()),
   TRISTATE: new TRISTATEChip(2, new Pos())
 }
-checks.AND1.inputs[0].linkNewPin(pins[0])
-checks.AND1.inputs[1].linkNewPin(pins[1])
-checks.NOT.inputs[0].linkNewPin(pins[2])
-checks.TRISTATE.inputs[0].linkNewPin(pins[0])
-checks.TRISTATE.inputs[1].linkNewPin(pins[1])
+runInAction(() => {
+  checks.AND1.inputs[0].linkPin(pins[0])
+  checks.AND1.inputs[1].linkPin(pins[1])
+  checks.NOT.inputs[0].linkPin(pins[2])
+  checks.TRISTATE.inputs[0].linkPin(pins[0])
+  checks.TRISTATE.inputs[1].linkPin(pins[1])
+})
 
 test(`AND`, async () => {
   const waitingResults = [

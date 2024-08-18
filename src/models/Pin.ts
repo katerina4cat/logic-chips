@@ -17,10 +17,18 @@ export class Pin {
   @observable
   accessor linkedPin: Pin[] = []
   @action
-  linkNewPin = (pin: Pin) => {
+  linkPin = (pin: Pin) => {
     if (this === pin) return false
     if (this.linkedPin.findIndex((fpin) => fpin === pin) !== -1) return false
     this.linkedPin.push(pin)
+    return true
+  }
+  @action
+  unlinkPin = (pin: Pin) => {
+    if (this === pin) return false
+    const ind = this.linkedPin.findIndex((fpin) => fpin === pin)
+    if (ind === -1) return false
+    this.linkedPin.splice(ind, 1)
     return true
   }
   // Собственные состояния пина, для начальных точек взаимодействия
