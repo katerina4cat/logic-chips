@@ -2,16 +2,7 @@ import { observable } from 'mobx'
 import { Pos } from './common/Pos'
 import { ISavePin, Pin } from './Pin'
 import { ISaveWire, Wire } from './Wire'
-
-export const enum ChipType {
-  DEFAULT,
-  AND,
-  NOT,
-  TRISTATE,
-  ESEGMENT,
-  ADAPTER,
-  BUS
-}
+import { ChipType } from './ChipType'
 
 export class Chip {
   title: string

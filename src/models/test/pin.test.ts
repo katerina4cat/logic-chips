@@ -2,6 +2,7 @@ import 'reflect-metadata'
 import { expect, test } from 'vitest'
 import { Pin } from '../Pin'
 import { STATE, stateInfo } from '../STATE'
+import { sleep } from './common'
 
 const pins = {
   inOne: new Pin(0, 'INPUT1', undefined, true),
@@ -17,9 +18,6 @@ pins.inEgh2.linkNewPin(pins.inEgh3)
 for (let i = 0; i < 7; i++) pins.inEgh3.selfStates[i] = STATE.UNDEFINED
 pins.inEgh3.selfStates[7] = pins.inOne.totalStates[0]
 
-function sleep(ms: number) {
-  return new Promise((resolve) => setTimeout(resolve, ms))
-}
 
 test(`Add one`, async () => {
   pins.outOne.linkNewPin(pins.inOne)
