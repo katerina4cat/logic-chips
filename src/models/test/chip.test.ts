@@ -7,6 +7,9 @@ import { Pin } from '../Pin'
 import { runInAction } from 'mobx'
 import { NOTChip } from '../DefaultChips/NOT'
 import { TRISTATEChip } from '../DefaultChips/TRISTATE'
+import { Wire } from '../Wire'
+import { Chip } from '../Chip'
+import { CUSTOMChip } from '../DefaultChips/CUSTOM'
 
 const checkTest = [
   [STATE.HIGHT, STATE.HIGHT],
@@ -30,19 +33,30 @@ const checkTest = [
   [STATE.ERROR, STATE.ERROR]
 ]
 
-const pins = [new Pin(0, 'A', 1, true), new Pin(1, 'B', 1, true), new Pin(2, 'C', 1, true)]
-
 const checks = {
   AND1: new ANDChip(0, new Pos()),
   NOT: new NOTChip(1, new Pos()),
   TRISTATE: new TRISTATEChip(2, new Pos())
 }
+
+const thisProc = new CUSTOMChip('test', '', 3, new Pos())
 runInAction(() => {
-  checks.AND1.inputs[0].linkPin(pins[0])
-  checks.AND1.inputs[1].linkPin(pins[1])
-  checks.NOT.inputs[0].linkPin(pins[2])
-  checks.TRISTATE.inputs[0].linkPin(pins[0])
-  checks.TRISTATE.inputs[1].linkPin(pins[1])
+  thisProc.addPin(new Pin(0, 'A', 1, true), true)
+  thisProc.addPin(new Pin(1, 'B', 1, true), true)
+  thisProc.addPin(new Pin(2, 'C', 1, true), true)
+  thisProc.addWire(
+    new Wire([], [thisProc, thisProc.inputs[0]], [checks.AND1, checks.AND1.inputs[0]])
+  )
+  thisProc.addWire(
+    new Wire([], [thisProc, thisProc.inputs[1]], [checks.AND1, checks.AND1.inputs[1]])
+  )
+  thisProc.addWire(new Wire([], [thisProc, thisProc.inputs[2]], [checks.NOT, checks.NOT.inputs[0]]))
+  thisProc.addWire(
+    new Wire([], [thisProc, thisProc.inputs[0]], [checks.TRISTATE, checks.TRISTATE.inputs[0]])
+  )
+  thisProc.addWire(
+    new Wire([], [thisProc, thisProc.inputs[1]], [checks.TRISTATE, checks.TRISTATE.inputs[1]])
+  )
 })
 
 test(`AND`, async () => {
@@ -69,8 +83,8 @@ test(`AND`, async () => {
   ]
   for (let i = 0; i < checkTest.length; i++) {
     runInAction(() => {
-      pins[0].selfStates[0] = checkTest[i][0]
-      pins[1].selfStates[0] = checkTest[i][1]
+      thisProc.inputs[0].selfStates[0] = checkTest[i][0]
+      thisProc.inputs[1].selfStates[0] = checkTest[i][1]
     })
     await sleep(5)
     expect(
@@ -104,7 +118,7 @@ test(`NOT`, async () => {
   ]
   for (let i = 0; i < checkTest.length; i++) {
     runInAction(() => {
-      pins[2].selfStates[0] = checkTest[i][0]
+      thisProc.inputs[2].selfStates[0] = checkTest[i][0]
     })
     await sleep(5)
     expect(
@@ -159,8 +173,8 @@ test(`TRISTATE`, async () => {
   ]
   for (let i = 0; i < checkTest.length; i++) {
     runInAction(() => {
-      pins[0].selfStates[0] = checkTest[i][0]
-      pins[1].selfStates[0] = checkTest[i][1]
+      thisProc.inputs[0].selfStates[0] = checkTest[i][0]
+      thisProc.inputs[1].selfStates[0] = checkTest[i][1]
     })
     await sleep(5)
     expect(

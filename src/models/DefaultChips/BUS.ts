@@ -5,6 +5,7 @@ import { Pos } from '../common/Pos'
 import { Pin } from '../Pin'
 import { mergeStates, STATE } from '../STATE'
 import { ton } from '../test/common'
+import { SIM_ERROR, SimulatingError } from '../common/SimulatingError'
 
 export class BUSChip extends Chip {
   @observable
@@ -53,7 +54,10 @@ export class BUSChip extends Chip {
   @action
   linkBus = (bus: BUSChip) => {
     if (this.getNearestBuses().findIndex((findingBus) => findingBus === bus) !== -1)
-      throw 'Эти шины уже связаны вместе!'
+      throw SimulatingError.warning(
+        SIM_ERROR.WIRE_BUS_ALREADY_LINKED,
+        'Эти шины уже связаны между собой!'
+      )
     this.linkedBus.push(bus)
     bus.linkedBus.push(this)
     this.calculateLogic()

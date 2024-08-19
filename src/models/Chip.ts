@@ -1,8 +1,9 @@
-import { observable } from 'mobx'
+import { action, observable } from 'mobx'
 import { Pos } from './common/Pos'
 import { ISavePin, Pin } from './Pin'
 import { ISaveWire, Wire } from './Wire'
 import { ChipType } from './ChipType'
+import { SIM_ERROR, SimulatingError } from './common/SimulatingError'
 
 export class Chip {
   title: string
@@ -23,7 +24,7 @@ export class Chip {
 
   constructor(
     title: string,
-    type: ChipType = ChipType.DEFAULT,
+    type: ChipType = ChipType.CUSTOM,
     color: string,
     id: number,
     pos: Pos

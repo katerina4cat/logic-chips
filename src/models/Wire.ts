@@ -4,6 +4,7 @@ import { Pin } from './Pin'
 import { Chip } from './Chip'
 import { ChipType } from './ChipType'
 import { BUSChip } from './DefaultChips/BUS'
+import { SimulatingError } from './common/SimulatingError'
 
 const enum WireTypes {
   DEFAULT,
@@ -18,8 +19,9 @@ export class Wire {
   from: [Chip, Pin]
   to: [Chip, Pin]
   type: WireTypes
+  completed = false
 
-  constructor(points: Pos[], from: [Chip, Pin], to: [Chip, Pin]) {
+  constructor(points: Pos[], from: [Chip, Pin], to: [Chip, Pin], complete = false) {
     this.points = points
     this.from = from
     this.to = to
@@ -28,12 +30,17 @@ export class Wire {
       else this.type = WireTypes.BUS_TO_INPUT
     else if (to[0].type === ChipType.BUS) this.type = WireTypes.SOURCE_TO_BUS
     else this.type = WireTypes.DEFAULT
+    if (complete) this.completeLink()
+  }
 
+  completeLink = () => {
+    if (this.completed) return
     if (this.type === WireTypes.BUS_TO_BUS) {
-      ;(from[0] as BUSChip).linkBus(to[0] as BUSChip)
+      ;(this.from[0] as BUSChip).linkBus(this.to[0] as BUSChip)
       return
     }
-    to[1].linkPin(from[1])
+    this.to[1].linkPin(this.from[1])
+    this.completed = true
   }
 
   breakWire = () => {

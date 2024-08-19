@@ -3,6 +3,9 @@ import { expect, test } from 'vitest'
 import { Pin } from '../Pin'
 import { STATE, stateInfo } from '../STATE'
 import { sleep } from './common'
+import { Chip } from '../Chip'
+import { Pos } from '../common/Pos'
+import { Wire } from '../Wire'
 
 const pins = {
   inOne: new Pin(0, 'INPUT1', undefined, true),
@@ -14,12 +17,20 @@ const pins = {
   outEgh: new Pin(4, 'INPUT8', 8)
 }
 
-pins.inEgh2.linkPin(pins.inEgh3)
+const buffChip = new Chip('ыв', undefined, 'sd', 0, new Pos())
+
+const wires: Wire[] = []
+const createNewWire = (from: Pin, to: Pin) => {
+  wires.push(new Wire([], [buffChip, from], [buffChip, to], true))
+}
+
+createNewWire(pins.inEgh3, pins.inEgh2)
+
 for (let i = 0; i < 7; i++) pins.inEgh3.selfStates[i] = STATE.UNDEFINED
 pins.inEgh3.selfStates[7] = pins.inOne.totalStates[0]
 
 test(`Add one`, async () => {
-  pins.outOne.linkPin(pins.inOne)
+  createNewWire(pins.inOne, pins.outOne)
   await sleep(100)
   expect(
     pins.outOne.totalStates,
@@ -34,7 +45,7 @@ test(`Change one`, async () => {
 })
 
 test(`Add second`, async () => {
-  pins.outOne.linkPin(pins.inTwo)
+  createNewWire(pins.inTwo, pins.outOne)
   await sleep(100)
   expect(pins.outOne.totalStates).toStrictEqual([STATE.ERROR])
 })
@@ -58,7 +69,7 @@ test(`Change First`, async () => {
 })
 
 test(`Composite adding`, async () => {
-  pins.outEgh.linkPin(pins.inEgh)
+  createNewWire(pins.inEgh, pins.outEgh)
 
   await sleep(100)
   expect(pins.outEgh.totalStates).toStrictEqual([
@@ -91,7 +102,7 @@ test(`Change composite`, async () => {
 })
 
 test(`Change composite`, async () => {
-  pins.outEgh.linkPin(pins.inEgh2)
+  createNewWire(pins.inEgh2, pins.outEgh)
 
   await sleep(100)
   expect(pins.outEgh.totalStates).toStrictEqual([

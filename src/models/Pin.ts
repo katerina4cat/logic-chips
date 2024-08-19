@@ -1,6 +1,7 @@
 import { action, computed, makeObservable, observable } from 'mobx'
 import { Pos } from './common/Pos'
 import { STATE, mergeState } from './STATE'
+import { SIM_ERROR, SimulatingError } from './common/SimulatingError'
 
 export class Pin {
   // Кол-во состояний
@@ -18,18 +19,31 @@ export class Pin {
   accessor linkedPin: Pin[] = []
   @action
   linkPin = (pin: Pin) => {
-    if (this === pin) return false
-    if (this.linkedPin.findIndex((fpin) => fpin === pin) !== -1) return false
+    if (this === pin)
+      throw SimulatingError.warning(
+        SIM_ERROR.LINKING_SELF_PIN,
+        'Невозможно связать пин с самим собой!'
+      )
+    if (this.type != pin.type)
+      throw SimulatingError.warning(
+        SIM_ERROR.LINKING_DIFFERENT_PIN,
+        'Невозможно связать различные типы пинов!'
+      )
+    if (this.linkedPin.findIndex((fpin) => fpin === pin) !== -1)
+      throw SimulatingError.warning(SIM_ERROR.LINK_SEARCH_PIN, 'Такая связь уже существует!')
     this.linkedPin.push(pin)
-    return true
   }
   @action
   unlinkPin = (pin: Pin) => {
-    if (this === pin) return false
+    if (this === pin)
+      throw SimulatingError.warning(
+        SIM_ERROR.LINKING_SELF_PIN,
+        'Невозможно связать пин с самим собой!'
+      )
     const ind = this.linkedPin.findIndex((fpin) => fpin === pin)
-    if (ind === -1) return false
+    if (ind === -1)
+      throw SimulatingError.warning(SIM_ERROR.LINK_SEARCH_PIN, 'Невозможно найти связанный пин!')
     this.linkedPin.splice(ind, 1)
-    return true
   }
   // Собственные состояния пина, для начальных точек взаимодействия
   @observable
