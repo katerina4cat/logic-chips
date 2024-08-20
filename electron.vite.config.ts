@@ -12,7 +12,8 @@ export default defineConfig({
   renderer: {
     resolve: {
       alias: {
-        '@renderer': resolve('src/renderer/src')
+        '@renderer': resolve('src/renderer/src'),
+        '@models': resolve('src/models')
       }
     },
     plugins: [react({ tsDecorators: true })]
