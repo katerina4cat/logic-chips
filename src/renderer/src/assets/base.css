@@ -8,6 +8,11 @@ html[data-theme='dark'] {
   --background: #534e61;
   --text-base: #efedf5;
   --element-background: #6f648b;
+  --element-border-color: #444;
+  --focus-element-border-color: #9a949e;
+}
+html {
+  --main-border-radius: 6px;
 }
 
 *,

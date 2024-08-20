@@ -1,6 +1,8 @@
 import Menu from '@renderer/pages/menu/Menu'
 import NewSave from '@renderer/pages/newSave/NewSave'
-import { createBrowserRouter } from 'react-router-dom'
+import Options from '@renderer/pages/options/Options'
+import Saves from '@renderer/pages/saves/Saves'
+import { createBrowserRouter, Navigate } from 'react-router-dom'
 
 export const roots = createBrowserRouter([
   {
@@ -8,7 +10,19 @@ export const roots = createBrowserRouter([
     element: <Menu />
   },
   {
-    path: '/NewSave',
+    path: '/NewGame',
     element: <NewSave />
+  },
+  {
+    path: '/Saves',
+    element: <Saves />
+  },
+  {
+    path: '/Options',
+    element: <Options />
+  },
+  {
+    path: '*',
+    element: <Navigate to="/" />
   }
 ])

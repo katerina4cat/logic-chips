@@ -1,9 +1,13 @@
-import { RouterProvider } from 'react-router-dom'
+import { NavigateFunction, RouterProvider } from 'react-router-dom'
 import { useTheme } from './hooks/useTheme'
 import { roots } from './routes/roots'
 
+export const navigate: { current: NavigateFunction } = {
+  current: () => {}
+}
+
 function App(): JSX.Element {
-  const [theme, setTheme] = useTheme()
+  useTheme()
   return (
     <>
       <RouterProvider router={roots} />
