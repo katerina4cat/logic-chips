@@ -7,19 +7,19 @@ import { Color, Colors } from './common/COLORS'
 export class Pin {
   // Кол-во состояний
   @observable
-  accessor type: number
+  type: number
   @observable
-  accessor title: string
+  title: string
   @observable
-  accessor color: Color
+  color: Color
   id: number
   @observable
-  accessor pos: Pos
+  pos: Pos
   isSource: boolean
 
   // Связанные проводами пины
   @observable
-  accessor linkedPin: Pin[] = []
+  linkedPin: Pin[] = []
   @action
   linkPin = (pin: Pin) => {
     if (this === pin)
@@ -50,7 +50,7 @@ export class Pin {
   }
   // Собственные состояния пина, для начальных точек взаимодействия
   @observable
-  accessor selfStates: STATE[] = []
+  selfStates: STATE[] = []
 
   @computed
   get totalStates(): STATE[] {

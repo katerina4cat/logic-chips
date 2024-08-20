@@ -9,7 +9,7 @@ import { SIM_ERROR, SimulatingError } from '../common/SimulatingError'
 
 export class BUSChip extends Chip {
   @observable
-  accessor linkedBus: BUSChip[] = []
+  linkedBus: BUSChip[] = []
   constructor(id: number, pos: Pos, type = 1) {
     super(
       chipTypeInfo[ChipType.BUS].title!,

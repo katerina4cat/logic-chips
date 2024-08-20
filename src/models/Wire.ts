@@ -15,7 +15,7 @@ const enum WireTypes {
 
 export class Wire {
   @observable
-  accessor points: Pos[]
+  points: Pos[]
   from: [Chip, Pin]
   to: [Chip, Pin]
   type: WireTypes

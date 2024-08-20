@@ -14,11 +14,11 @@ interface StateInfo {
 
 export const stateInfo: { [key in STATE]: StateInfo } = {
   [STATE.LOW]: {
-    color: (color) => `color-mixin(in srgb, ${color.color} 25%, #000)`,
+    color: (color) => `color-mix(in srgb, ${color.color} 25%, #000)`,
     title: 'Низкий'
   },
   [STATE.HIGHT]: {
-    color: (color) => `color-mixin(in srgb, ${color.color} 95%, #000)`,
+    color: (color) => `color-mix(in srgb, ${color.color} 95%, #000)`,
     title: 'Высокий'
   },
   [STATE.UNDEFINED]: {
@@ -26,6 +26,7 @@ export const stateInfo: { [key in STATE]: StateInfo } = {
     title: 'Неизвестный'
   },
   [STATE.ERROR]: {
+    color: (color) => color.color,
     title: 'Ошибочный'
   }
 }

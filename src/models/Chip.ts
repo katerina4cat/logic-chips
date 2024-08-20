@@ -12,15 +12,15 @@ export class Chip {
   id: number
 
   @observable
-  accessor pos: Pos
+  pos: Pos
   @observable
-  accessor inputs: Pin[] = []
+  inputs: Pin[] = []
   @observable
-  accessor outputs: Pin[] = []
+  outputs: Pin[] = []
   @observable
-  accessor subChips: Chip[] = []
+  subChips: Chip[] = []
   @observable
-  accessor wires: Wire[] = []
+  wires: Wire[] = []
 
   constructor(
     title: string,

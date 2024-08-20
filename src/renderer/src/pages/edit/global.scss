@@ -1,18 +1,9 @@
 .errorFill {
-  animation: error 1s infinite reverse;
+  animation: error 0.5s infinite alternate;
 }
 
 @keyframes error {
-  0% {
-    fill: --state-color;
-    stroke: --state-color;
-  }
-  50% {
-    fill: #000;
-    stroke: #000;
-  }
   100% {
-    fill: #fff;
-    stroke: #fff;
+    background-color: #5b5959;
   }
 }

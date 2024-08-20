@@ -13,10 +13,10 @@ export interface IAdapterOutputSettings {
 
 export class ADAPTERChip extends Chip {
   @observable
-  accessor displayAdderPin = true
+  displayAdderPin = true
   inputsID = 0
   @observable
-  accessor outputSettings: IAdapterOutputSettings[] = []
+  outputSettings: IAdapterOutputSettings[] = []
   constructor(id: number, pos: Pos) {
     super(
       chipTypeInfo[ChipType.ADAPTER].title!,
