@@ -1,4 +1,4 @@
-import { action, observable } from 'mobx'
+import { action, makeObservable, observable } from 'mobx'
 import { Pos } from './common/Pos'
 import { Pin } from './Pin'
 import { Chip } from './Chip'
@@ -31,6 +31,7 @@ export class Wire {
     else if (to[0].type === ChipType.BUS) this.type = WireTypes.SOURCE_TO_BUS
     else this.type = WireTypes.DEFAULT
     if (complete) this.completeLink()
+    makeObservable(this)
   }
 
   completeLink = () => {

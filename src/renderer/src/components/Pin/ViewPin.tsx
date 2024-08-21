@@ -6,6 +6,8 @@ import { STATE } from '@models/STATE'
 
 interface Props {
   pin: Pin
+  className?: string
+  style?: React.CSSProperties
 }
 
 export class ViewPinViewModel extends ViewModel<unknown, Props> {
@@ -17,10 +19,11 @@ export class ViewPinViewModel extends ViewModel<unknown, Props> {
 const ViewPin = view(ViewPinViewModel)<Props>(({ viewModel }) => {
   return (
     <div
-      style={{ backgroundColor: viewModel.viewProps.pin.stateColor }}
+      style={{ backgroundColor: viewModel.viewProps.pin.stateColor, ...viewModel.viewProps.style }}
       className={[
         viewModel.viewProps.pin.totalStates[0] !== STATE.ERROR ? '' : 'errorFill',
-        cl.Pin
+        cl.Pin,
+        viewModel.viewProps.className
       ].join(' ')}
     ></div>
   )

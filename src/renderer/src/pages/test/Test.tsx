@@ -9,6 +9,7 @@ import { Wire } from '@models/Wire'
 import { Chip } from '@models/Chip'
 import { Pos } from '@models/common/Pos'
 import { Colors } from '@models/common/COLORS'
+import SidePin from '@renderer/components/Pin/SidePin'
 
 interface Props {}
 
@@ -33,6 +34,8 @@ const Test = view(TestViewModel)<Props>(({ viewModel }) => {
       <ViewPin pin={viewModel.pin1} />
       <ViewPin pin={viewModel.pin2} />
       <ViewPin pin={viewModel.pin3} />
+      <SidePin pin={viewModel.pin1} input selfState />
+      <SidePin pin={viewModel.pin1} input={false} selfState />
     </div>
   )
 })

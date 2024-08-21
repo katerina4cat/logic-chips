@@ -1,0 +1,25 @@
+.SidePin {
+  display: flex;
+  align-items: center;
+  .Scroll {
+    width: 0.4em;
+    margin: 0 0.25em;
+    height: 2em;
+    background-color: #111;
+    cursor: n-resize;
+  }
+  .StatusBtn {
+    height: 2em;
+    width: 2em;
+    border: 0.075em solid black;
+    border-radius: 50%;
+    display: block;
+    cursor: pointer;
+  }
+  .Line {
+    width: 1em;
+    height: 0.3em;
+    background-color: #111;
+    z-index: -1;
+  }
+}

@@ -90,6 +90,7 @@ export class Pin {
     this.isSource = isSource
     this.color = color
     if (this.isSource) this.selfStates = new Array(this.type).fill(STATE.LOW)
+    makeObservable(this)
   }
 }
 
