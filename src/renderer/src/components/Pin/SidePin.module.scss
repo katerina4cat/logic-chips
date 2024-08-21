@@ -1,6 +1,8 @@
 .SidePin {
   display: flex;
   align-items: center;
+  position: absolute;
+  transform: translateY(-50%);
   .Scroll {
     width: 0.4em;
     margin: 0 0.25em;
@@ -14,7 +16,6 @@
     border: 0.075em solid black;
     border-radius: 50%;
     display: block;
-    cursor: pointer;
   }
   .Line {
     width: 1em;

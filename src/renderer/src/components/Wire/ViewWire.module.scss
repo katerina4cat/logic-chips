@@ -1,0 +1,8 @@
+.Wire {
+  stroke-width: 4;
+  fill: none;
+  &:hover {
+    stroke-width: 5.5;
+    cursor: pointer;
+  }
+}

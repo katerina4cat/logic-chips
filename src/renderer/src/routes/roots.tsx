@@ -1,8 +1,8 @@
+import Edit from '@renderer/pages/edit/Edit'
 import Menu from '@renderer/pages/menu/Menu'
 import NewSave from '@renderer/pages/newSave/NewSave'
 import Options from '@renderer/pages/options/Options'
 import Saves from '@renderer/pages/saves/Saves'
-import Test from '@renderer/pages/test/Test'
 import { createBrowserRouter, Navigate } from 'react-router-dom'
 
 export const roots = createBrowserRouter([
@@ -23,8 +23,8 @@ export const roots = createBrowserRouter([
     element: <Options />
   },
   {
-    path: '/Test',
-    element: <Test />
+    path: '/Edit',
+    element: <Edit />
   },
   {
     path: '*',

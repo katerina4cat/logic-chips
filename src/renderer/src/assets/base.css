@@ -2,6 +2,7 @@ html[data-theme='light'] {
   --background: #e6e1f2;
   --text-base: #323133;
   --element-background: #cfbff6;
+  --pin-filed-bg: #353536;
 }
 
 html[data-theme='dark'] {
@@ -10,6 +11,7 @@ html[data-theme='dark'] {
   --element-background: #6f648b;
   --element-border-color: #444;
   --focus-element-border-color: #9a949e;
+  --pin-filed-bg: #353536;
 }
 html {
   --main-border-radius: 6px;

@@ -1,22 +1,30 @@
+import { makeObservable, observable } from 'mobx'
+
 export class Pos {
+  @observable
   x: number
+  @observable
   y: number
   constructor(x: number = 0, y: number = 0) {
     this.x = x
     this.y = y
+    makeObservable(this)
   }
-  add = (pos: Pos) => {
+  get lenght() {
+    return Math.sqrt(this.x ** 2 + this.y ** 2)
+  }
+  addMe = (pos: Pos) => {
     this.x += pos.x
     this.y += pos.y
     return this
   }
-  sum = (pos: Pos) => new Pos(this.x + pos.x, this.y + pos.y)
-  sub = (pos: Pos) => {
+  add = (pos: Pos) => new Pos(this.x + pos.x, this.y + pos.y)
+  subMe = (pos: Pos) => {
     this.x -= pos.x
     this.y -= pos.y
     return this
   }
-  dif = (pos: Pos) => new Pos(this.x - pos.x, this.y - pos.y)
+  sub = (pos: Pos) => new Pos(this.x - pos.x, this.y - pos.y)
   reverseMe = (x: boolean = true, y: boolean = true) => {
     if (x) this.x = -this.x
     if (y) this.y = -this.y
@@ -24,11 +32,19 @@ export class Pos {
   }
   reversed = (x: boolean = true, y: boolean = true) =>
     new Pos(x ? -this.x : this.x, y ? -this.y : this.y)
-  multy = (pos: Pos) => {
-    this.x *= pos.x
-    this.y *= pos.y
+  multyMe = (pos: Pos | number) => {
+    if (pos instanceof Pos) {
+      this.x *= pos.x
+      this.y *= pos.y
+    } else {
+      this.x *= pos
+      this.y *= pos
+    }
     return this
   }
 
-  multyd = (pos: Pos) => new Pos(this.x * pos.x, this.y * pos.y)
+  multy = (pos: Pos | number) =>
+    pos instanceof Pos
+      ? new Pos(this.x * pos.x, this.y * pos.y)
+      : new Pos(this.x * pos, this.y * pos)
 }

@@ -1,8 +1,10 @@
 import { ViewModel, view } from '@yoskutik/react-vvm'
-import { makeObservable } from 'mobx'
+import { action, makeObservable } from 'mobx'
 import cl from './ViewPin.module.scss'
 import { Pin } from '@models/Pin'
 import { STATE } from '@models/STATE'
+import { Pos } from '@models/common/Pos'
+import { createRef } from 'react'
 
 interface Props {
   pin: Pin
@@ -15,6 +17,21 @@ export class ViewPinViewModel extends ViewModel<unknown, Props> {
     super()
     makeObservable(this)
   }
+
+  protected onViewMounted(): void {
+    window.addEventListener('resize', this.calcPinPosition)
+    this.calcPinPosition()
+  }
+
+  protected onViewUnmounted(): void {
+    window.removeEventListener('resize', this.calcPinPosition)
+  }
+  @action
+  calcPinPosition = (ui?: UIEvent) => {
+    const box = this.ref.current?.getBoundingClientRect()
+    if (box) this.viewProps.pin.pos.x = ((box.x + box.width / 2) / window.innerWidth) * 100
+  }
+  ref = createRef<HTMLDivElement>()
 }
 const ViewPin = view(ViewPinViewModel)<Props>(({ viewModel }) => {
   return (
@@ -25,6 +42,7 @@ const ViewPin = view(ViewPinViewModel)<Props>(({ viewModel }) => {
         cl.Pin,
         viewModel.viewProps.className
       ].join(' ')}
+      ref={viewModel.ref}
     ></div>
   )
 })

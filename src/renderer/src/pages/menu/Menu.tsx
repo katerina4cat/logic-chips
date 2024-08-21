@@ -21,7 +21,7 @@ const Menu = view(MenuViewModel)<Props>(({ viewModel }) => {
       <Button onClick={() => navigate.current('/NewGame')}>Новая игра</Button>
       <Button onClick={() => navigate.current('/Saves')}>Загрузить игру</Button>
       <Button onClick={() => navigate.current('/Options')}>Настройки</Button>
-      <Button onClick={() => navigate.current('/Test')}>Разработка</Button>
+      <Button onClick={() => navigate.current('/Edit')}>Разработка</Button>
     </div>
   )
 })
