@@ -4,6 +4,7 @@ import cl from './ViewWire.module.scss'
 import { Wire } from '@models/Wire'
 import { windowScalingMethods } from '@renderer/common/PointsLineRounding'
 import { EditViewModel } from '@renderer/pages/edit/Edit'
+import { STATE } from '@models/STATE'
 
 interface Props {
   wire: Wire
@@ -31,8 +32,11 @@ export class ViewWireViewModel extends ViewModel<EditViewModel, Props> {
 const ViewWire = view(ViewWireViewModel)<Props>(({ viewModel }) => {
   return (
     <path
-      className={cl.Wire}
-      style={{ stroke: viewModel.viewProps.wire.to.stateColor }}
+      className={[
+        cl.Wire,
+        viewModel.viewProps.wire.from.totalStates[0] === STATE.ERROR ? 'errorStroke' : ''
+      ].join(' ')}
+      style={{ stroke: viewModel.viewProps.wire.from.stateColor }}
       d={viewModel.data}
       onMouseEnter={() => window.addEventListener('keydown', viewModel.deleteCheck)}
       onMouseLeave={() => window.removeEventListener('keydown', viewModel.deleteCheck)}

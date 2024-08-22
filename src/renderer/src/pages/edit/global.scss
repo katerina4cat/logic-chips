@@ -1,5 +1,14 @@
 .errorFill {
-  animation: error 0.5s infinite alternate;
+  animation: error 0.5s infinite alternate ease-in-out;
+}
+.errorStroke {
+  animation: errorStroke 0.5s infinite alternate ease-in-out;
+}
+
+@keyframes errorStroke {
+  100% {
+    stroke: #5b5959;
+  }
 }
 
 @keyframes error {

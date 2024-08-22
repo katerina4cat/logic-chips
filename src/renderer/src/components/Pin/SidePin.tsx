@@ -1,18 +1,20 @@
 import { ViewModel, view } from '@yoskutik/react-vvm'
-import { action, makeObservable } from 'mobx'
+import { action, makeObservable, runInAction } from 'mobx'
 import cl from './SidePin.module.scss'
 import { Pin } from '@models/Pin'
 import ViewPin from './ViewPin'
 import { STATE } from '@models/STATE'
 import { windowScalingMethods } from '@renderer/common/PointsLineRounding'
+import { SidePinBlockViewModel } from '../SidePinBlock/SidePinBlock'
 
 interface Props {
   pin: Pin
   input?: true
   selfState?: true
+  isPreview?: true
 }
 
-export class SidePinViewModel extends ViewModel<unknown, Props> {
+export class SidePinViewModel extends ViewModel<SidePinBlockViewModel, Props> {
   constructor() {
     super()
     makeObservable(this)
@@ -43,12 +45,27 @@ const SidePin = view(SidePinViewModel)<Props>(({ viewModel }) => {
         flexDirection: viewModel.viewProps.input ? 'row' : 'row-reverse',
         top: `${viewModel.viewProps.pin.pos.y * windowScalingMethods.scale.y}px`,
         left: viewModel.viewProps.input ? 0 : undefined,
-        right: viewModel.viewProps.input ? undefined : 1
+        right: viewModel.viewProps.input ? undefined : 1,
+        pointerEvents: viewModel.viewProps.isPreview ? 'none' : undefined
       }}
+      onClick={(e) => e.stopPropagation()}
+      onMouseEnter={() =>
+        runInAction(() => {
+          viewModel.parent.show = false
+        })
+      }
+      onMouseLeave={() =>
+        runInAction(() => {
+          viewModel.parent.show = true
+        })
+      }
     >
       <div className={cl.Scroll} onMouseDown={viewModel.mouseDown}></div>
       <div
-        className={cl.StatusBtn}
+        className={[
+          cl.StatusBtn,
+          viewModel.viewProps.pin.totalStates[0] === STATE.ERROR ? 'errorFill' : ''
+        ].join(' ')}
         onClick={viewModel.viewProps.selfState && viewModel.changeState}
         style={{
           backgroundColor: viewModel.viewProps.pin.stateColor,
