@@ -4,6 +4,7 @@ import cl from './SidePin.module.scss'
 import { Pin } from '@models/Pin'
 import ViewPin from './ViewPin'
 import { STATE } from '@models/STATE'
+import { windowScalingMethods } from '@renderer/common/PointsLineRounding'
 
 interface Props {
   pin: Pin
@@ -40,7 +41,7 @@ const SidePin = view(SidePinViewModel)<Props>(({ viewModel }) => {
       className={cl.SidePin}
       style={{
         flexDirection: viewModel.viewProps.input ? 'row' : 'row-reverse',
-        top: `${viewModel.viewProps.pin.pos.y}%`,
+        top: `${viewModel.viewProps.pin.pos.y * windowScalingMethods.scale.y}px`,
         left: viewModel.viewProps.input ? 0 : undefined,
         right: viewModel.viewProps.input ? undefined : 1
       }}

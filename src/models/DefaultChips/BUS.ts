@@ -1,4 +1,4 @@
-import { action, computed, observable, reaction } from 'mobx'
+import { action, computed, makeObservable, observable, reaction } from 'mobx'
 import { Chip } from '../Chip'
 import { ChipType, chipTypeInfo } from '../ChipType'
 import { Pos } from '../common/Pos'
@@ -18,9 +18,10 @@ export class BUSChip extends Chip {
       id,
       pos
     )
-    this.inputs.push(new Pin(0, 'STATE', type))
-    this.outputs.push(new Pin(1, 'OUTSTATE', type, true))
+    this.inputs.push(new Pin(0, this, 'STATE', type))
+    this.outputs.push(new Pin(1, this, 'OUTSTATE', type, true))
     reaction(() => this.inputs[0].totalStates, this.calculateLogic)
+    makeObservable(this)
   }
 
   @computed

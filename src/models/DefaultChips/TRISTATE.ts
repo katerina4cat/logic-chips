@@ -1,4 +1,4 @@
-import { action, reaction } from 'mobx'
+import { action, makeObservable, reaction } from 'mobx'
 import { Chip } from '../Chip'
 import { ChipType, chipTypeInfo } from '../ChipType'
 import { Pos } from '../common/Pos'
@@ -14,10 +14,11 @@ export class TRISTATEChip extends Chip {
       id,
       pos
     )
-    this.inputs.push(new Pin(0, 'D', 1, false))
-    this.inputs.push(new Pin(1, 'E', 1, false))
-    this.outputs.push(new Pin(2, 'R', 1, true))
+    this.inputs.push(new Pin(0, this, 'D', 1, false))
+    this.inputs.push(new Pin(1, this, 'E', 1, false))
+    this.outputs.push(new Pin(2, this, 'R', 1, true))
     this.inputs.forEach((inp) => reaction(() => inp.totalStates, this.calculateLogic))
+    makeObservable(this)
   }
   @action
   calculateLogic = () => {

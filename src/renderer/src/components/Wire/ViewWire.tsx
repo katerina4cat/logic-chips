@@ -17,9 +17,9 @@ export class ViewWireViewModel extends ViewModel<EditViewModel, Props> {
   @computed
   get data() {
     return windowScalingMethods.roundLinePoints([
-      this.viewProps.wire.from[1].pos,
+      this.viewProps.wire.from.pos,
       ...this.viewProps.wire.points,
-      this.viewProps.wire.to[1].pos
+      this.viewProps.wire.to.pos
     ])
   }
   deleteCheck = (e: KeyboardEvent) => {
@@ -32,7 +32,7 @@ const ViewWire = view(ViewWireViewModel)<Props>(({ viewModel }) => {
   return (
     <path
       className={cl.Wire}
-      style={{ stroke: viewModel.viewProps.wire.to[1].stateColor }}
+      style={{ stroke: viewModel.viewProps.wire.to.stateColor }}
       d={viewModel.data}
       onMouseEnter={() => window.addEventListener('keydown', viewModel.deleteCheck)}
       onMouseLeave={() => window.removeEventListener('keydown', viewModel.deleteCheck)}

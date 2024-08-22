@@ -8,15 +8,17 @@ import { runInAction } from 'mobx'
 import { NOTChip } from '../DefaultChips/NOT'
 import { TRISTATEChip } from '../DefaultChips/TRISTATE'
 import { BUSChip } from '../DefaultChips/BUS'
+import { Chip } from '@models/Chip'
 
+const chip = new Chip('', undefined, '', 0, new Pos())
 const pins = {
-  A: new Pin(0, 'A', 1, true),
-  B: new Pin(1, 'B', 1, true),
-  C: new Pin(2, 'C', 1, true),
-  D: new Pin(3, 'D', 8, true),
-  D2: new Pin(32, 'D2', 8, true),
-  R1: new Pin(4, 'R1', 1),
-  R2: new Pin(4, 'R1', 8)
+  A: new Pin(0, chip, 'A', 1, true),
+  B: new Pin(1, chip, 'B', 1, true),
+  C: new Pin(2, chip, 'C', 1, true),
+  D: new Pin(3, chip, 'D', 8, true),
+  D2: new Pin(32, chip, 'D2', 8, true),
+  R1: new Pin(4, chip, 'R1', 1),
+  R2: new Pin(4, chip, 'R1', 8)
 }
 
 const bus = {

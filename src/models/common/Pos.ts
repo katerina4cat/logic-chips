@@ -5,6 +5,9 @@ export class Pos {
   x: number
   @observable
   y: number
+  get copy() {
+    return new Pos(this.x, this.y)
+  }
   constructor(x: number = 0, y: number = 0) {
     this.x = x
     this.y = y

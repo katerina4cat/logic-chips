@@ -41,22 +41,14 @@ const checks = {
 
 const thisProc = new CUSTOMChip('test', '', 3, new Pos())
 runInAction(() => {
-  thisProc.addPin(new Pin(0, 'A', 1, true), true)
-  thisProc.addPin(new Pin(1, 'B', 1, true), true)
-  thisProc.addPin(new Pin(2, 'C', 1, true), true)
-  thisProc.addWire(
-    new Wire([], [thisProc, thisProc.inputs[0]], [checks.AND1, checks.AND1.inputs[0]])
-  )
-  thisProc.addWire(
-    new Wire([], [thisProc, thisProc.inputs[1]], [checks.AND1, checks.AND1.inputs[1]])
-  )
-  thisProc.addWire(new Wire([], [thisProc, thisProc.inputs[2]], [checks.NOT, checks.NOT.inputs[0]]))
-  thisProc.addWire(
-    new Wire([], [thisProc, thisProc.inputs[0]], [checks.TRISTATE, checks.TRISTATE.inputs[0]])
-  )
-  thisProc.addWire(
-    new Wire([], [thisProc, thisProc.inputs[1]], [checks.TRISTATE, checks.TRISTATE.inputs[1]])
-  )
+  thisProc.addPin(new Pin(0, thisProc, 'A', 1, true), true)
+  thisProc.addPin(new Pin(1, thisProc, 'B', 1, true), true)
+  thisProc.addPin(new Pin(2, thisProc, 'C', 1, true), true)
+  thisProc.addWire(new Wire([], thisProc.inputs[0], checks.AND1.inputs[0]))
+  thisProc.addWire(new Wire([], thisProc.inputs[1], checks.AND1.inputs[1]))
+  thisProc.addWire(new Wire([], thisProc.inputs[2], checks.NOT.inputs[0]))
+  thisProc.addWire(new Wire([], thisProc.inputs[0], checks.TRISTATE.inputs[0]))
+  thisProc.addWire(new Wire([], thisProc.inputs[1], checks.TRISTATE.inputs[1]))
 })
 
 test(`AND`, async () => {

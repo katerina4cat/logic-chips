@@ -6,22 +6,21 @@ import { sleep } from './common'
 import { Chip } from '../Chip'
 import { Pos } from '../common/Pos'
 import { Wire } from '../Wire'
+const buffChip = new Chip('ыв', undefined, 'sd', 0, new Pos())
 
 const pins = {
-  inOne: new Pin(0, 'INPUT1', undefined, true),
-  inTwo: new Pin(1, 'INPUT2', undefined, true),
-  inEgh: new Pin(2, 'INPUT8', 8, true),
-  inEgh3: new Pin(7, 'INPUT8', 8, true),
-  inEgh2: new Pin(5, 'INPUT83', 8),
-  outOne: new Pin(3, 'INPUT1', undefined),
-  outEgh: new Pin(4, 'INPUT8', 8)
+  inOne: new Pin(0, buffChip, 'INPUT1', undefined, true),
+  inTwo: new Pin(1, buffChip, 'INPUT2', undefined, true),
+  inEgh: new Pin(2, buffChip, 'INPUT8', 8, true),
+  inEgh3: new Pin(7, buffChip, 'INPUT8', 8, true),
+  inEgh2: new Pin(5, buffChip, 'INPUT83', 8),
+  outOne: new Pin(3, buffChip, 'INPUT1', undefined),
+  outEgh: new Pin(4, buffChip, 'INPUT8', 8)
 }
-
-const buffChip = new Chip('ыв', undefined, 'sd', 0, new Pos())
 
 const wires: Wire[] = []
 const createNewWire = (from: Pin, to: Pin) => {
-  wires.push(new Wire([], [buffChip, from], [buffChip, to], true))
+  wires.push(new Wire([], from, to, true))
 }
 
 createNewWire(pins.inEgh3, pins.inEgh2)

@@ -5,6 +5,7 @@ import { Pin } from '@models/Pin'
 import { STATE } from '@models/STATE'
 import { Pos } from '@models/common/Pos'
 import { createRef } from 'react'
+import { wireConnector } from '@renderer/common/GlobalVariables'
 
 interface Props {
   pin: Pin
@@ -43,6 +44,7 @@ const ViewPin = view(ViewPinViewModel)<Props>(({ viewModel }) => {
         viewModel.viewProps.className
       ].join(' ')}
       ref={viewModel.ref}
+      onClick={() => wireConnector.current(viewModel.viewProps.pin)}
     ></div>
   )
 })

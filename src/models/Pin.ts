@@ -3,6 +3,7 @@ import { Pos } from './common/Pos'
 import { STATE, mergeState, stateInfo } from './STATE'
 import { SIM_ERROR, SimulatingError } from './common/SimulatingError'
 import { Color, Colors } from './common/COLORS'
+import { Chip } from './Chip'
 
 export class Pin {
   // Кол-во состояний
@@ -16,6 +17,7 @@ export class Pin {
   @observable
   pos: Pos
   isSource: boolean
+  chip: Chip
 
   // Связанные проводами пины
   @observable
@@ -77,6 +79,7 @@ export class Pin {
 
   constructor(
     id: number,
+    chip: Chip,
     title?: string,
     type: number = 1,
     isSource: boolean = false,
@@ -86,6 +89,7 @@ export class Pin {
     this.type = type
     this.title = title || ''
     this.id = id
+    this.chip = chip
     this.pos = pos
     this.isSource = isSource
     this.color = color

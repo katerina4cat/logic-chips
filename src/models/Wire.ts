@@ -1,10 +1,8 @@
-import { action, makeObservable, observable } from 'mobx'
+import { makeObservable, observable } from 'mobx'
 import { Pos } from './common/Pos'
 import { Pin } from './Pin'
-import { Chip } from './Chip'
 import { ChipType } from './ChipType'
 import { BUSChip } from './DefaultChips/BUS'
-import { SimulatingError } from './common/SimulatingError'
 
 const enum WireTypes {
   DEFAULT,
@@ -16,19 +14,19 @@ const enum WireTypes {
 export class Wire {
   @observable
   points: Pos[]
-  from: [Chip, Pin]
-  to: [Chip, Pin]
+  from: Pin
+  to: Pin
   type: WireTypes
   completed = false
 
-  constructor(points: Pos[], from: [Chip, Pin], to: [Chip, Pin], complete = false) {
+  constructor(points: Pos[], from: Pin, to: Pin, complete = false) {
     this.points = points
     this.from = from
     this.to = to
-    if (from[0].type === ChipType.BUS)
-      if (to[0].type === ChipType.BUS) this.type = WireTypes.BUS_TO_BUS
+    if (from.chip.type === ChipType.BUS)
+      if (to.chip.type === ChipType.BUS) this.type = WireTypes.BUS_TO_BUS
       else this.type = WireTypes.BUS_TO_INPUT
-    else if (to[0].type === ChipType.BUS) this.type = WireTypes.SOURCE_TO_BUS
+    else if (to.chip.type === ChipType.BUS) this.type = WireTypes.SOURCE_TO_BUS
     else this.type = WireTypes.DEFAULT
     if (complete) this.completeLink()
     makeObservable(this)
@@ -37,19 +35,19 @@ export class Wire {
   completeLink = () => {
     if (this.completed) return
     if (this.type === WireTypes.BUS_TO_BUS) {
-      ;(this.from[0] as BUSChip).linkBus(this.to[0] as BUSChip)
+      ;(this.from.chip as BUSChip).linkBus(this.to.chip as BUSChip)
       return
     }
-    this.to[1].linkPin(this.from[1])
+    this.to.linkPin(this.from)
     this.completed = true
   }
 
   breakWire = () => {
     if (this.type === WireTypes.BUS_TO_BUS) {
-      ;(this.from[0] as BUSChip).unlinkBus(this.to[0] as BUSChip)
+      ;(this.from.chip as BUSChip).unlinkBus(this.to.chip as BUSChip)
       return
     }
-    this.to[1].unlinkPin(this.from[1])
+    this.to.unlinkPin(this.from)
   }
 }
 
