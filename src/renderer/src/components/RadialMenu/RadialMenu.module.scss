@@ -11,11 +11,10 @@
   fill: var(--element-background);
   transition: all 0.125s ease-in-out;
 }
-.ElementTextPath {
-  transition: all 0.125s ease-in-out;
+.ElementMoving {
+  fill: var(--element-background);
 }
 .ElementText {
-  transition: all 0.125s ease-in-out;
   font-size: 0.25em;
   pointer-events: none;
 }

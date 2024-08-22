@@ -1,5 +1,5 @@
 import { ViewModel, view } from '@yoskutik/react-vvm'
-import { makeObservable } from 'mobx'
+import { makeObservable, observable } from 'mobx'
 import './global.scss'
 import { CUSTOMChip } from '@models/DefaultChips/CUSTOM'
 import { Colors } from '@models/common/COLORS'
@@ -39,6 +39,7 @@ export class EditViewModel extends ViewModel<unknown, Props> {
     )
   }
   svgRef = createRef<SVGSVGElement>()
+  @observable
   radialElements: RadialElementObject[] = [
     {
       key: '23',
@@ -87,7 +88,7 @@ const Edit = view(EditViewModel)<Props>(({ viewModel }) => {
       </svg>
       <SidePinBlock pins={viewModel.currentChip.inputs} input selfState />
       <SidePinBlock pins={viewModel.currentChip.outputs} />
-      <RadialMenu elements={viewModel.radialElements} />
+      <RadialMenu elements={viewModel.radialElements} editable />
     </div>
   )
 })

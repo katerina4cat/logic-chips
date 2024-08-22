@@ -1,6 +1,6 @@
 import { Pos } from '@models/common/Pos'
 import { makeObservable, observable, runInAction } from 'mobx'
-
+export const fixAngle = (angle: number) => ((angle % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2)
 export const roundLen = 25
 class WindowScalingMethods {
   constructor() {
@@ -10,9 +10,16 @@ class WindowScalingMethods {
         this.scale = new Pos(window.innerWidth / 100, window.innerHeight / 100)
       })
     )
+    window.addEventListener('mousemove', (e) => {
+      runInAction(() => {
+        this.cursorPos = new Pos(e.pageX / this.scale.x, e.pageY / this.scale.y)
+      })
+    })
   }
   @observable
   scale = new Pos(window.innerWidth / 100, window.innerHeight / 100)
+  @observable
+  cursorPos = new Pos(0, 0)
 
   roundLinePoints = (points: Pos[]) => {
     let data = ``

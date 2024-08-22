@@ -1,11 +1,12 @@
 import { ViewModel, view } from '@yoskutik/react-vvm'
-import { computed, makeObservable } from 'mobx'
+import { action, makeObservable } from 'mobx'
 import cl from './RadialMenu.module.scss'
 import { windowScalingMethods } from '@renderer/common/PointsLineRounding'
 import RadialElement, { RadialElementObject } from './RadialElement'
 
 interface Props {
   elements: RadialElementObject[]
+  editable?: boolean
 }
 
 export class RadialMenuViewModel extends ViewModel<unknown, Props> {
@@ -14,6 +15,12 @@ export class RadialMenuViewModel extends ViewModel<unknown, Props> {
     super()
     makeObservable(this)
     this.halfElement = Math.PI * (1 / this.viewProps.elements.length)
+  }
+  @action
+  swapElement = (fromInd: number, toInd: number) => {
+    const buff = this.viewProps.elements[fromInd]
+    this.viewProps.elements[fromInd] = this.viewProps.elements[toInd]
+    this.viewProps.elements[toInd] = buff
   }
 }
 const RadialMenu = view(RadialMenuViewModel)<Props>(({ viewModel }) => {
@@ -31,6 +38,8 @@ const RadialMenu = view(RadialMenuViewModel)<Props>(({ viewModel }) => {
             halfElement={viewModel.halfElement}
             elementIndex={ind + 1}
             element={element}
+            editable={viewModel.viewProps.editable}
+            key={element.key}
           />
         )
       })}
