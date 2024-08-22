@@ -9,7 +9,9 @@ import { Wire } from '@models/Wire'
 import ViewWire from '@renderer/components/Wire/ViewWire'
 import SidePinBlock from '@renderer/components/SidePinBlock/SidePinBlock'
 import WireIncompleted from '@renderer/components/Wire/WireIncompleted'
-import { createRef } from 'react'
+import { createRef, Key } from 'react'
+import RadialMenu from '@renderer/components/RadialMenu/RadialMenu'
+import { RadialElementObject } from '@renderer/components/RadialMenu/RadialElement'
 
 interface Props {}
 
@@ -37,6 +39,29 @@ export class EditViewModel extends ViewModel<unknown, Props> {
     )
   }
   svgRef = createRef<SVGSVGElement>()
+  radialElements: RadialElementObject[] = [
+    {
+      key: '23',
+      title: 'Test',
+      onClick: function (key: Key): void {
+        throw new Error('Function not implemented.')
+      }
+    },
+    {
+      key: '232',
+      title: 'Test2',
+      onClick: function (key: Key): void {
+        throw new Error('Function not implemented.')
+      }
+    },
+    {
+      key: '2322',
+      title: 'Test245',
+      onClick: function (key: Key): void {
+        throw new Error('Function not implemented.')
+      }
+    }
+  ]
 }
 const Edit = view(EditViewModel)<Props>(({ viewModel }) => {
   return (
@@ -62,6 +87,7 @@ const Edit = view(EditViewModel)<Props>(({ viewModel }) => {
       </svg>
       <SidePinBlock pins={viewModel.currentChip.inputs} input selfState />
       <SidePinBlock pins={viewModel.currentChip.outputs} />
+      <RadialMenu elements={viewModel.radialElements} />
     </div>
   )
 })

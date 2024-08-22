@@ -1,0 +1,21 @@
+.RadialMenu {
+  position: fixed;
+  max-height: 75vh;
+  max-width: 75vw;
+  aspect-ratio: 1;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.Element {
+  fill: var(--element-background);
+  transition: all 0.125s ease-in-out;
+}
+.ElementTextPath {
+  transition: all 0.125s ease-in-out;
+}
+.ElementText {
+  transition: all 0.125s ease-in-out;
+  font-size: 0.25em;
+  pointer-events: none;
+}
