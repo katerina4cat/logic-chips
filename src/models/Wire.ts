@@ -57,6 +57,7 @@ export class Wire {
         if (to.isSource && !from.isSource) {
           this.from = to
           this.to = from
+          points.reverse()
           break
         }
       default:

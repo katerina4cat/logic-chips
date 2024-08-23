@@ -6,9 +6,11 @@ import { STATE } from '@models/STATE'
 import { Pos } from '@models/common/Pos'
 import { createRef } from 'react'
 import { wireConnector } from '@renderer/common/GlobalVariables'
+import { windowScalingMethods } from '@renderer/common/PointsLineRounding'
 
 interface Props {
   pin: Pin
+  side?: boolean
   className?: string
   style?: React.CSSProperties
 }
@@ -19,18 +21,28 @@ export class ViewPinViewModel extends ViewModel<unknown, Props> {
     makeObservable(this)
   }
 
+  @action
   protected onViewMounted(): void {
     window.addEventListener('resize', this.calcPinPosition)
     this.calcPinPosition()
   }
 
   protected onViewUnmounted(): void {
-    window.removeEventListener('resize', this.calcPinPosition)
+    if (this.viewProps.side) {
+      window.removeEventListener('resize', this.calcPinPosition)
+    }
   }
   @action
-  calcPinPosition = (ui?: UIEvent) => {
-    const box = this.ref.current?.getBoundingClientRect()
-    if (box) this.viewProps.pin.pos.x = ((box.x + box.width / 2) / window.innerWidth) * 100
+  calcPinPosition = () => {
+    if (this.viewProps.side) {
+      const box = this.ref.current!.getBoundingClientRect()
+      this.viewProps.pin.pos.x = (box.x + box.width / 2) / windowScalingMethods.scale.x
+    } else {
+      const box = this.ref.current!.getBoundingClientRect()
+      this.viewProps.pin.pos = new Pos(box.x + box.width / 2, box.y + box.height / 2)
+        .divMe(windowScalingMethods.scale)
+        .subMe(this.viewProps.pin.chip.pos)
+    }
   }
   ref = createRef<HTMLDivElement>()
 }
@@ -44,7 +56,7 @@ const ViewPin = view(ViewPinViewModel)<Props>(({ viewModel }) => {
         viewModel.viewProps.className
       ].join(' ')}
       ref={viewModel.ref}
-      onClick={() => wireConnector.current(viewModel.viewProps.pin)}
+      onClick={(e) => wireConnector.current(viewModel.viewProps.pin, e.ctrlKey)}
     ></div>
   )
 })

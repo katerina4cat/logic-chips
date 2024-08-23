@@ -23,6 +23,7 @@ class SaveManager {
   }
   @observable
   currentSave?: ISaveInfo
+  @observable
   loadSaveByName = (title: string) => {
     const ind = this.saves.findIndex((save) => save.title === title)
     if (ind !== -1) this.currentSave = this.saves[ind]

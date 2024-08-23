@@ -27,6 +27,11 @@ export class Pin {
   isSource: boolean
   chip: Chip
 
+  @computed
+  get globalPos() {
+    return this.pos.add(this.chip.pos)
+  }
+
   // Связанные проводами пины
   @observable
   linkedPin: Pin[] = []

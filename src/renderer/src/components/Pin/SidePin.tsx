@@ -79,6 +79,7 @@ const SidePin = view(SidePinViewModel)<Props>(({ viewModel }) => {
       <ViewPin
         pin={viewModel.viewProps.pin}
         style={{ transform: `translateX(${viewModel.viewProps.input ? -0.2 : 0.2}em)` }}
+        side
       />
     </div>
   )

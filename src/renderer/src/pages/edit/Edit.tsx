@@ -10,6 +10,9 @@ import RadialMenu from '@renderer/components/RadialMenu/RadialMenu'
 import { useNavigate, useParams } from 'react-router-dom'
 import { saveManager } from '@models/Managers/SaveManager'
 import { navigate } from '@renderer/App'
+import ViewChip from '@renderer/components/Chip/ViewChip'
+import { ANDChip } from '@models/DefaultChips/AND'
+import { Pos } from '@models/common/Pos'
 
 interface Props {}
 
@@ -18,6 +21,7 @@ export class EditViewModel extends ViewModel<unknown, Props> {
   constructor() {
     super()
     makeObservable(this)
+    this.currentChip.addChip(new ANDChip(23, new Pos(34, 54)))
   }
   svgRef = createRef<SVGSVGElement>()
 }
@@ -54,9 +58,22 @@ const Edit = view(EditViewModel)<Props>(({ viewModel }) => {
         ))}
         <WireIncompleted />
       </svg>
+      {viewModel.currentChip.subChips.map((chip) => (
+        <ViewChip chip={chip} key={chip.id} />
+      ))}
       <SidePinBlock pins={viewModel.currentChip.inputs} input selfState />
       <SidePinBlock pins={viewModel.currentChip.outputs} />
-      <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%' }}>
+
+      <div
+        style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100%',
+          height: '100%',
+          display: 'none'
+        }}
+      >
         <RadialMenu
           elements={saveManager.currentSave.wheels[0]}
           editable

@@ -41,6 +41,9 @@ export class WireIncompletedViewModel extends ViewModel<EditViewModel, Props> {
       window.removeEventListener('keydown', this.stopCheck)
       this.parent.svgRef.current?.removeEventListener('click', this.svgClick)
     }
+    if (e.key.toLocaleLowerCase() === 'z' || e.key.toLocaleLowerCase() === 'я') {
+      this.points.pop()
+    }
   }
 
   @action
@@ -56,9 +59,13 @@ export class WireIncompletedViewModel extends ViewModel<EditViewModel, Props> {
   }
 
   @action
-  selectPin = (pin?: Pin) => {
+  selectPin = (pin?: Pin, ctrl: boolean = false) => {
     if (this.from && pin) {
-      const newWire = new Wire(this.points, this.from, pin)
+      const newWire = new Wire(
+        this.points.map((pos) => pos.copy),
+        this.from,
+        pin
+      )
       try {
         newWire.completeLink()
         this.parent.currentChip.wires.push(newWire)
@@ -67,8 +74,10 @@ export class WireIncompletedViewModel extends ViewModel<EditViewModel, Props> {
           alert(err.message)
         }
       }
-      this.from = undefined
-      this.points = []
+      if (!ctrl) {
+        this.from = undefined
+        this.points = []
+      }
       return
     }
     this.from = pin
@@ -84,7 +93,11 @@ export class WireIncompletedViewModel extends ViewModel<EditViewModel, Props> {
   @computed
   get data() {
     if (!this.from) return undefined
-    return windowScalingMethods.roundLinePoints([this.from.pos, ...this.points, this.cursorPos])
+    return windowScalingMethods.roundLinePoints([
+      this.from.globalPos,
+      ...this.points,
+      this.cursorPos
+    ])
   }
 }
 const WireIncompleted = view(WireIncompletedViewModel)<Props>(({ viewModel }) => {

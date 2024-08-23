@@ -34,11 +34,13 @@ class WindowScalingMethods {
           data += `L${pos.x} ${pos.y}`
           return
         }
-        let vect1 = pos.sub(points[ind - 1])
         let vect2 = pos.sub(points[ind + 1])
-        vect1 = pos.sub(vect1.multy(roundLen / vect1.lenght))
-        vect2 = pos.sub(vect2.multy(roundLen / vect2.lenght))
-        data += `L${vect1.x} ${vect1.y} Q ${pos.x} ${pos.y} ${vect2.x} ${vect2.y} `
+        if (vect2.lenght !== 0) {
+          let vect1 = pos.sub(points[ind - 1])
+          vect1 = pos.sub(vect1.multy(vect1.lenght > roundLen ? roundLen / vect1.lenght : 1))
+          vect2 = pos.sub(vect2.multy(vect2.lenght > roundLen ? roundLen / vect2.lenght : 1))
+          data += `L${vect1.x} ${vect1.y} Q ${pos.x} ${pos.y} ${vect2.x} ${vect2.y} `
+        }
       })
     return data
   }

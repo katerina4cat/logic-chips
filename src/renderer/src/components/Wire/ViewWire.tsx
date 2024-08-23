@@ -18,9 +18,9 @@ export class ViewWireViewModel extends ViewModel<EditViewModel, Props> {
   @computed
   get data() {
     return windowScalingMethods.roundLinePoints([
-      this.viewProps.wire.from.pos,
+      this.viewProps.wire.from.globalPos,
       ...this.viewProps.wire.points,
-      this.viewProps.wire.to.pos
+      this.viewProps.wire.to.globalPos
     ])
   }
   deleteCheck = (e: KeyboardEvent) => {
