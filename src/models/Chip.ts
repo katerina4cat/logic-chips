@@ -1,4 +1,4 @@
-import { action, observable } from 'mobx'
+import { action, makeObservable, observable } from 'mobx'
 import { Pos } from './common/Pos'
 import { ISavePin, Pin } from './Pin'
 import { ISaveWire, Wire } from './Wire'
@@ -12,15 +12,15 @@ export class Chip {
   id: number
 
   @observable
-  accessor pos: Pos
+  pos: Pos
   @observable
-  accessor inputs: Pin[] = []
+  inputs: Pin[] = []
   @observable
-  accessor outputs: Pin[] = []
+  outputs: Pin[] = []
   @observable
-  accessor subChips: Chip[] = []
+  subChips: Chip[] = []
   @observable
-  accessor wires: Wire[] = []
+  wires: Wire[] = []
 
   constructor(
     title: string,
@@ -34,6 +34,7 @@ export class Chip {
     this.color = color
     this.id = id
     this.pos = pos
+    makeObservable(this)
   }
 }
 

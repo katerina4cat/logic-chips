@@ -1,4 +1,4 @@
-import { action, observable, reaction, runInAction, set } from 'mobx'
+import { action, makeObservable, observable, reaction, runInAction, set } from 'mobx'
 import { Chip } from '../Chip'
 import { ChipType, chipTypeInfo } from '../ChipType'
 import { Pos } from '../common/Pos'
@@ -13,10 +13,10 @@ export interface IAdapterOutputSettings {
 
 export class ADAPTERChip extends Chip {
   @observable
-  accessor displayAdderPin = true
+  displayAdderPin = true
   inputsID = 0
   @observable
-  accessor outputSettings: IAdapterOutputSettings[] = []
+  outputSettings: IAdapterOutputSettings[] = []
   constructor(id: number, pos: Pos) {
     super(
       chipTypeInfo[ChipType.ADAPTER].title!,
@@ -26,6 +26,7 @@ export class ADAPTERChip extends Chip {
       pos
     )
     this.inputs.forEach((inp) => reaction(() => inp.totalStates, this.calculateLogic))
+    makeObservable(this)
   }
 
   @action
@@ -37,7 +38,7 @@ export class ADAPTERChip extends Chip {
         (pin) => pin.id === settings.id && pin.type === settings.inputID.length
       )
       if (ind !== -1) buff.push(this.outputs[ind])
-      else buff.push(new Pin(settings.id, settings.title, settings.inputID.length, true))
+      else buff.push(new Pin(settings.id, this, settings.title, settings.inputID.length, true))
     })
     this.outputs = buff
   }
@@ -66,7 +67,7 @@ export class ADAPTERChip extends Chip {
 
   @action
   addInput = (pin: Pin) => {
-    const buff = new Pin(this.inputsID, pin.title, pin.type)
+    const buff = new Pin(this.inputsID, this, pin.title, pin.type)
     this.inputsID += 1
     buff.linkPin(pin)
     this.inputs.push(buff)

@@ -5,8 +5,14 @@ import { ton } from './common'
 import { ADAPTERChip } from '../DefaultChips/ADAPTER'
 import { Pos } from '../common/Pos'
 import { runInAction } from 'mobx'
+import { Chip } from '@models/Chip'
 
-const pins = [new Pin(0, 'A', 1, true), new Pin(1, 'B', 4, true), new Pin(2, 'C', 1, true)]
+const chip = new Chip('', undefined, '', 0, new Pos())
+const pins = [
+  new Pin(0, chip, 'A', 1, true),
+  new Pin(1, chip, 'B', 4, true),
+  new Pin(2, chip, 'C', 1, true)
+]
 const adapter = new ADAPTERChip(0, new Pos())
 adapter.addInput(pins[0])
 adapter.addInput(pins[1])

@@ -1,4 +1,4 @@
-import { action, reaction } from 'mobx'
+import { action, makeObservable, reaction } from 'mobx'
 import { Chip } from '../Chip'
 import { ChipType, chipTypeInfo } from '../ChipType'
 import { Pos } from '../common/Pos'
@@ -14,10 +14,11 @@ export class ANDChip extends Chip {
       id,
       pos
     )
-    this.inputs.push(new Pin(0, 'A', 1, false))
-    this.inputs.push(new Pin(1, 'B', 1, false))
-    this.outputs.push(new Pin(2, 'R', 1, true))
+    this.inputs.push(new Pin(0, this, 'A', 1, false))
+    this.inputs.push(new Pin(1, this, 'B', 1, false))
+    this.outputs.push(new Pin(2, this, 'R', 1, true))
     this.inputs.forEach((inp) => reaction(() => inp.totalStates, this.calculateLogic))
+    makeObservable(this)
   }
 
   @action

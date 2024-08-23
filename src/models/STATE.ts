@@ -1,3 +1,5 @@
+import { Color } from './common/COLORS'
+
 export enum STATE {
   LOW,
   HIGHT,
@@ -6,25 +8,25 @@ export enum STATE {
 }
 
 interface StateInfo {
-  color: (baseColor: string) => string
+  color?: (color: Color) => string
   title: string
 }
 
 export const stateInfo: { [key in STATE]: StateInfo } = {
   [STATE.LOW]: {
-    color: (baseColor: string) => `color-mixin(${baseColor},#00000088)`,
+    color: (color) => `color-mix(in srgb, ${color.color} 25%, #000)`,
     title: 'Низкий'
   },
   [STATE.HIGHT]: {
-    color: (baseColor: string) => `color-mixin(${baseColor},#00000088)`,
+    color: (color) => `color-mix(in srgb, ${color.color} 95%, #000)`,
     title: 'Высокий'
   },
   [STATE.UNDEFINED]: {
-    color: (baseColor: string) => `color-mixin(${baseColor},#00000088)`,
+    color: () => '#000',
     title: 'Неизвестный'
   },
   [STATE.ERROR]: {
-    color: (baseColor: string) => `none`,
+    color: (color) => color.color,
     title: 'Ошибочный'
   }
 }

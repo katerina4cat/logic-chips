@@ -1,0 +1,14 @@
+.NewSave {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25em;
+  .Buttons {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+    .Button {
+      max-width: 47.5%;
+      min-width: 40%;
+    }
+  }
+}

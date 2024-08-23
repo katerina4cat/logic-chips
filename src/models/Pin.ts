@@ -1,22 +1,27 @@
 import { action, computed, makeObservable, observable } from 'mobx'
 import { Pos } from './common/Pos'
-import { STATE, mergeState } from './STATE'
+import { STATE, mergeState, stateInfo } from './STATE'
 import { SIM_ERROR, SimulatingError } from './common/SimulatingError'
+import { Color, Colors } from './common/COLORS'
+import { Chip } from './Chip'
 
 export class Pin {
   // Кол-во состояний
   @observable
-  accessor type: number
+  type: number
   @observable
-  accessor title: string
+  title: string
+  @observable
+  color: Color
   id: number
   @observable
-  accessor pos: Pos
+  pos: Pos
   isSource: boolean
+  chip: Chip
 
   // Связанные проводами пины
   @observable
-  accessor linkedPin: Pin[] = []
+  linkedPin: Pin[] = []
   @action
   linkPin = (pin: Pin) => {
     if (this === pin)
@@ -47,7 +52,7 @@ export class Pin {
   }
   // Собственные состояния пина, для начальных точек взаимодействия
   @observable
-  accessor selfStates: STATE[] = []
+  selfStates: STATE[] = []
 
   @computed
   get totalStates(): STATE[] {
@@ -65,19 +70,31 @@ export class Pin {
     return x
   }
 
+  @computed
+  get stateColor() {
+    if (stateInfo[this.totalStates[0]].color)
+      return stateInfo[this.totalStates[0]].color!(this.color)
+    return undefined
+  }
+
   constructor(
     id: number,
+    chip: Chip,
     title?: string,
     type: number = 1,
     isSource: boolean = false,
-    pos: Pos = new Pos()
+    pos: Pos = new Pos(),
+    color: Color = Colors.red
   ) {
     this.type = type
     this.title = title || ''
     this.id = id
+    this.chip = chip
     this.pos = pos
     this.isSource = isSource
+    this.color = color
     if (this.isSource) this.selfStates = new Array(this.type).fill(STATE.LOW)
+    makeObservable(this)
   }
 }
 

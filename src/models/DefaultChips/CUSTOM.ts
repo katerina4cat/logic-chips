@@ -1,4 +1,4 @@
-import { action } from 'mobx'
+import { action, makeObservable } from 'mobx'
 import { Chip } from '../Chip'
 import { ChipType, chipTypeInfo } from '../ChipType'
 import { Pos } from '../common/Pos'
@@ -9,6 +9,7 @@ import { Wire } from '../Wire'
 export class CUSTOMChip extends Chip {
   constructor(title: string, color: string, id: number = Date.now(), pos: Pos = new Pos()) {
     super(title, undefined, color, id, pos)
+    makeObservable(this)
   }
 
   @action
