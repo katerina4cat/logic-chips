@@ -50,4 +50,20 @@ export class Pos {
     pos instanceof Pos
       ? new Pos(this.x * pos.x, this.y * pos.y)
       : new Pos(this.x * pos, this.y * pos)
+
+  divMe = (pos: Pos | number) => {
+    if (pos instanceof Pos) {
+      this.x /= pos.x
+      this.y /= pos.y
+    } else {
+      this.x /= pos
+      this.y /= pos
+    }
+    return this
+  }
+
+  div = (pos: Pos | number) =>
+    pos instanceof Pos
+      ? new Pos(this.x / pos.x, this.y / pos.y)
+      : new Pos(this.x / pos, this.y / pos)
 }

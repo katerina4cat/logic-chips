@@ -44,21 +44,21 @@ export class EditViewModel extends ViewModel<unknown, Props> {
     {
       key: '23',
       title: 'Test',
-      onClick: function (key: Key): void {
+      onClick: function (): void {
         throw new Error('Function not implemented.')
       }
     },
     {
       key: '232',
       title: 'Test2',
-      onClick: function (key: Key): void {
+      onClick: function (): void {
         throw new Error('Function not implemented.')
       }
     },
     {
       key: '2322',
       title: 'Test245',
-      onClick: function (key: Key): void {
+      onClick: function (): void {
         throw new Error('Function not implemented.')
       }
     }
@@ -88,7 +88,9 @@ const Edit = view(EditViewModel)<Props>(({ viewModel }) => {
       </svg>
       <SidePinBlock pins={viewModel.currentChip.inputs} input selfState />
       <SidePinBlock pins={viewModel.currentChip.outputs} />
-      <RadialMenu elements={viewModel.radialElements} editable />
+      <div style={{ position: 'fixed', top: 0, left: 0, width: '100%', height: '100%' }}>
+        <RadialMenu elements={viewModel.radialElements} editable />
+      </div>
     </div>
   )
 })

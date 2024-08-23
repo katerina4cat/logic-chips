@@ -1,10 +1,7 @@
 .RadialMenu {
-  position: fixed;
   max-height: 75vh;
   max-width: 75vw;
   aspect-ratio: 1;
-  left: 50%;
-  transform: translate(-50%, -50%);
 }
 
 .Element {
@@ -12,7 +9,8 @@
   transition: all 0.125s ease-in-out;
 }
 .ElementMoving {
-  fill: var(--element-background);
+  fill: color-mix(in srgb, var(--element-background) 75%, #fff);
+  z-index: 10;
 }
 .ElementText {
   font-size: 0.25em;

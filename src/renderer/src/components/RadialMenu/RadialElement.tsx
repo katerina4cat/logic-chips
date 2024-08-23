@@ -6,28 +6,26 @@ import { RadialMenuViewModel } from './RadialMenu'
 import { fixAngle, windowScalingMethods } from '@renderer/common/PointsLineRounding'
 
 interface Props {
-  halfElement: number
   elementIndex: number
   element: RadialElementObject
-  editable?: boolean
 }
 
 export interface RadialElementObject {
   key: React.Key
   title: string
-  onClick: (key: React.Key) => void
+  onClick: () => void
 }
 
 export class RadialElementViewModel extends ViewModel<RadialMenuViewModel, Props> {
   @computed
   get centerPI() {
-    return this.viewProps.halfElement * (2 * this.viewProps.elementIndex)
+    return this.parent.halfElement * (2 * this.viewProps.elementIndex)
   }
   halfY: number
   constructor() {
     super()
     makeObservable(this)
-    this.halfY = Math.sin(this.viewProps.halfElement)
+    this.halfY = Math.sin(this.parent.halfElement)
   }
   @computed
   get textPath() {
@@ -40,24 +38,24 @@ export class RadialElementViewModel extends ViewModel<RadialMenuViewModel, Props
       new Pos(
         50 +
           Math.cos(
-            (this.deltaAngle !== 0 ? this.deltaAngle : this.centerPI) - this.viewProps.halfElement
+            (this.deltaAngle !== 0 ? this.deltaAngle : this.centerPI) - this.parent.halfElement
           ) *
             this.radius,
         50 +
           Math.sin(
-            (this.deltaAngle !== 0 ? this.deltaAngle : this.centerPI) - this.viewProps.halfElement
+            (this.deltaAngle !== 0 ? this.deltaAngle : this.centerPI) - this.parent.halfElement
           ) *
             this.radius
       ),
       new Pos(
         50 +
           Math.cos(
-            (this.deltaAngle !== 0 ? this.deltaAngle : this.centerPI) + this.viewProps.halfElement
+            (this.deltaAngle !== 0 ? this.deltaAngle : this.centerPI) + this.parent.halfElement
           ) *
             this.radius,
         50 +
           Math.sin(
-            (this.deltaAngle !== 0 ? this.deltaAngle : this.centerPI) + this.viewProps.halfElement
+            (this.deltaAngle !== 0 ? this.deltaAngle : this.centerPI) + this.parent.halfElement
           ) *
             this.radius
       )
@@ -70,13 +68,13 @@ export class RadialElementViewModel extends ViewModel<RadialMenuViewModel, Props
   deltaAngle: number = 0
   @action
   calcDeltaAngle = () => {
-    const vectCursor = windowScalingMethods.cursorPos.sub(new Pos(50, 50))
+    const vectCursor = windowScalingMethods.cursorPos.sub(this.parent.centerRadial)
     vectCursor.multyMe(1 / vectCursor.lenght)
     if (vectCursor.y > 0) this.deltaAngle = Math.acos(vectCursor.x)
     else this.deltaAngle = Math.PI + Math.acos(-vectCursor.x)
     const imageIndex =
       Math.floor(
-        fixAngle(this.deltaAngle - this.viewProps.halfElement) / (this.viewProps.halfElement * 2)
+        fixAngle(this.deltaAngle - this.parent.halfElement) / (this.parent.halfElement * 2)
       ) + 1
     if (this.viewProps.elementIndex !== imageIndex)
       this.parent.swapElement(this.viewProps.elementIndex - 1, imageIndex - 1)
@@ -86,7 +84,9 @@ export class RadialElementViewModel extends ViewModel<RadialMenuViewModel, Props
     window.addEventListener('mousemove', this.calcDeltaAngle)
     window.addEventListener('mouseup', this.onMouseUp)
     this.isMoving = true
+    this.downTime = Date.now()
   }
+  downTime: number = 0
   @observable
   isMoving = false
   @action
@@ -95,6 +95,7 @@ export class RadialElementViewModel extends ViewModel<RadialMenuViewModel, Props
     this.isMoving = false
     window.removeEventListener('mousemove', this.calcDeltaAngle)
     window.removeEventListener('mouseup', this.onMouseUp)
+    if (Date.now() - this.downTime < 150) this.viewProps.element.onClick()
   }
 }
 const RadialElement = view(RadialElementViewModel)<Props>(({ viewModel }) => {
@@ -109,7 +110,7 @@ const RadialElement = view(RadialElementViewModel)<Props>(({ viewModel }) => {
         onMouseLeave={action(() => {
           viewModel.radius = 40
         })}
-        onMouseDown={viewModel.viewProps.editable ? viewModel.onMouseDown : undefined}
+        onMouseDown={viewModel.parent.viewProps.editable ? viewModel.onMouseDown : undefined}
       />
       <path
         d={viewModel.textPath}
