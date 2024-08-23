@@ -13,6 +13,14 @@ const enum WireTypes {
 let wiresIDS = Date.now()
 
 export class Wire {
+  toSave = (): ISaveWire => ({
+    points: this.points,
+    fromChip: this.from.chip.id,
+    fromPin: this.from.id,
+    toChip: this.to.chip.id,
+    toPin: this.to.id,
+    id: this.id
+  })
   @observable
   points: Pos[]
   from: Pin
@@ -81,9 +89,10 @@ export class Wire {
 }
 
 export interface ISaveWire {
-  points: { x: number; y: number }
+  points: { x: number; y: number }[]
   fromChip: number
   fromPin: number
   toChip: number
   toPin: number
+  id: number
 }

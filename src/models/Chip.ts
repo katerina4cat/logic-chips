@@ -1,13 +1,35 @@
-import { action, makeObservable, observable } from 'mobx'
+import { makeObservable, observable } from 'mobx'
 import { Pos } from './common/Pos'
 import { ISavePin, Pin } from './Pin'
 import { ISaveWire, Wire } from './Wire'
 import { ChipType } from './ChipType'
-import { SIM_ERROR, SimulatingError } from './common/SimulatingError'
 
 export class Chip {
+  toSave = (): ISaveChip => ({
+    title: this.title,
+    color: this.color,
+    subChips: this.subChips.map((chip) => chip.toSubSave()),
+    inputs: this.inputs.map((pin) => pin.toSave()),
+    outputs: this.outputs.map((pin) => pin.toSave()),
+    wires: this.wires.map((wire) => wire.toSave())
+  })
+  toSubSave = (): ISaveSubChip => ({
+    id: this.id,
+    title: this.title,
+    pos: this.pos,
+    type: this.type
+  })
+  findPin = (chipID: number, pinID: number): Pin | undefined => {
+    if (chipID === 0)
+      return (
+        this.inputs.find((pin) => pin.id === pinID) || this.outputs.find((pin) => pin.id === pinID)
+      )
+    return this.subChips.find((chip) => chip.id === chipID)?.findPin(0, pinID)
+  }
+  @observable
   title: string
   type: ChipType
+  @observable
   color: string
   id: number
 
@@ -38,12 +60,18 @@ export class Chip {
   }
 }
 
-export interface ISaveChip {
+export interface ISaveSubChip {
+  id: number
   title: string
   type: ChipType
-  color: string
   pos: { x: number; y: number }
-  subChips: { id: number; title: string }[]
+  data?: any
+}
+
+export interface ISaveChip {
+  title: string
+  color: string
+  subChips: ISaveSubChip[]
   inputs: ISavePin[]
   outputs: ISavePin[]
   wires: ISaveWire[]

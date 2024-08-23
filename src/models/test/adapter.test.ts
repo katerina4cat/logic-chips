@@ -16,7 +16,7 @@ const pins = [
 const adapter = new ADAPTERChip(0, new Pos())
 adapter.addInput(pins[0])
 adapter.addInput(pins[1])
-adapter.setOutputSettingss([
+adapter.setOutputSettings([
   {
     id: -1,
     inputID: [0, 1, 1, 1],

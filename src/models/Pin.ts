@@ -2,10 +2,18 @@ import { action, computed, makeObservable, observable } from 'mobx'
 import { Pos } from './common/Pos'
 import { STATE, mergeState, stateInfo } from './STATE'
 import { SIM_ERROR, SimulatingError } from './common/SimulatingError'
-import { Color, Colors } from './common/COLORS'
+import { Color, COLORS, Colors } from './common/COLORS'
 import { Chip } from './Chip'
 
 export class Pin {
+  toSave = (): ISavePin => ({
+    title: this.title,
+    y: this.pos.y,
+    id: this.id,
+    type: this.type,
+    color: this.color.id
+  })
+
   // Кол-во состояний
   @observable
   type: number
@@ -103,4 +111,5 @@ export interface ISavePin {
   y: number
   id: number
   type: number
+  color: COLORS
 }

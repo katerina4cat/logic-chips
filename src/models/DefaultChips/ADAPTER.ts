@@ -1,4 +1,4 @@
-import { action, makeObservable, observable, reaction, runInAction, set } from 'mobx'
+import { action, makeObservable, observable, reaction, runInAction } from 'mobx'
 import { Chip } from '../Chip'
 import { ChipType, chipTypeInfo } from '../ChipType'
 import { Pos } from '../common/Pos'
@@ -17,7 +17,7 @@ export class ADAPTERChip extends Chip {
   inputsID = 0
   @observable
   outputSettings: IAdapterOutputSettings[] = []
-  constructor(id: number, pos: Pos) {
+  constructor(id: number, pos: Pos, data: IAdapterOutputSettings[]) {
     super(
       chipTypeInfo[ChipType.ADAPTER].title!,
       ChipType.ADAPTER,
@@ -27,10 +27,11 @@ export class ADAPTERChip extends Chip {
     )
     this.inputs.forEach((inp) => reaction(() => inp.totalStates, this.calculateLogic))
     makeObservable(this)
+    this.setOutputSettings(data)
   }
 
   @action
-  setOutputSettingss = (outputSettings: IAdapterOutputSettings[]) => {
+  setOutputSettings = (outputSettings: IAdapterOutputSettings[]) => {
     this.outputSettings = outputSettings
     const buff: Pin[] = []
     outputSettings.forEach((settings) => {

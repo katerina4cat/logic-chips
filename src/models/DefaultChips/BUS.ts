@@ -1,5 +1,5 @@
 import { action, computed, makeObservable, observable, reaction } from 'mobx'
-import { Chip } from '../Chip'
+import { Chip, ISaveSubChip } from '../Chip'
 import { ChipType, chipTypeInfo } from '../ChipType'
 import { Pos } from '../common/Pos'
 import { Pin } from '../Pin'
@@ -7,10 +7,23 @@ import { mergeStates, STATE } from '../STATE'
 import { ton } from '../test/common'
 import { SIM_ERROR, SimulatingError } from '../common/SimulatingError'
 
+export interface BusExtraData {
+  type: number
+  points: Pos[]
+}
+
 export class BUSChip extends Chip {
   @observable
   linkedBus: BUSChip[] = []
-  constructor(id: number, pos: Pos, type = 1) {
+  override toSubSave = (): ISaveSubChip => ({
+    id: this.id,
+    title: this.title,
+    type: this.type,
+    pos: this.pos,
+    data: { type: this.type, points: this.points }
+  })
+  points: Pos[] = []
+  constructor(id: number, pos: Pos, extraData: BusExtraData) {
     super(
       chipTypeInfo[ChipType.BUS].title!,
       ChipType.BUS,
@@ -18,8 +31,9 @@ export class BUSChip extends Chip {
       id,
       pos
     )
-    this.inputs.push(new Pin(0, this, 'STATE', type))
-    this.outputs.push(new Pin(1, this, 'OUTSTATE', type, true))
+    this.points = extraData.points
+    this.inputs.push(new Pin(0, this, 'STATE', extraData.type))
+    this.outputs.push(new Pin(1, this, 'OUTSTATE', extraData.type, true))
     reaction(() => this.inputs[0].totalStates, this.calculateLogic)
     makeObservable(this)
   }

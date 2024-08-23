@@ -1,6 +1,5 @@
 import { action, makeObservable } from 'mobx'
 import { Chip } from '../Chip'
-import { ChipType, chipTypeInfo } from '../ChipType'
 import { Pos } from '../common/Pos'
 import { SimulatingError, SIM_ERROR } from '../common/SimulatingError'
 import { Pin } from '../Pin'
