@@ -19,19 +19,22 @@ class SaveManager {
   constructor() {
     this.saves = JSON.parse(localStorage.getItem('saves') || '[]') as ISaveInfo[]
     makeObservable(this)
-    reaction(() => this.saves, this.save)
+    reaction(() => this.currentSave, this.save)
   }
+  @observable
   currentSave?: ISaveInfo
   loadSaveByName = (title: string) => {
     const ind = this.saves.findIndex((save) => save.title === title)
     if (ind !== -1) this.currentSave = this.saves[ind]
     else {
-      this.currentSave = {
+      const buff = {
         title: title,
         created: Date.now(),
-        chips: []
+        chips: [],
+        wheels: [['AND', 'NOT', 'TRISTATE'], [], [], [], [], [], [], [], []]
       }
-      this.saves.push(this.currentSave)
+      this.saves.push(buff)
+      this.currentSave = buff
     }
   }
   @computed
@@ -141,6 +144,7 @@ interface ISaveInfo {
   title: string
   created: number
   chips: ISaveChip[]
+  wheels: string[][]
 }
 
 export const saveManager = new SaveManager()

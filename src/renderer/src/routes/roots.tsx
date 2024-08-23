@@ -23,7 +23,7 @@ export const roots = createBrowserRouter([
     element: <Options />
   },
   {
-    path: '/Edit',
+    path: '/Edit/:id',
     element: <Edit />
   },
   {

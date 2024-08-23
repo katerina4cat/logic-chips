@@ -7,13 +7,8 @@ import { fixAngle, windowScalingMethods } from '@renderer/common/PointsLineRound
 
 interface Props {
   elementIndex: number
-  element: RadialElementObject
-}
-
-export interface RadialElementObject {
-  key: React.Key
-  title: string
-  onClick: () => void
+  element: string
+  onClick: (element: string) => void
 }
 
 export class RadialElementViewModel extends ViewModel<RadialMenuViewModel, Props> {
@@ -95,7 +90,7 @@ export class RadialElementViewModel extends ViewModel<RadialMenuViewModel, Props
     this.isMoving = false
     window.removeEventListener('mousemove', this.calcDeltaAngle)
     window.removeEventListener('mouseup', this.onMouseUp)
-    if (Date.now() - this.downTime < 150) this.viewProps.element.onClick()
+    if (Date.now() - this.downTime < 150) this.viewProps.onClick(this.viewProps.element)
   }
 }
 const RadialElement = view(RadialElementViewModel)<Props>(({ viewModel }) => {
@@ -114,15 +109,15 @@ const RadialElement = view(RadialElementViewModel)<Props>(({ viewModel }) => {
       />
       <path
         d={viewModel.textPath}
-        id={'selector_' + viewModel.viewProps.element.key}
+        id={'selector_' + viewModel.viewProps.element + viewModel.viewProps.elementIndex}
         className={cl.ElementTextPath}
       />
       <text textAnchor="middle" className={cl.ElementText}>
         <textPath
-          href={'#selector_' + viewModel.viewProps.element.key}
+          href={'#selector_' + viewModel.viewProps.element + viewModel.viewProps.elementIndex}
           startOffset={viewModel.radius + '%'}
         >
-          {viewModel.viewProps.element.title}
+          {viewModel.viewProps.element}
         </textPath>
       </text>
     </g>

@@ -1,14 +1,15 @@
 import { ViewModel, view } from '@yoskutik/react-vvm'
 import { action, computed, makeObservable, observable } from 'mobx'
 import cl from './RadialMenu.module.scss'
-import RadialElement, { RadialElementObject } from './RadialElement'
+import RadialElement from './RadialElement'
 import { createRef } from 'react'
 import { Pos } from '@models/common/Pos'
 import { windowScalingMethods } from '@renderer/common/PointsLineRounding'
 
 interface Props {
-  elements: RadialElementObject[]
+  elements: string[]
   editable?: boolean
+  onClick: (element: string) => void
 }
 
 export class RadialMenuViewModel extends ViewModel<unknown, Props> {
@@ -41,7 +42,14 @@ const RadialMenu = view(RadialMenuViewModel)<Props>(({ viewModel }) => {
   return (
     <svg viewBox="0 0 100 100" className={cl.RadialMenu} ref={viewModel.ref}>
       {viewModel.viewProps.elements.map((element, ind) => {
-        return <RadialElement elementIndex={ind + 1} element={element} key={element.key} />
+        return (
+          <RadialElement
+            elementIndex={ind + 1}
+            element={element}
+            key={element}
+            onClick={viewModel.viewProps.onClick}
+          />
+        )
       })}
     </svg>
   )
