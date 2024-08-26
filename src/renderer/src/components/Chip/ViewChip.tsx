@@ -5,10 +5,10 @@ import { Chip } from '@models/Chip'
 import ViewPin from '../Pin/ViewPin'
 import { windowScalingMethods } from '@renderer/common/PointsLineRounding'
 import { Pos } from '@models/common/Pos'
-import { createRef } from 'react'
 
 interface Props {
   chip: Chip
+  preview?: boolean
 }
 
 export class ViewChipViewModel extends ViewModel<unknown, Props> {
@@ -38,12 +38,16 @@ const ViewChip = view(ViewChipViewModel)<Props>(({ viewModel }) => {
   return (
     <div
       className={cl.ViewChip}
-      style={{
-        top: viewModel.viewProps.chip.pos.y * windowScalingMethods.scale.y,
-        left: viewModel.viewProps.chip.pos.x * windowScalingMethods.scale.x,
-        backgroundColor: viewModel.viewProps.chip.color
-      }}
-      onMouseDown={viewModel.onMouseDown}
+      style={
+        viewModel.viewProps.preview
+          ? { position: 'static', backgroundColor: viewModel.viewProps.chip.color }
+          : {
+              top: viewModel.viewProps.chip.pos.y * windowScalingMethods.scale.y,
+              left: viewModel.viewProps.chip.pos.x * windowScalingMethods.scale.x,
+              backgroundColor: viewModel.viewProps.chip.color
+            }
+      }
+      onMouseDown={viewModel.viewProps.preview ? undefined : viewModel.onMouseDown}
     >
       <div className={cl.Pins} style={{ transform: 'translateX(-50%)' }}>
         {viewModel.viewProps.chip.inputs.map((pin) => (

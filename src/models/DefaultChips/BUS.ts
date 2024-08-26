@@ -4,8 +4,8 @@ import { ChipType, chipTypeInfo } from '../ChipType'
 import { Pos } from '../common/Pos'
 import { Pin } from '../Pin'
 import { mergeStates, STATE } from '../STATE'
-import { ton } from '../test/common'
 import { SIM_ERROR, SimulatingError } from '../common/SimulatingError'
+import { generateNumberID } from '@models/common/RandomId'
 
 export interface BusExtraData {
   type: number
@@ -23,7 +23,7 @@ export class BUSChip extends Chip {
     data: { type: this.type, points: this.points }
   })
   points: Pos[] = []
-  constructor(id: number, pos: Pos, extraData: BusExtraData) {
+  constructor(id: number = generateNumberID(), pos: Pos, extraData: BusExtraData) {
     super(
       chipTypeInfo[ChipType.BUS].title!,
       ChipType.BUS,
@@ -34,6 +34,7 @@ export class BUSChip extends Chip {
     this.points = extraData.points
     this.inputs.push(new Pin(0, this, 'STATE', extraData.type))
     this.outputs.push(new Pin(1, this, 'OUTSTATE', extraData.type, true))
+    this.outputs[0].selfStates[0] = STATE.UNDEFINED
     reaction(() => this.inputs[0].totalStates, this.calculateLogic)
     makeObservable(this)
   }

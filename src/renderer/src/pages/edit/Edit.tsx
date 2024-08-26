@@ -1,5 +1,5 @@
 import { ViewModel, view } from '@yoskutik/react-vvm'
-import { makeObservable } from 'mobx'
+import { action, makeObservable, observable } from 'mobx'
 import './global.scss'
 import { CUSTOMChip } from '@models/DefaultChips/CUSTOM'
 import ViewWire from '@renderer/components/Wire/ViewWire'
@@ -13,20 +13,35 @@ import { navigate } from '@renderer/App'
 import ViewChip from '@renderer/components/Chip/ViewChip'
 import { ANDChip } from '@models/DefaultChips/AND'
 import { Pos } from '@models/common/Pos'
+import { hotKeyEventListener } from '@renderer/common/HotKeyListener'
+import { Chip } from '@models/Chip'
+import AddingChip from './AddingChip'
 
 interface Props {}
 
 export class EditViewModel extends ViewModel<unknown, Props> {
+  @observable
   currentChip = new CUSTOMChip('', '', 0)
+  @observable
+  addingChip?: Chip
   constructor() {
     super()
     makeObservable(this)
     this.currentChip.addChip(new ANDChip(23, new Pos(34, 54)))
+    hotKeyEventListener.hotkeys.RADIAL_MENU1.addListener(action(() => (this.radial = !this.radial)))
   }
+  @observable
+  radial = false
   svgRef = createRef<SVGSVGElement>()
+  @action
+  setAdding = (name: string) => {
+    this.addingChip = saveManager.loadChipByName(name)
+    this.radial = false
+  }
 }
 const Edit = view(EditViewModel)<Props>(({ viewModel }) => {
   navigate.current = useNavigate()
+  hotKeyEventListener
   const { id } = useParams()
   useEffect(() => {
     if (id && saveManager.savesTitleInfo.findIndex((save) => save.title === id) !== -1)
@@ -61,6 +76,7 @@ const Edit = view(EditViewModel)<Props>(({ viewModel }) => {
       {viewModel.currentChip.subChips.map((chip) => (
         <ViewChip chip={chip} key={chip.id} />
       ))}
+      <AddingChip />
       <SidePinBlock pins={viewModel.currentChip.inputs} input selfState />
       <SidePinBlock pins={viewModel.currentChip.outputs} />
 
@@ -71,15 +87,15 @@ const Edit = view(EditViewModel)<Props>(({ viewModel }) => {
           left: 0,
           width: '100%',
           height: '100%',
-          display: 'none'
+          display: viewModel.radial ? 'block' : 'none',
+          zIndex: 75
         }}
       >
         <RadialMenu
           elements={saveManager.currentSave.wheels[0]}
+          title={(v) => v}
           editable
-          onClick={(element: string) => {
-            console.log(element)
-          }}
+          onClick={viewModel.setAdding}
         />
       </div>
     </div>

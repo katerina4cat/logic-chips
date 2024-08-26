@@ -7,7 +7,8 @@ import { Pos } from '@models/common/Pos'
 import { windowScalingMethods } from '@renderer/common/PointsLineRounding'
 
 interface Props {
-  elements: string[]
+  elements: any[]
+  title: (v: any) => string
   editable?: boolean
   onClick: (element: string) => void
 }
@@ -46,6 +47,7 @@ const RadialMenu = view(RadialMenuViewModel)<Props>(({ viewModel }) => {
           <RadialElement
             elementIndex={ind + 1}
             element={element}
+            title={viewModel.viewProps.title}
             key={element}
             onClick={viewModel.viewProps.onClick}
           />

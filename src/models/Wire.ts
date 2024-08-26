@@ -3,6 +3,7 @@ import { Pos } from './common/Pos'
 import { Pin } from './Pin'
 import { ChipType } from './ChipType'
 import { BUSChip } from './DefaultChips/BUS'
+import { generateNumberID } from './common/RandomId'
 
 const enum WireTypes {
   DEFAULT,
@@ -29,8 +30,14 @@ export class Wire {
   type: WireTypes
   completed = false
 
-  constructor(points: Pos[], from: Pin, to: Pin, complete = false, id?: number) {
-    this.id = id || wiresIDS
+  constructor(
+    points: Pos[],
+    from: Pin,
+    to: Pin,
+    complete = false,
+    id: number = generateNumberID()
+  ) {
+    this.id = id
     wiresIDS += 1
     this.points = points
     if (from.chip.type === ChipType.BUS)

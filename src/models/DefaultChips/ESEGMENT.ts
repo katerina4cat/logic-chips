@@ -3,9 +3,10 @@ import { Chip } from '../Chip'
 import { ChipType, chipTypeInfo } from '../ChipType'
 import { Pos } from '../common/Pos'
 import { Pin } from '../Pin'
+import { generateNumberID } from '@models/common/RandomId'
 
 export class ESEGMENTChip extends Chip {
-  constructor(id: number, pos: Pos) {
+  constructor(id: number = generateNumberID(), pos: Pos) {
     super(
       chipTypeInfo[ChipType.ESEGMENT].title!,
       ChipType.ESEGMENT,

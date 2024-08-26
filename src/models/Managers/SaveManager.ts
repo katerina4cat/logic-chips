@@ -60,16 +60,28 @@ class SaveManager {
     localStorage.setItem('saves', JSON.stringify(this.saves))
   }
 
-  loadChipByName = (chipName: string) => {
+  loadChipByName = (chipName: string, id?: number) => {
     if (this.currentSave === undefined) {
       alert('Как ты смог инициализировать сохранение чипа, без выбора сохранения?')
       return
     }
     const chipInfo = this.currentSave.chips.find((chipI) => chipI.title === chipName)
     if (chipInfo === undefined) {
+      switch (chipName) {
+        case 'NOT':
+          return new NOTChip(id, new Pos())
+        case 'AND':
+          return new ANDChip(id, new Pos())
+        case 'TRISTATE':
+          return new TRISTATEChip(id, new Pos())
+        case 'ESEGMENT':
+          return new ESEGMENTChip(id, new Pos())
+        case 'ADAPTER':
+          return new ADAPTERChip(id, new Pos(), [])
+      }
       throw 'Невозможно открыть такой чип'
     }
-    const chip = new CUSTOMChip(chipInfo.title, chipInfo.color, 0)
+    const chip = new CUSTOMChip(chipInfo.title, chipInfo.color, id || 0)
     chipInfo.inputs.forEach((pinInfo) =>
       chip.addPin(
         new Pin(

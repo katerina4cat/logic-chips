@@ -4,6 +4,7 @@ import { STATE, mergeState, stateInfo } from './STATE'
 import { SIM_ERROR, SimulatingError } from './common/SimulatingError'
 import { Color, COLORS, Colors } from './common/COLORS'
 import { Chip } from './Chip'
+import { generateNumberID } from './common/RandomId'
 
 export class Pin {
   toSave = (): ISavePin => ({
@@ -91,7 +92,7 @@ export class Pin {
   }
 
   constructor(
-    id: number,
+    id: number = generateNumberID(),
     chip: Chip,
     title?: string,
     type: number = 1,

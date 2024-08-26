@@ -3,6 +3,7 @@ import { Pos } from './common/Pos'
 import { ISavePin, Pin } from './Pin'
 import { ISaveWire, Wire } from './Wire'
 import { ChipType } from './ChipType'
+import { generateNumberID } from './common/RandomId'
 
 export class Chip {
   toSave = (): ISaveChip => ({
@@ -48,7 +49,7 @@ export class Chip {
     title: string,
     type: ChipType = ChipType.CUSTOM,
     color: string,
-    id: number,
+    id: number = generateNumberID(),
     pos: Pos
   ) {
     this.title = title

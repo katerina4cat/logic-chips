@@ -3,6 +3,7 @@ import { Chip } from '../Chip'
 import { ChipType, chipTypeInfo } from '../ChipType'
 import { Pos } from '../common/Pos'
 import { Pin } from '../Pin'
+import { generateNumberID } from '@models/common/RandomId'
 
 export interface IAdapterOutputSettings {
   id: number
@@ -17,7 +18,7 @@ export class ADAPTERChip extends Chip {
   inputsID = 0
   @observable
   outputSettings: IAdapterOutputSettings[] = []
-  constructor(id: number, pos: Pos, data: IAdapterOutputSettings[]) {
+  constructor(id: number = generateNumberID(), pos: Pos, data: IAdapterOutputSettings[]) {
     super(
       chipTypeInfo[ChipType.ADAPTER].title!,
       ChipType.ADAPTER,

@@ -4,9 +4,10 @@ import { Pos } from '../common/Pos'
 import { SimulatingError, SIM_ERROR } from '../common/SimulatingError'
 import { Pin } from '../Pin'
 import { Wire } from '../Wire'
+import { generateNumberID } from '@models/common/RandomId'
 
 export class CUSTOMChip extends Chip {
-  constructor(title: string, color: string, id: number = Date.now(), pos: Pos = new Pos()) {
+  constructor(title: string, color: string, id: number = generateNumberID(), pos: Pos = new Pos()) {
     super(title, undefined, color, id, pos)
     makeObservable(this)
   }

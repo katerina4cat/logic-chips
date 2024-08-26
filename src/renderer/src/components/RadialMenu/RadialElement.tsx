@@ -7,7 +7,8 @@ import { fixAngle, windowScalingMethods } from '@renderer/common/PointsLineRound
 
 interface Props {
   elementIndex: number
-  element: string
+  element: any
+  title: (v: any) => string
   onClick: (element: string) => void
 }
 
@@ -117,7 +118,7 @@ const RadialElement = view(RadialElementViewModel)<Props>(({ viewModel }) => {
           href={'#selector_' + viewModel.viewProps.element + viewModel.viewProps.elementIndex}
           startOffset={viewModel.radius + '%'}
         >
-          {viewModel.viewProps.element}
+          {viewModel.viewProps.title(viewModel.viewProps.element)}
         </textPath>
       </text>
     </g>
