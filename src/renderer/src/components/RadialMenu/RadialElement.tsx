@@ -100,6 +100,7 @@ const RadialElement = view(RadialElementViewModel)<Props>(({ viewModel }) => {
       <path
         d={viewModel.getPointsForElement}
         className={viewModel.isMoving ? cl.ElementMoving : cl.Element}
+        onClick={(e) => e.stopPropagation()}
         onMouseEnter={action(() => {
           if (!viewModel.isMoving) viewModel.radius = 45
         })}

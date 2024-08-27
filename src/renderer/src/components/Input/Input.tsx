@@ -5,7 +5,7 @@ import React from 'react'
 
 interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
   value: string
-  name: string
+  name?: string
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => string
 }
 

@@ -1,0 +1,17 @@
+.ModalBack {
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  z-index: 1000;
+  background-color: rgba(0, 0, 0, 0.45);
+  .ModalContent {
+    padding: 1em;
+    min-width: 40%;
+    min-height: 40%;
+    background-color: var(--background);
+    border-radius: var(--main-border-radius);
+  }
+}
