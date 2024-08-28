@@ -14,8 +14,9 @@ html[data-theme='dark'] {
   --pin-filed-bg: #353536;
 }
 html {
-  --compose: #2c778a;
+  --compose: #8c49ff;
   --main-border-radius: 6px;
+  --min-border-radius: 4px;
 }
 
 *,

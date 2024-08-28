@@ -1,0 +1,12 @@
+.StatesList {
+  display: flex;
+  gap: 1.5em;
+  flex-wrap: wrap;
+  .StatusBtn {
+    height: 1.5em;
+    width: 1.5em;
+    border: 0.075em solid black;
+    border-radius: 50%;
+    display: block;
+  }
+}

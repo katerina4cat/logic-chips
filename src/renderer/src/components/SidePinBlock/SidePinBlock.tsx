@@ -1,5 +1,5 @@
 import { ViewModel, view } from '@yoskutik/react-vvm'
-import { action, makeObservable, observable, runInAction } from 'mobx'
+import { action, computed, makeObservable, observable, reaction, runInAction } from 'mobx'
 import cl from './SidePinBlock.module.scss'
 import { Pin } from '@models/Pin'
 import SidePin from '../Pin/SidePin'
@@ -16,25 +16,46 @@ export class SidePinBlockViewModel extends ViewModel<EditViewModel, Props> {
   constructor() {
     super()
     makeObservable(this)
+    reaction(
+      () => windowScalingMethods.cursorPos.y,
+      () => {
+        this.previewPin.pos.y = windowScalingMethods.cursorPos.y
+      }
+    )
   }
   protected onViewMounted(): void {
-    window.addEventListener('mousemove', this.mouseMove)
+    window.addEventListener('keydown', this.keyDown)
   }
   protected onViewUnmounted(): void {
-    window.removeEventListener('mousemove', this.mouseMove)
+    window.removeEventListener('keydown', this.keyDown)
+    window.removeEventListener('keyup', this.keyUp)
   }
   @action
-  mouseMove = (e: MouseEvent) => {
-    this.previewPin.pos.y = e.pageY / windowScalingMethods.scale.y
+  keyDown = (e: KeyboardEvent) => {
+    if (e.code === 'AltLeft') {
+      e.preventDefault()
+      this.previewPin.type = 8
+      window.addEventListener('keyup', this.keyUp)
+      window.removeEventListener('keydown', this.keyDown)
+    }
   }
+  @action
+  keyUp = (e: KeyboardEvent) => {
+    if (e.code === 'AltLeft') {
+      this.previewPin.type = 1
+      window.removeEventListener('keyup', this.keyUp)
+      window.addEventListener('keydown', this.keyDown)
+    }
+  }
+
   @action
   addPin = () => {
     this.parent.currentChip.addPin(
       new Pin(
-        Date.now(),
+        undefined,
         this.parent.currentChip,
         undefined,
-        1,
+        this.previewPin.type,
         this.viewProps.input,
         this.previewPin.pos.copy
       ),
@@ -48,21 +69,21 @@ export class SidePinBlockViewModel extends ViewModel<EditViewModel, Props> {
 }
 const SidePinBlock = view(SidePinBlockViewModel)<Props>(({ viewModel }) => {
   return (
-    <div
-      className={cl.SideBlock}
-      style={{ right: viewModel.viewProps.input ? undefined : 0 }}
-      onMouseEnter={() =>
-        runInAction(() => {
-          viewModel.show = true
-        })
-      }
-      onMouseLeave={() =>
-        runInAction(() => {
-          viewModel.show = false
-        })
-      }
-      onClick={viewModel.addPin}
-    >
+    <div className={cl.SideBlock} style={{ right: viewModel.viewProps.input ? undefined : 0 }}>
+      <div
+        className={cl.SideBlockElement}
+        onMouseEnter={() =>
+          runInAction(() => {
+            viewModel.show = true
+          })
+        }
+        onMouseLeave={() =>
+          runInAction(() => {
+            viewModel.show = false
+          })
+        }
+        onClick={viewModel.addPin}
+      ></div>
       {viewModel.viewProps.pins.map((pin) => (
         <SidePin
           pin={pin}

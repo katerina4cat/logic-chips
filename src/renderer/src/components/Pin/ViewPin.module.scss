@@ -7,9 +7,7 @@
   cursor: pointer;
 }
 .CompositePin {
-  height: 1em;
-  width: 1em;
-  border-radius: 40%;
+  border-radius: 20%;
   position: relative;
-  background-color: var(--compose) !important;
+  background-color: color-mix(in srgb, var(--compose) 55%, #000) !important ;
 }
