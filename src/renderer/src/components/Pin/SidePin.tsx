@@ -6,6 +6,7 @@ import ViewPin from './ViewPin'
 import { STATE } from '@models/STATE'
 import { windowScalingMethods } from '@renderer/common/PointsLineRounding'
 import { SidePinBlockViewModel } from '../SidePinBlock/SidePinBlock'
+import CompositeSvg from './Composite.svg?react'
 
 interface Props {
   pin: Pin
@@ -36,6 +37,8 @@ export class SidePinViewModel extends ViewModel<SidePinBlockViewModel, Props> {
     window.removeEventListener('mousemove', this.mouseMoveWithPin)
     window.removeEventListener('mouseup', this.mouseUp)
   }
+  @action
+  openComposeContext = () => {}
 }
 const SidePin = view(SidePinViewModel)<Props>(({ viewModel }) => {
   return (
@@ -61,17 +64,31 @@ const SidePin = view(SidePinViewModel)<Props>(({ viewModel }) => {
       }
     >
       <div className={cl.Scroll} onMouseDown={viewModel.mouseDown}></div>
+
       <div
         className={[
           cl.StatusBtn,
+          viewModel.viewProps.pin.type !== 1 ? cl.ComposePin : '',
           viewModel.viewProps.pin.totalStates[0] === STATE.ERROR ? 'errorFill' : ''
         ].join(' ')}
-        onClick={viewModel.viewProps.selfState && viewModel.changeState}
+        onClick={
+          viewModel.viewProps.pin.type === 1
+            ? viewModel.viewProps.selfState && viewModel.changeState
+            : viewModel.openComposeContext
+        }
         style={{
           backgroundColor: viewModel.viewProps.pin.stateColor,
           cursor: viewModel.viewProps.input ? 'pointer' : 'auto'
         }}
-      ></div>
+      >
+        {viewModel.viewProps.pin.type !== 1 ? (
+          <>
+            <CompositeSvg className={cl.CompositeIcon} />
+            <div className={cl.CompositeNumber}>{viewModel.viewProps.pin.type}</div>
+          </>
+        ) : undefined}
+      </div>
+
       <div
         className={cl.Line}
         style={{ transform: `translateX(${viewModel.viewProps.input ? -0.15 : 0.15}em)` }}

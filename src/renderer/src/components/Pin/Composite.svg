@@ -1,0 +1,17 @@
+<svg viewBox="-1 0 32 40" xmlns="http://www.w3.org/2000/svg">
+  <path 
+  d="M30 40 C30 20 0 20 0 0 " 
+  stroke="#147fff" fill="none"/>
+  <path 
+  d="M 0 40 C 0 20 30 20 30 0" 
+  stroke="#e93145" fill="none"/>
+  <path 
+  d="M7.5 40 C 7.5 25 22.5 15 22.5 0" 
+  stroke="#1fb03a" fill="none"/>
+  <path 
+  d="M 22.5 40 C 22.5 25 7.5 15 7.5 0" 
+  stroke="#8c49ff" fill="none"/>
+  <path 
+  d="M15 40 L 15 0" 
+  stroke="#ff9b00" fill="none"/>
+</svg>

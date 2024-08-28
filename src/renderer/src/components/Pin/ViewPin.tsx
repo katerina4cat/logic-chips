@@ -53,6 +53,7 @@ const ViewPin = view(ViewPinViewModel)<Props>(({ viewModel }) => {
       className={[
         viewModel.viewProps.pin.totalStates[0] !== STATE.ERROR ? '' : 'errorFill',
         cl.Pin,
+        viewModel.viewProps.pin.type !== 1 ? cl.CompositePin : '',
         viewModel.viewProps.className
       ].join(' ')}
       ref={viewModel.ref}

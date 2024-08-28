@@ -15,6 +15,8 @@ import { Chip } from '@models/Chip'
 import AddingChip from './AddingChip'
 import Modals from './Modals'
 import { modalsStates } from './ModalsStates'
+import { Pin } from '@models/Pin'
+import { Pos } from '@models/common/Pos'
 
 interface Props {}
 
@@ -26,6 +28,14 @@ export class EditViewModel extends ViewModel<unknown, Props> {
   constructor() {
     super()
     makeObservable(this)
+    this.currentChip.addPin(
+      new Pin(undefined, this.currentChip, 'IN', 1, true, new Pos(0, 25)),
+      true
+    )
+    this.currentChip.addPin(
+      new Pin(undefined, this.currentChip, 'IN', 32, true, new Pos(0, 45)),
+      true
+    )
   }
   svgRef = createRef<SVGSVGElement>()
   @action

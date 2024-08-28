@@ -6,3 +6,10 @@
   display: block;
   cursor: pointer;
 }
+.CompositePin {
+  height: 1em;
+  width: 1em;
+  border-radius: 40%;
+  position: relative;
+  background-color: var(--compose) !important;
+}

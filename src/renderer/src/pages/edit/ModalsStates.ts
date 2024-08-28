@@ -4,6 +4,7 @@ import { makeObservable, observable, action } from 'mobx'
 type ModalsList = {
   saving: boolean
   radial: boolean
+  library: boolean
 }
 
 class ModalsStates {
@@ -14,7 +15,8 @@ class ModalsStates {
   constructor() {
     this.states = {
       saving: false,
-      radial: false
+      radial: false,
+      library: false
     }
     makeObservable(this)
     hotKeyEventListener.hotkeys.RADIAL_MENU1.addListener(this.radialHandler)
