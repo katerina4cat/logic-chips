@@ -1,6 +1,7 @@
 .Window {
   position: fixed;
   width: fit-content;
+  box-shadow: 4px 4px 8px 0px #444;
   .Header {
     display: flex;
     justify-content: flex-end;

@@ -25,7 +25,6 @@ const CompositeContext = view(CompositeContextViewModel)<Props>(({ viewModel }) 
       setdisplay={viewModel.setdisplay}
       position={new Pos()}
       title={viewModel.parent.viewProps.pin.title}
-      zindex={Number(`1.${Date.now()}`)}
     >
       <div className={cl.StatesList}>
         {(viewModel.parent.viewProps.input

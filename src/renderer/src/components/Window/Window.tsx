@@ -10,13 +10,16 @@ interface Props {
   position: Pos
   title?: string
   children: any
-  zindex?: number
 }
+
+let globalZindexes = 5000
 
 export class WindowViewModel extends ViewModel<unknown, Props> {
   constructor() {
     super()
     makeObservable(this)
+    globalZindexes += 1
+    this.zIndex = globalZindexes
     reaction(
       () => windowScalingMethods.cursorPos,
       () => {
@@ -33,15 +36,21 @@ export class WindowViewModel extends ViewModel<unknown, Props> {
   @observable
   currentPos = this.viewProps.position.copy
   mooving = false
+  @action
   mouseDown = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     this.deltaClick = new Pos(e.pageX - this.currentPos.x, e.pageY - this.currentPos.y)
     window.addEventListener('mouseup', this.mouseUp)
+    globalZindexes += 1
+    this.zIndex = globalZindexes
     this.mooving = true
+    console.log(this.zIndex)
   }
   mouseUp = () => {
     this.mooving = false
     window.removeEventListener('mouseup', this.mouseUp)
   }
+  @observable
+  zIndex
 }
 const Window = view(WindowViewModel)<Props>(({ viewModel }) => {
   return (
@@ -49,7 +58,8 @@ const Window = view(WindowViewModel)<Props>(({ viewModel }) => {
       className={cl.Window}
       style={{
         left: `${viewModel.currentPos.x}px`,
-        top: `${viewModel.currentPos.y}px`
+        top: `${viewModel.currentPos.y}px`,
+        zIndex: viewModel.zIndex
       }}
     >
       <div className={cl.Header} onMouseDown={viewModel.mouseDown}>
