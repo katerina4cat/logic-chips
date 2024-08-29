@@ -5,6 +5,7 @@ import { Pin } from '@models/Pin'
 import SidePin from '../Pin/SidePin'
 import { EditViewModel } from '@renderer/pages/edit/Edit'
 import { windowScalingMethods } from '@renderer/common/PointsLineRounding'
+import { CUSTOMChip } from '@models/DefaultChips/CUSTOM'
 
 interface Props {
   pins: Pin[]
@@ -50,7 +51,7 @@ export class SidePinBlockViewModel extends ViewModel<EditViewModel, Props> {
 
   @action
   addPin = () => {
-    this.parent.currentChip.addPin(
+    ;(this.parent.currentChip as CUSTOMChip).addPin(
       new Pin(
         undefined,
         this.parent.currentChip,

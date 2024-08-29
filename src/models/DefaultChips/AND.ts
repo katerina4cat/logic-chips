@@ -5,6 +5,7 @@ import { Pos } from '../common/Pos'
 import { Pin } from '../Pin'
 import { STATE } from '../STATE'
 import { generateNumberID } from '@models/common/RandomId'
+import { ton } from '@models/test/common'
 
 export class ANDChip extends Chip {
   constructor(id: number = generateNumberID(), pos: Pos) {
@@ -18,8 +19,10 @@ export class ANDChip extends Chip {
     this.inputs.push(new Pin(0, this, 'A', 1, false))
     this.inputs.push(new Pin(1, this, 'B', 1, false))
     this.outputs.push(new Pin(2, this, 'R', 1, true))
-    this.inputs.forEach((inp) => reaction(() => inp.totalStates, this.calculateLogic))
     makeObservable(this)
+    this.inputs.forEach((inp) =>
+      reaction(() => inp.totalStates, this.calculateLogic, { fireImmediately: true })
+    )
   }
 
   @action

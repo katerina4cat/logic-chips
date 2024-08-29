@@ -25,17 +25,20 @@ export class Pin {
   id: number
   @observable
   pos: Pos
+  @observable
+  atChippos: Pos = new Pos()
   isSource: boolean
   chip: Chip
 
   @computed
   get globalPos() {
-    return this.pos.add(this.chip.pos)
+    return this.atChippos.add(this.chip.pos)
   }
 
   // Связанные проводами пины
   @observable
   linkedPin: Pin[] = []
+
   @action
   linkPin = (pin: Pin) => {
     if (this === pin)
@@ -113,7 +116,7 @@ export class Pin {
       () => this.type,
       () => {
         if (this.isSource)
-          while (this.type !== this.selfStates.length)
+          for (let i = 0; i < Math.abs(this.type - this.selfStates.length); i++)
             if (this.type > this.selfStates.length) this.selfStates.push(STATE.LOW)
             else this.selfStates.pop()
       }

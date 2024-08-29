@@ -82,8 +82,10 @@
   max-width: 30vw;
   gap: 1em;
   .Colors {
-    width: 100%;
+    width: 25vw;
     display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     gap: 0.75em;
   }
   .Button {

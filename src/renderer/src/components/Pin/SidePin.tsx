@@ -1,5 +1,5 @@
 import { ViewModel, view } from '@yoskutik/react-vvm'
-import { action, makeObservable, observable, runInAction } from 'mobx'
+import { action, makeObservable, observable, reaction, runInAction } from 'mobx'
 import cl from './SidePin.module.scss'
 import { Pin } from '@models/Pin'
 import ViewPin from './ViewPin'
@@ -12,6 +12,7 @@ import Button from '../Button/Button'
 import { createRef } from 'react'
 import { hotKeyEventListener } from '@renderer/common/HotKeyListener'
 import { Color, Colors } from '@models/common/COLORS'
+import { CUSTOMChip } from '@models/DefaultChips/CUSTOM'
 
 interface Props {
   pin: Pin
@@ -24,22 +25,24 @@ export class SidePinViewModel extends ViewModel<SidePinBlockViewModel, Props> {
   constructor() {
     super()
     makeObservable(this)
+    reaction(() => windowScalingMethods.cursorPos, this.mouseMoveWithPin)
   }
   @action
   changeState = () => {
     this.viewProps.pin.selfStates[0] =
       this.viewProps.pin.selfStates[0] === STATE.LOW ? STATE.HIGHT : STATE.LOW
   }
-  mouseDown = () => {
-    window.addEventListener('mouseup', this.mouseUp)
-    window.addEventListener('mousemove', this.mouseMoveWithPin)
-  }
+  moovingPin = false
   @action
-  mouseMoveWithPin = (e: MouseEvent) => {
-    this.viewProps.pin.pos.y = (e.pageY / window.innerHeight) * 100
+  mouseMoveWithPin = () => {
+    if (this.moovingPin) this.viewProps.pin.pos.y = windowScalingMethods.cursorPos.y
+  }
+  mouseDown = () => {
+    this.moovingPin = true
+    window.addEventListener('mouseup', this.mouseUp)
   }
   mouseUp = () => {
-    window.removeEventListener('mousemove', this.mouseMoveWithPin)
+    this.moovingPin = false
     window.removeEventListener('mouseup', this.mouseUp)
   }
   @action
@@ -75,7 +78,7 @@ const SidePin = view(SidePinViewModel)<Props>(({ viewModel }) => {
           flexDirection: viewModel.viewProps.input ? 'row' : 'row-reverse',
           top: `${viewModel.viewProps.pin.pos.y * windowScalingMethods.scale.y}px`,
           left: viewModel.viewProps.input ? 0 : undefined,
-          right: viewModel.viewProps.input ? undefined : 1,
+          right: viewModel.viewProps.input ? undefined : 0,
           pointerEvents: viewModel.viewProps.isPreview ? 'none' : undefined
         }}
         onClick={(e) => e.stopPropagation()}
@@ -184,7 +187,9 @@ const SidePin = view(SidePinViewModel)<Props>(({ viewModel }) => {
           <Button
             className={cl.Button}
             onClick={() => {
-              viewModel.parent.parent.currentChip.destroyPin(viewModel.viewProps.pin)
+              ;(viewModel.parent.parent.currentChip as CUSTOMChip).destroyPin(
+                viewModel.viewProps.pin
+              )
             }}
           >
             Удалить

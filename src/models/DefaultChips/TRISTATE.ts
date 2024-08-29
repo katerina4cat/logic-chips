@@ -19,7 +19,11 @@ export class TRISTATEChip extends Chip {
     this.inputs.push(new Pin(1, this, 'E', 1, false))
     this.outputs.push(new Pin(2, this, 'R', 1, true))
     this.outputs[0].selfStates[0] = STATE.UNDEFINED
-    this.inputs.forEach((inp) => reaction(() => inp.totalStates, this.calculateLogic))
+    this.inputs.forEach((inp) =>
+      reaction(() => inp.totalStates, this.calculateLogic, {
+        fireImmediately: true
+      })
+    )
     makeObservable(this)
   }
   @action

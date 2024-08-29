@@ -1,9 +1,11 @@
-import { makeObservable, observable } from 'mobx'
+import { action, makeObservable, observable } from 'mobx'
 import { Pos } from './common/Pos'
 import { Pin } from './Pin'
 import { ChipType } from './ChipType'
 import { BUSChip } from './DefaultChips/BUS'
 import { generateNumberID } from './common/RandomId'
+import { ANDChip } from './DefaultChips/AND'
+import { NOTChip } from './DefaultChips/NOT'
 
 const enum WireTypes {
   DEFAULT,
@@ -81,6 +83,7 @@ export class Wire {
     if (this.completed) return
     if (this.type === WireTypes.BUS_TO_BUS) {
       ;(this.from.chip as BUSChip).linkBus(this.to.chip as BUSChip)
+      this.completed = true
       return
     }
     this.to.linkPin(this.from)

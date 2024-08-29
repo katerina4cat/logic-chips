@@ -21,6 +21,7 @@ class ModalsStates {
     makeObservable(this)
     hotKeyEventListener.hotkeys.RADIAL_MENU1.addListener(this.radialHandler)
     hotKeyEventListener.hotkeys.SAVE.addListener(() => modalsStates.closeAll('saving'))
+    hotKeyEventListener.hotkeys.LIBRARY.addListener(() => modalsStates.closeAll('library'))
   }
   @action
   radialHandler = (data: string) => {

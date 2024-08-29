@@ -5,6 +5,7 @@ import { Wire } from '@models/Wire'
 import { windowScalingMethods } from '@renderer/common/PointsLineRounding'
 import { EditViewModel } from '@renderer/pages/edit/Edit'
 import { STATE } from '@models/STATE'
+import { CUSTOMChip } from '@models/DefaultChips/CUSTOM'
 
 interface Props {
   wire: Wire
@@ -18,14 +19,18 @@ export class ViewWireViewModel extends ViewModel<EditViewModel, Props> {
   @computed
   get data() {
     return windowScalingMethods.roundLinePoints([
-      this.viewProps.wire.from.globalPos,
+      this.viewProps.wire.from.chip !== this.parent.currentChip
+        ? this.viewProps.wire.from.globalPos
+        : this.viewProps.wire.from.pos,
       ...this.viewProps.wire.points,
-      this.viewProps.wire.to.globalPos
+      this.viewProps.wire.to.chip !== this.parent.currentChip
+        ? this.viewProps.wire.to.globalPos
+        : this.viewProps.wire.to.pos
     ])
   }
   deleteCheck = (e: KeyboardEvent) => {
     if (e.key.toLowerCase() === 'delete') {
-      this.parent.currentChip.destroyWire(this.viewProps.wire)
+      ;(this.parent.currentChip as CUSTOMChip).destroyWire(this.viewProps.wire)
     }
   }
 }

@@ -26,7 +26,11 @@ export class ADAPTERChip extends Chip {
       id,
       pos
     )
-    this.inputs.forEach((inp) => reaction(() => inp.totalStates, this.calculateLogic))
+    this.inputs.forEach((inp) =>
+      reaction(() => inp.totalStates, this.calculateLogic, {
+        fireImmediately: true
+      })
+    )
     makeObservable(this)
     this.setOutputSettings(data)
   }

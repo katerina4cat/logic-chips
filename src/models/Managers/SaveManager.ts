@@ -1,4 +1,4 @@
-import { Chip, ISaveChip } from '@models/Chip'
+import { Chip, ISaveChip, ISaveSubChip } from '@models/Chip'
 import { ChipType } from '@models/ChipType'
 import { Colors } from '@models/common/COLORS'
 import { Pos } from '@models/common/Pos'
@@ -11,7 +11,7 @@ import { NOTChip } from '@models/DefaultChips/NOT'
 import { TRISTATEChip } from '@models/DefaultChips/TRISTATE'
 import { Pin } from '@models/Pin'
 import { Wire } from '@models/Wire'
-import { computed, makeObservable, observable, reaction } from 'mobx'
+import { action, computed, makeObservable, observable, reaction } from 'mobx'
 
 class SaveManager {
   @observable
@@ -54,13 +54,14 @@ class SaveManager {
     const ind = this.currentSave.chips.findIndex((savedChip) => savedChip.title === chip.title)
     if (ind !== -1) this.currentSave.chips[ind] = chip.toSave()
     else this.currentSave.chips.push(chip.toSave())
+    this.save()
   }
 
   save = () => {
     localStorage.setItem('saves', JSON.stringify(this.saves))
   }
 
-  loadChipByName = (chipName: string, id?: number) => {
+  loadChipByName = (chipName: string, thisChipInfo?: ISaveSubChip) => {
     if (this.currentSave === undefined) {
       alert('Как ты смог инициализировать сохранение чипа, без выбора сохранения?')
       return
@@ -69,19 +70,24 @@ class SaveManager {
     if (chipInfo === undefined) {
       switch (chipName) {
         case 'NOT':
-          return new NOTChip(id, new Pos())
+          return new NOTChip(thisChipInfo?.id, new Pos())
         case 'AND':
-          return new ANDChip(id, new Pos())
+          return new ANDChip(thisChipInfo?.id, new Pos())
         case 'TRISTATE':
-          return new TRISTATEChip(id, new Pos())
+          return new TRISTATEChip(thisChipInfo?.id, new Pos())
         case 'ESEGMENT':
-          return new ESEGMENTChip(id, new Pos())
+          return new ESEGMENTChip(thisChipInfo?.id, new Pos())
         case 'ADAPTER':
-          return new ADAPTERChip(id, new Pos(), [])
+          return new ADAPTERChip(thisChipInfo?.id, new Pos(), [])
       }
       throw 'Невозможно открыть такой чип'
     }
-    const chip = new CUSTOMChip(chipInfo.title, chipInfo.color, id || 0)
+    const chip = new CUSTOMChip(
+      chipInfo.title,
+      chipInfo.color,
+      thisChipInfo?.id || 0,
+      new Pos(thisChipInfo?.pos?.x, thisChipInfo?.pos?.y)
+    )
     chipInfo.inputs.forEach((pinInfo) =>
       chip.addPin(
         new Pin(
@@ -89,7 +95,7 @@ class SaveManager {
           chip,
           pinInfo.title,
           pinInfo.type,
-          true,
+          chip.id === 0,
           new Pos(0, pinInfo.y),
           Colors[pinInfo.color]
         ),
@@ -111,30 +117,44 @@ class SaveManager {
       )
     )
     chipInfo.subChips.forEach((subChipInfo) => {
+      let addingChip: Chip | undefined = undefined
       switch (subChipInfo.type) {
         case ChipType.NOT:
-          return new NOTChip(subChipInfo.id, new Pos(subChipInfo.pos.x, subChipInfo.pos.y))
+          addingChip = new NOTChip(subChipInfo.id, new Pos(subChipInfo.pos.x, subChipInfo.pos.y))
+          break
         case ChipType.AND:
-          return new ANDChip(subChipInfo.id, new Pos(subChipInfo.pos.x, subChipInfo.pos.y))
+          addingChip = new ANDChip(subChipInfo.id, new Pos(subChipInfo.pos.x, subChipInfo.pos.y))
+          break
         case ChipType.ESEGMENT:
-          return new ESEGMENTChip(subChipInfo.id, new Pos(subChipInfo.pos.x, subChipInfo.pos.y))
+          addingChip = new ESEGMENTChip(
+            subChipInfo.id,
+            new Pos(subChipInfo.pos.x, subChipInfo.pos.y)
+          )
+          break
         case ChipType.TRISTATE:
-          return new TRISTATEChip(subChipInfo.id, new Pos(subChipInfo.pos.x, subChipInfo.pos.y))
+          addingChip = new TRISTATEChip(
+            subChipInfo.id,
+            new Pos(subChipInfo.pos.x, subChipInfo.pos.y)
+          )
+          break
         case ChipType.ADAPTER:
-          return new ADAPTERChip(
+          addingChip = new ADAPTERChip(
             subChipInfo.id,
             new Pos(subChipInfo.pos.x, subChipInfo.pos.y),
             subChipInfo.data
           )
+          break
         case ChipType.BUS:
-          return new BUSChip(
+          addingChip = new BUSChip(
             subChipInfo.id,
             new Pos(subChipInfo.pos.x, subChipInfo.pos.y),
             subChipInfo.data
           )
+          break
         case ChipType.CUSTOM:
-          return this.loadChipByName(chipInfo.title)
+          addingChip = this.loadChipByName(subChipInfo.title, subChipInfo)
       }
+      if (addingChip) chip.addChip(addingChip)
     })
     chipInfo.wires.forEach((wire) => {
       const from = chip.findPin(wire.fromChip, wire.fromPin)
@@ -149,6 +169,7 @@ class SaveManager {
             wire.id
           )
         )
+      else alert('Не удалось найти пины провода')
     })
     return chip
   }

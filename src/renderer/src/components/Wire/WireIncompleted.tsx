@@ -21,12 +21,9 @@ export class WireIncompletedViewModel extends ViewModel<EditViewModel, Props> {
       () => this.from,
       () => {
         if (this.from) {
-          this.cursorPos = this.from.pos.copy
-          window.addEventListener('mousemove', this.mouseMove)
           window.addEventListener('keydown', this.stopCheck)
           this.parent.svgRef.current?.addEventListener('click', this.svgClick)
         } else {
-          window.removeEventListener('mousemove', this.mouseMove)
           this.parent.svgRef.current?.removeEventListener('click', this.svgClick)
         }
       }
@@ -37,7 +34,6 @@ export class WireIncompletedViewModel extends ViewModel<EditViewModel, Props> {
     if (e.key === 'Escape') {
       this.points = []
       this.from = undefined
-      window.removeEventListener('mousemove', this.mouseMove)
       window.removeEventListener('keydown', this.stopCheck)
       this.parent.svgRef.current?.removeEventListener('click', this.svgClick)
     }
@@ -45,17 +41,9 @@ export class WireIncompletedViewModel extends ViewModel<EditViewModel, Props> {
       this.points.pop()
     }
   }
-
-  @action
-  mouseMove = (e: MouseEvent) => {
-    this.cursorPos = new Pos(
-      e.pageX / windowScalingMethods.scale.x,
-      e.pageY / windowScalingMethods.scale.y
-    )
-  }
   @action
   svgClick = () => {
-    this.points.push(this.cursorPos.copy)
+    this.points.push(windowScalingMethods.cursorPos.copy)
   }
 
   @action
@@ -87,16 +75,14 @@ export class WireIncompletedViewModel extends ViewModel<EditViewModel, Props> {
   from?: Pin
   @observable
   points: Pos[] = []
-  @observable
-  cursorPos: Pos = new Pos()
 
   @computed
   get data() {
     if (!this.from) return undefined
     return windowScalingMethods.roundLinePoints([
-      this.from.globalPos,
+      this.from.chip !== this.parent.currentChip ? this.from.globalPos : this.from.pos,
       ...this.points,
-      this.cursorPos
+      windowScalingMethods.cursorPos
     ])
   }
 }

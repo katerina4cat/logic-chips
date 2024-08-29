@@ -3,6 +3,7 @@ import { makeObservable } from 'mobx'
 import { EditViewModel } from './Edit'
 import SaveModal from './Modals/SaveModal'
 import ChipSelector from './Modals/ChipSelector'
+import ChipLibrary from './Modals/ChipLibrary'
 
 interface Props {}
 
@@ -17,6 +18,7 @@ const Modals = view(ModalsViewModel)<Props>(({ viewModel }) => {
     <>
       <ChipSelector />
       <SaveModal />
+      <ChipLibrary />
     </>
   )
 })

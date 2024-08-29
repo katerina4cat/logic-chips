@@ -39,7 +39,7 @@ export class ViewPinViewModel extends ViewModel<unknown, Props> {
       this.viewProps.pin.pos.x = (box.x + box.width / 2) / windowScalingMethods.scale.x
     } else {
       const box = this.ref.current!.getBoundingClientRect()
-      this.viewProps.pin.pos = new Pos(box.x + box.width / 2, box.y + box.height / 2)
+      this.viewProps.pin.atChippos = new Pos(box.x + box.width / 2, box.y + box.height / 2)
         .divMe(windowScalingMethods.scale)
         .subMe(this.viewProps.pin.chip.pos)
     }
@@ -58,6 +58,7 @@ const ViewPin = view(ViewPinViewModel)<Props>(({ viewModel }) => {
       ].join(' ')}
       ref={viewModel.ref}
       onClick={(e) => wireConnector.current(viewModel.viewProps.pin, e.ctrlKey)}
+      onContextMenu={() => console.log(viewModel.viewProps.pin)}
     ></div>
   )
 })

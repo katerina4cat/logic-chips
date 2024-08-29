@@ -5,13 +5,16 @@ import { Chip } from '@models/Chip'
 import ViewPin from '../Pin/ViewPin'
 import { windowScalingMethods } from '@renderer/common/PointsLineRounding'
 import { Pos } from '@models/common/Pos'
+import { EditViewModel } from '@renderer/pages/edit/Edit'
+import { saveManager } from '@models/Managers/SaveManager'
+import { ChipType } from '@models/ChipType'
 
 interface Props {
   chip: Chip
   preview?: boolean
 }
 
-export class ViewChipViewModel extends ViewModel<unknown, Props> {
+export class ViewChipViewModel extends ViewModel<EditViewModel, Props> {
   constructor() {
     super()
     makeObservable(this)
@@ -46,6 +49,18 @@ const ViewChip = view(ViewChipViewModel)<Props>(({ viewModel }) => {
               left: viewModel.viewProps.chip.pos.x * windowScalingMethods.scale.x,
               backgroundColor: viewModel.viewProps.chip.color
             }
+      }
+      onClick={(e) => {
+        if (e.altKey)
+          viewModel.parent.addingChip = saveManager.loadChipByName(viewModel.viewProps.chip.title)
+      }}
+      onContextMenu={
+        viewModel.viewProps.chip.type === ChipType.CUSTOM
+          ? action(() => {
+              viewModel.parent.chipViewerOver.push(viewModel.parent.currentChip)
+              viewModel.parent.currentChip = viewModel.viewProps.chip
+            })
+          : undefined
       }
       onMouseDown={viewModel.viewProps.preview ? undefined : viewModel.onMouseDown}
     >

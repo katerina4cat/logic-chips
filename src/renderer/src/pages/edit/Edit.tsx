@@ -1,5 +1,5 @@
 import { ViewModel, view } from '@yoskutik/react-vvm'
-import { action, makeObservable, observable } from 'mobx'
+import { action, makeObservable, observable, runInAction } from 'mobx'
 import './global.scss'
 import { CUSTOMChip } from '@models/DefaultChips/CUSTOM'
 import ViewWire from '@renderer/components/Wire/ViewWire'
@@ -15,27 +15,33 @@ import { Chip } from '@models/Chip'
 import AddingChip from './AddingChip'
 import Modals from './Modals'
 import { modalsStates } from './ModalsStates'
-import { Pin } from '@models/Pin'
-import { Pos } from '@models/common/Pos'
 
 interface Props {}
 
 export class EditViewModel extends ViewModel<unknown, Props> {
   @observable
-  currentChip = new CUSTOMChip('', '', 0)
+  currentChip: Chip = new CUSTOMChip('', '', 0)
+  @observable
+  chipViewerOver: Chip[] = []
   @observable
   addingChip?: Chip
   constructor() {
     super()
     makeObservable(this)
-    this.currentChip.addPin(
-      new Pin(undefined, this.currentChip, 'IN', 1, true, new Pos(0, 25)),
-      true
-    )
-    this.currentChip.addPin(
-      new Pin(undefined, this.currentChip, 'IN', 32, true, new Pos(0, 45)),
-      true
-    )
+    hotKeyEventListener.hotkeys.NEW_CHIP.addListener(this.newChipCreating)
+    hotKeyEventListener.hotkeys.BACK_BTN.addListener(this.backViewChip)
+  }
+  @action
+  newChipCreating = () => {
+    this.currentChip = new CUSTOMChip('', '#666', 0)
+  }
+  @action
+  backViewChip = () => {
+    if (this.chipViewerOver.length !== 0) this.currentChip = this.chipViewerOver.pop()!
+  }
+  protected onViewUnmounted(): void {
+    hotKeyEventListener.hotkeys.NEW_CHIP.removeListener(this.newChipCreating)
+    hotKeyEventListener.hotkeys.BACK_BTN.removeListener(this.backViewChip)
   }
   svgRef = createRef<SVGSVGElement>()
   @action
@@ -47,13 +53,22 @@ export class EditViewModel extends ViewModel<unknown, Props> {
 const Edit = view(EditViewModel)<Props>(({ viewModel }) => {
   navigate.current = useNavigate()
   hotKeyEventListener
-  const { id } = useParams()
+  const { id, chip } = useParams()
   useEffect(() => {
     if (id && saveManager.savesTitleInfo.findIndex((save) => save.title === id) !== -1)
       saveManager.loadSaveByName(id)
     else {
       navigate.current(-1)
       alert('Не удаётся найти это сохранение')
+      return
+    }
+    if (chip) {
+      try {
+        runInAction(() => {
+          const buff = saveManager.loadChipByName(chip)
+          if (buff) viewModel.currentChip = buff
+        })
+      } catch {}
     }
   }, [])
   return (

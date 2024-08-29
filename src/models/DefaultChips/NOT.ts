@@ -18,8 +18,12 @@ export class NOTChip extends Chip {
     this.inputs.push(new Pin(0, this, 'A', 1, false))
     this.outputs.push(new Pin(1, this, 'R', 1, true))
     this.outputs[0].selfStates[0] = STATE.HIGHT
-    this.inputs.forEach((inp) => reaction(() => inp.totalStates, this.calculateLogic))
     makeObservable(this)
+    this.inputs.forEach((inp) =>
+      reaction(() => inp.totalStates, this.calculateLogic, {
+        fireImmediately: true
+      })
+    )
   }
 
   @action

@@ -35,7 +35,9 @@ export class BUSChip extends Chip {
     this.inputs.push(new Pin(0, this, 'STATE', extraData.type))
     this.outputs.push(new Pin(1, this, 'OUTSTATE', extraData.type, true))
     this.outputs[0].selfStates[0] = STATE.UNDEFINED
-    reaction(() => this.inputs[0].totalStates, this.calculateLogic)
+    reaction(() => this.inputs[0].totalStates, this.calculateLogic, {
+      fireImmediately: true
+    })
     makeObservable(this)
   }
 
