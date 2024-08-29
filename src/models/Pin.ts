@@ -1,4 +1,4 @@
-import { action, computed, makeObservable, observable } from 'mobx'
+import { action, computed, makeObservable, observable, reaction } from 'mobx'
 import { Pos } from './common/Pos'
 import { STATE, mergeState, stateInfo } from './STATE'
 import { SIM_ERROR, SimulatingError } from './common/SimulatingError'
@@ -101,7 +101,7 @@ export class Pin {
     color: Color = Colors.red
   ) {
     this.type = type
-    this.title = title || ''
+    this.title = title || 'Pin'
     this.id = id
     this.chip = chip
     this.pos = pos
@@ -109,6 +109,15 @@ export class Pin {
     this.color = color
     if (this.isSource) this.selfStates = new Array(this.type).fill(STATE.LOW)
     makeObservable(this)
+    reaction(
+      () => this.type,
+      () => {
+        if (this.isSource)
+          while (this.type !== this.selfStates.length)
+            if (this.type > this.selfStates.length) this.selfStates.push(STATE.LOW)
+            else this.selfStates.pop()
+      }
+    )
   }
 }
 

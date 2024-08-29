@@ -7,6 +7,7 @@ import Modal from '@renderer/components/Modal/Modal'
 import { ModalsViewModel } from '../Modals'
 import { hotKeyEventListener } from '@renderer/common/HotKeyListener'
 import { modalsStates } from '../ModalsStates'
+import { saveManager } from '@models/Managers/SaveManager'
 
 interface Props {}
 
@@ -20,6 +21,10 @@ export class SaveModalViewModel extends ViewModel<ModalsViewModel, Props> {
   openModal = () => {
     modalsStates.states.saving = true
   }
+  @action
+  saveChip = () => {
+    saveManager.addOrEditCurrentSave(this.parent.parent.currentChip)
+  }
 }
 const SaveModal = view(SaveModalViewModel)<Props>(({ viewModel }) => {
   return (
@@ -30,7 +35,7 @@ const SaveModal = view(SaveModalViewModel)<Props>(({ viewModel }) => {
         modalsStates.closeAll('saving', false)
       }}
     >
-      <h2>Сохранить</h2>
+      <h2>Сохранить текущий чип</h2>
       <Input
         value={viewModel.parent.parent.currentChip.title}
         onChange={action((e) => {
@@ -39,13 +44,16 @@ const SaveModal = view(SaveModalViewModel)<Props>(({ viewModel }) => {
         })}
         placeholder="Название"
       />
-      <input
-        type="color"
-        onChange={action((e) => {
-          viewModel.parent.parent.currentChip.color = e.target.value
-        })}
-        value={viewModel.parent.parent.currentChip.color}
-      />
+      <div style={{ display: 'flex', gap: '0.75em' }}>
+        Цвет чипа:
+        <input
+          type="color"
+          onChange={action((e) => {
+            viewModel.parent.parent.currentChip.color = e.target.value
+          })}
+          value={viewModel.parent.parent.currentChip.color}
+        />
+      </div>
       <div className={cl.Buttons}>
         <Button
           onClick={() => {

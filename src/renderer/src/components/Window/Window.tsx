@@ -43,7 +43,6 @@ export class WindowViewModel extends ViewModel<unknown, Props> {
     globalZindexes += 1
     this.zIndex = globalZindexes
     this.mooving = true
-    console.log(this.zIndex)
   }
   mouseUp = () => {
     this.mooving = false

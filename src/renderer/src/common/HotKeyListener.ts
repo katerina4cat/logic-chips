@@ -5,7 +5,8 @@ const defaultHotKeys: AvaibleHotKey = {
   EDIT_RADIAL_MENU: new HotKey({ keyCodes: ['KeyA'] }),
   SAVE: new HotKey({ keyCodes: ['KeyS'], ctrl: true }),
   ADDING_CHIPS_ADD: new HotKey({ keyCodes: ['ArrowUp', 'ArrowRight'] }),
-  ADDING_CHIPS_SUB: new HotKey({ keyCodes: ['ArrowLeft', 'ArrowDown'] })
+  ADDING_CHIPS_SUB: new HotKey({ keyCodes: ['ArrowLeft', 'ArrowDown'] }),
+  CANCEL: new HotKey({ keyCodes: ['Escape'] })
 }
 
 class HotKeyListener {
@@ -31,4 +32,5 @@ interface AvaibleHotKey {
   SAVE: HotKey
   ADDING_CHIPS_ADD: HotKey
   ADDING_CHIPS_SUB: HotKey
+  CANCEL: HotKey
 }

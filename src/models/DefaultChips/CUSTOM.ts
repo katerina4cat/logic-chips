@@ -40,7 +40,7 @@ export class CUSTOMChip extends Chip {
       throw SimulatingError.warning(SIM_ERROR.CHIP_PIN_NOT_EXIST, 'Не удалось найти пин!')
     ;(pin.isSource ? this.inputs : this.outputs).splice(ind, 1)
     this.wires
-      .filter((wire) => wire.from[1] === pin || wire.to[1] === pin)
+      .filter((wire) => wire.from === pin || wire.to === pin)
       .forEach((wire) => this.destroyWire(wire))
   }
 
@@ -57,7 +57,7 @@ export class CUSTOMChip extends Chip {
     if (ind === -1)
       throw SimulatingError.warning(SIM_ERROR.CHIP_NOT_EXIST, 'Не удалось найти этот чип!')
     this.wires
-      .filter((wire) => wire.from[0] === chip || wire.to[0] === chip)
+      .filter((wire) => wire.from.chip === chip || wire.to.chip === chip)
       .forEach((wire) => this.destroyWire(wire))
     this.subChips.slice(ind, 1)
   }

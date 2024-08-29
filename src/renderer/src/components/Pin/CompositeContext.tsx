@@ -32,6 +32,7 @@ const CompositeContext = view(CompositeContextViewModel)<Props>(({ viewModel }) 
           : viewModel.parent.viewProps.pin.totalStates
         ).map((state, ind) => (
           <div
+            key={ind}
             className={[cl.StatusBtn, state === STATE.ERROR ? 'errorFill' : ''].join(' ')}
             onClick={
               viewModel.parent.viewProps.selfState &&

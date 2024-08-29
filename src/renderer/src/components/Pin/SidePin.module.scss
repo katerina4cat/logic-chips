@@ -58,4 +58,36 @@
     background-color: #111;
     z-index: -1;
   }
+  .PinTitle {
+    background-color: transparent;
+    border: none;
+    border-bottom: 2px solid var(--element-border-color);
+    outline: none;
+    min-width: 0;
+    max-width: 10ch;
+    margin-left: 1em;
+  }
+}
+
+.DefaultContext {
+  z-index: 25;
+  position: absolute;
+  transform: translate(1em, 1em);
+  border-radius: var(--main-border-radius);
+  background-color: var(--acent-background);
+  flex-direction: column;
+  padding: 1em;
+  padding-top: 0.5em;
+  align-items: center;
+  max-width: 30vw;
+  gap: 1em;
+  .Colors {
+    width: 100%;
+    display: flex;
+    gap: 0.75em;
+  }
+  .Button {
+    width: max-content;
+    font-size: 0.8em;
+  }
 }

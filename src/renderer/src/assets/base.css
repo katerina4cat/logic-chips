@@ -11,6 +11,7 @@ html[data-theme='dark'] {
   --element-background: #6f648b;
   --element-border-color: #444;
   --focus-element-border-color: #9a949e;
+  --acent-background: #343;
   --pin-filed-bg: #353536;
 }
 html {
