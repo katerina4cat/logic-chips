@@ -4,6 +4,7 @@ import { EditViewModel } from './Edit'
 import SaveModal from './Modals/SaveModal'
 import ChipSelector from './Modals/ChipSelector'
 import ChipLibrary from './Modals/ChipLibrary'
+import MenuModal from './Modals/MenuModal'
 
 interface Props {}
 
@@ -19,6 +20,7 @@ const Modals = view(ModalsViewModel)<Props>(({ viewModel }) => {
       <ChipSelector />
       <SaveModal />
       <ChipLibrary />
+      <MenuModal />
     </>
   )
 })

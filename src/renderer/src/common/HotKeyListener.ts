@@ -1,19 +1,21 @@
-import { HotKey } from './HotKey'
+import { HotKey, HotKeyWithDigit } from './HotKey'
 
 const defaultHotKeys: AvaibleHotKey = {
-  RADIAL_MENU1: new HotKey({ keyCodes: [/Digit[1-9]/], alt: true }),
+  RADIAL_MENU: new HotKeyWithDigit({ keyCodes: [/Digit[1-9]/], alt: true }),
   EDIT_RADIAL_MENU: new HotKey({ keyCodes: ['KeyA'] }),
   SAVE: new HotKey({ keyCodes: ['KeyS'], ctrl: true }),
-  LIBRARY: new HotKey({ keyCodes: ['KeyA'] }),
+  LIBRARY: new HotKey({ keyCodes: ['KeyA'], ctrl: true }),
   ADDING_CHIPS_ADD: new HotKey({ keyCodes: ['ArrowUp', 'ArrowRight'] }),
   ADDING_CHIPS_SUB: new HotKey({ keyCodes: ['ArrowLeft', 'ArrowDown'] }),
   CANCEL: new HotKey({ keyCodes: ['Escape'] }),
-  NEW_CHIP: new HotKey({ keyCodes: ['KeyN'], alt: true }),
-  BACK_BTN: new HotKey({ keyCodes: ['Backspace'] })
+  NEW_CHIP: new HotKey({ keyCodes: ['KeyX'], ctrl: true }),
+  BACK_BTN: new HotKey({ keyCodes: ['Backspace'] }),
+  UNDO: new HotKey({ keyCodes: ['KeyZ'] })
 }
 
 class HotKeyListener {
   hotkeys = defaultHotKeys
+
   constructor() {
     window.addEventListener('unload', this.unload)
     window.addEventListener('keydown', this.onKeyDown)
@@ -30,7 +32,7 @@ class HotKeyListener {
 export const hotKeyEventListener = new HotKeyListener()
 
 interface AvaibleHotKey {
-  RADIAL_MENU1: HotKey
+  RADIAL_MENU: HotKeyWithDigit
   EDIT_RADIAL_MENU: HotKey
   SAVE: HotKey
   LIBRARY: HotKey
@@ -39,4 +41,5 @@ interface AvaibleHotKey {
   CANCEL: HotKey
   NEW_CHIP: HotKey
   BACK_BTN: HotKey
+  UNDO: HotKey
 }

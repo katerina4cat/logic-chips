@@ -20,7 +20,7 @@ interface Props {}
 
 export class EditViewModel extends ViewModel<unknown, Props> {
   @observable
-  currentChip: Chip = new CUSTOMChip('', '', 0)
+  currentChip: Chip = new CUSTOMChip('', undefined, 0)
   @observable
   chipViewerOver: Chip[] = []
   @observable
@@ -33,6 +33,7 @@ export class EditViewModel extends ViewModel<unknown, Props> {
   }
   @action
   newChipCreating = () => {
+    navigate.current(`/Edit/${saveManager.currentSave?.title}`)
     this.currentChip = new CUSTOMChip('', '#666', 0)
   }
   @action
@@ -45,7 +46,15 @@ export class EditViewModel extends ViewModel<unknown, Props> {
   }
   svgRef = createRef<SVGSVGElement>()
   @action
+  clearAdding = () => {
+    this.addingChip = undefined
+    hotKeyEventListener.hotkeys.CANCEL.removeListener(this.clearAdding)
+    hotKeyEventListener.hotkeys.BACK_BTN.removeListener(this.clearAdding)
+  }
+  @action
   setAdding = (name: string) => {
+    hotKeyEventListener.hotkeys.CANCEL.addListener(this.clearAdding)
+    hotKeyEventListener.hotkeys.BACK_BTN.addListener(this.clearAdding)
     this.addingChip = saveManager.loadChipByName(name)
     modalsStates.closeAll('radial', false)
   }

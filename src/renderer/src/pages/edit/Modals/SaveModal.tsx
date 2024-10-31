@@ -5,7 +5,6 @@ import Button from '@renderer/components/Button/Button'
 import Input from '@renderer/components/Input/Input'
 import Modal from '@renderer/components/Modal/Modal'
 import { ModalsViewModel } from '../Modals'
-import { hotKeyEventListener } from '@renderer/common/HotKeyListener'
 import { modalsStates } from '../ModalsStates'
 import { saveManager } from '@models/Managers/SaveManager'
 
@@ -15,11 +14,6 @@ export class SaveModalViewModel extends ViewModel<ModalsViewModel, Props> {
   constructor() {
     super()
     makeObservable(this)
-    hotKeyEventListener.hotkeys.SAVE.addListener(this.openModal)
-  }
-  @action
-  openModal = () => {
-    modalsStates.states.saving = true
   }
   @action
   saveChip = () => {

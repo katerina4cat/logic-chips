@@ -46,6 +46,16 @@ class SaveManager {
       chips: save.chips.length
     }))
   }
+  dependentChips = (chipName: string) => {
+    return this.currentSave?.chips
+      .filter((chip) => chip.subChips.find((subChip) => subChip.title === chipName))
+      .map((chip) => chip.title)
+  }
+  removeChip = (chipName: string) => {
+    this.currentSave!.chips =
+      this.currentSave?.chips.filter((chip) => chip.title !== chipName) || []
+    this.save()
+  }
   addOrEditCurrentSave = (chip: Chip) => {
     if (this.currentSave === undefined) {
       alert('Как ты смог инициализировать сохранение чипа, без выбора сохранения?')
@@ -61,7 +71,7 @@ class SaveManager {
     localStorage.setItem('saves', JSON.stringify(this.saves))
   }
 
-  loadChipByName = (chipName: string, thisChipInfo?: ISaveSubChip) => {
+  loadChipByName = (chipName: string, thisChipInfo?: Partial<ISaveSubChip>) => {
     if (this.currentSave === undefined) {
       alert('Как ты смог инициализировать сохранение чипа, без выбора сохранения?')
       return

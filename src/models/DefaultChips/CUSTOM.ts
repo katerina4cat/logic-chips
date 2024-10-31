@@ -7,7 +7,12 @@ import { Wire } from '../Wire'
 import { generateNumberID } from '@models/common/RandomId'
 
 export class CUSTOMChip extends Chip {
-  constructor(title: string, color: string, id: number = generateNumberID(), pos: Pos = new Pos()) {
+  constructor(
+    title: string,
+    color: string = '#8773e8',
+    id: number = generateNumberID(),
+    pos: Pos = new Pos()
+  ) {
     super(title, undefined, color, id, pos)
     makeObservable(this)
   }

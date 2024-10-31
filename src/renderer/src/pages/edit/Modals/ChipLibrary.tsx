@@ -1,10 +1,12 @@
 import Modal from '@renderer/components/Modal/Modal'
 import { ViewModel, view } from '@yoskutik/react-vvm'
-import { action, makeObservable } from 'mobx'
+import { action, computed, makeObservable, observable } from 'mobx'
 import { modalsStates } from '../ModalsStates'
 import { saveManager } from '@models/Managers/SaveManager'
 import cl from './ChipLibrary.module.scss'
 import { ModalsViewModel } from '../Modals'
+import Button from '@renderer/components/Button/Button'
+import { navigate } from '@renderer/App'
 
 interface Props {}
 
@@ -14,22 +16,55 @@ export class ChipLibraryViewModel extends ViewModel<ModalsViewModel, Props> {
     makeObservable(this)
   }
   defaultChips = ['AND', 'NOT', 'TRISTATE', 'ESEGMENT', 'ADAPTER']
+  @observable
+  selected = ''
+  @computed
+  get canDelete() {
+    return (
+      this.defaultChips.find((chipName) => chipName === this.selected) === undefined &&
+      !saveManager.dependentChips(this.selected)?.length
+    )
+  }
+  @action
+  deleteChip = () => {
+    const dependent = saveManager.dependentChips(this.selected)
+    if (dependent?.length !== 0) {
+      alert(`У этого чипа имеются зависимости!
+        ${dependent?.join('\n')}`)
+      return
+    }
+    if (this.defaultChips.find((chipName) => chipName === this.selected)) {
+      alert(`Этот чип невозможно удалить!
+        ${dependent?.join('\n')}`)
+      return
+    }
+
+    saveManager.removeChip(this.selected)
+    this.selected = ''
+  }
 }
 const ChipLibrary = view(ChipLibraryViewModel)<Props>(({ viewModel }) => {
   return (
     <>
       <Modal
+        className={cl.ChipLibrary}
         enabled={modalsStates.states.library}
         setenabled={(v) => modalsStates.closeAll('library', v)}
       >
-        <div className={cl.ChipLibrary}>
+        <h2>Список чипов</h2>
+        <div className={cl.List}>
           {viewModel.defaultChips.map((title) => (
             <div
-              className={cl.ChipButton}
-              onClick={() => {
-                viewModel.parent.parent.addingChip = saveManager.loadChipByName(title)
+              className={[cl.ChipButton, title === viewModel.selected ? cl.SelectedChip : undefined]
+                .filter(Boolean)
+                .join(' ')}
+              onClick={action(() => {
+                viewModel.selected = title
+              })}
+              onDoubleClick={action(() => {
+                viewModel.parent.parent.setAdding(title)
                 modalsStates.closeAll('library', false)
-              }}
+              })}
               key={title}
             >
               {title}
@@ -37,9 +72,17 @@ const ChipLibrary = view(ChipLibraryViewModel)<Props>(({ viewModel }) => {
           ))}
           {saveManager.currentSave?.chips.map((chip) => (
             <div
-              className={cl.ChipButton}
+              className={[
+                cl.ChipButton,
+                chip.title === viewModel.selected ? cl.SelectedChip : undefined
+              ]
+                .filter(Boolean)
+                .join(' ')}
               onClick={action(() => {
-                viewModel.parent.parent.addingChip = saveManager.loadChipByName(chip.title)
+                viewModel.selected = chip.title
+              })}
+              onDoubleClick={action(() => {
+                viewModel.parent.parent.setAdding(chip.title)
                 modalsStates.closeAll('library', false)
               })}
               key={chip.title}
@@ -47,6 +90,39 @@ const ChipLibrary = view(ChipLibraryViewModel)<Props>(({ viewModel }) => {
               {chip.title}
             </div>
           ))}
+        </div>
+        <div className={cl.Buttons}>
+          <Button
+            onClick={action(() => {
+              viewModel.parent.parent.setAdding(viewModel.selected)
+              modalsStates.closeAll('library', false)
+            })}
+          >
+            Добавить
+          </Button>
+          <Button style={{ opacity: viewModel.canDelete ? 1 : 0.5 }} onClick={viewModel.deleteChip}>
+            Удалить
+          </Button>
+          <Button
+            onClick={action(() => {
+              navigate.current(`/Edit/${saveManager.currentSave?.title}/${viewModel.selected}`)
+              const chip = saveManager.loadChipByName(viewModel.selected)
+              if (chip) {
+                viewModel.parent.parent.currentChip = chip
+                modalsStates.closeAll('library', false)
+              } else alert('Не удалось загрузить чип')
+            })}
+          >
+            Изменить
+          </Button>
+          <Button
+            onClick={action(() => {
+              viewModel.parent.parent.newChipCreating()
+              modalsStates.closeAll('library', false)
+            })}
+          >
+            Новый чип
+          </Button>
         </div>
       </Modal>
     </>

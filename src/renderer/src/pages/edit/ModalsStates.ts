@@ -5,6 +5,7 @@ type ModalsList = {
   saving: boolean
   radial: boolean
   library: boolean
+  menu: boolean
 }
 
 class ModalsStates {
@@ -16,20 +17,34 @@ class ModalsStates {
     this.states = {
       saving: false,
       radial: false,
-      library: false
+      library: false,
+      menu: false
     }
     makeObservable(this)
-    hotKeyEventListener.hotkeys.RADIAL_MENU1.addListener(this.radialHandler)
-    hotKeyEventListener.hotkeys.SAVE.addListener(() => modalsStates.closeAll('saving'))
-    hotKeyEventListener.hotkeys.LIBRARY.addListener(() => modalsStates.closeAll('library'))
+    hotKeyEventListener.hotkeys.RADIAL_MENU.addListener(this.radialHandler)
+    hotKeyEventListener.hotkeys.SAVE.addListener(() => {
+      if (!this.states.menu) modalsStates.closeAll('saving')
+    })
+    hotKeyEventListener.hotkeys.LIBRARY.addListener(() => {
+      if (!this.states.menu) modalsStates.closeAll('library')
+    })
+    hotKeyEventListener.hotkeys.CANCEL.addListener(this.cancelHandler)
   }
   @action
-  radialHandler = (data: string) => {
-    const numberBuff = Number(data.match(/\d/))
-    const swapRadial = this.currentRadial !== numberBuff
-    this.currentRadial = numberBuff
-    if (swapRadial) modalsStates.closeAll('radial', true)
-    else modalsStates.closeAll('radial')
+  cancelHandler = () => {
+    this.closeAll(
+      'menu',
+      !Object.values(this.states).find((state) => state) &&
+        hotKeyEventListener.hotkeys.CANCEL.listeners.length === 1
+    )
+  }
+  @action
+  radialHandler = (digit: number) => {
+    if (this.currentRadial !== digit) {
+      this.currentRadial = digit
+      return
+    }
+    this.closeAll('radial')
   }
   @action
   closeAll = (except: keyof ModalsList, v?: boolean) => {

@@ -64,8 +64,10 @@ export class SidePinViewModel extends ViewModel<SidePinBlockViewModel, Props> {
   }
   @action
   disableDefaultContext = () => {
+    if (!this.defaultcontext) return false
     this.defaultcontext = false
     hotKeyEventListener.hotkeys.CANCEL.removeListener(this.disableDefaultContext)
+    return true
   }
   ref = createRef<HTMLDivElement>()
 }

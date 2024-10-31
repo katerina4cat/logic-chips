@@ -9,6 +9,7 @@ import { EditViewModel } from '@renderer/pages/edit/Edit'
 import { Wire } from '@models/Wire'
 import { SimulatingError } from '@models/common/SimulatingError'
 import { STATE } from '@models/STATE'
+import { hotKeyEventListener } from '@renderer/common/HotKeyListener'
 
 interface Props {}
 
@@ -21,25 +22,28 @@ export class WireIncompletedViewModel extends ViewModel<EditViewModel, Props> {
       () => this.from,
       () => {
         if (this.from) {
-          window.addEventListener('keydown', this.stopCheck)
+          hotKeyEventListener.hotkeys.CANCEL.addListener(this.cancel)
+          hotKeyEventListener.hotkeys.BACK_BTN.addListener(this.undo)
+          hotKeyEventListener.hotkeys.UNDO.addListener(this.undo)
           this.parent.svgRef.current?.addEventListener('click', this.svgClick)
         } else {
           this.parent.svgRef.current?.removeEventListener('click', this.svgClick)
+          hotKeyEventListener.hotkeys.CANCEL.removeListener(this.cancel)
+          hotKeyEventListener.hotkeys.BACK_BTN.removeListener(this.undo)
+          hotKeyEventListener.hotkeys.UNDO.removeListener(this.undo)
         }
       }
     )
   }
   @action
-  stopCheck = (e: KeyboardEvent) => {
-    if (e.key === 'Escape') {
-      this.points = []
-      this.from = undefined
-      window.removeEventListener('keydown', this.stopCheck)
-      this.parent.svgRef.current?.removeEventListener('click', this.svgClick)
-    }
-    if (e.key.toLocaleLowerCase() === 'z' || e.key.toLocaleLowerCase() === 'я') {
-      this.points.pop()
-    }
+  cancel = () => {
+    this.points = []
+    this.from = undefined
+    this.parent.svgRef.current?.removeEventListener('click', this.svgClick)
+  }
+  @action
+  undo = (e: KeyboardEvent) => {
+    this.points.pop()
   }
   @action
   svgClick = () => {

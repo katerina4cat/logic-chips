@@ -9,6 +9,7 @@ import { createRef } from 'react'
 import { generateNumberID } from '@models/common/RandomId'
 import { saveManager } from '@models/Managers/SaveManager'
 import { Pos } from '@models/common/Pos'
+import { CUSTOMChip } from '@models/DefaultChips/CUSTOM'
 
 interface Props {}
 
@@ -51,14 +52,16 @@ export class AddingChipViewModel extends ViewModel<EditViewModel, Props> {
       )
       const heightPerElement = rect!.height / this.addingCount
       for (let i = 0; i < this.addingCount; i++) {
-        const clone = saveManager.loadChipByName(this.parent.addingChip.title, generateNumberID())
+        const clone = saveManager.loadChipByName(this.parent.addingChip.title, {
+          id: generateNumberID()
+        })
         if (!clone) {
           console.log('Не удалось загрузить такие чипы')
           break
         }
         clone.pos = this.parent.addingChip.pos.copy
         clone.pos.y += (heightPerElement * i) / windowScalingMethods.scale.y
-        this.parent.currentChip.addChip(clone)
+        ;(this.parent.currentChip as CUSTOMChip).addChip(clone)
       }
       this.parent.addingChip = undefined
     }

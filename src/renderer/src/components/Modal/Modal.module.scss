@@ -8,10 +8,9 @@
   z-index: 1000;
   background-color: rgba(0, 0, 0, 0.45);
   .ModalContent {
-    padding: 1em;
-    min-width: 40%;
-    min-height: 40%;
+    padding: 2em 7.5em;
     background-color: var(--background);
     border-radius: var(--main-border-radius);
+    box-shadow: none;
   }
 }
