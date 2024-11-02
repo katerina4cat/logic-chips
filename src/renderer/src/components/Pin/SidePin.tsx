@@ -51,24 +51,6 @@ export class SidePinViewModel extends ViewModel<SidePinBlockViewModel, Props> {
   }
   @observable
   context = false
-  @observable
-  defaultcontext = false
-  @observable
-  pinType = this.viewProps.pin.type
-  @action
-  checkOutsizeClick = (e: MouseEvent) => {
-    if (!this.ref.current?.contains(e.target as Node)) {
-      this.defaultcontext = false
-      window.removeEventListener('click', this.checkOutsizeClick)
-    }
-  }
-  @action
-  disableDefaultContext = () => {
-    if (!this.defaultcontext) return false
-    this.defaultcontext = false
-    hotKeyEventListener.hotkeys.CANCEL.removeListener(this.disableDefaultContext)
-    return true
-  }
   ref = createRef<HTMLDivElement>()
 }
 const SidePin = view(SidePinViewModel)<Props>(({ viewModel }) => {
@@ -86,16 +68,7 @@ const SidePin = view(SidePinViewModel)<Props>(({ viewModel }) => {
         onClick={(e) => e.stopPropagation()}
         ref={viewModel.ref}
       >
-        <div
-          className={cl.Scroll}
-          onMouseDown={viewModel.mouseDown}
-          onContextMenu={action((e) => {
-            e.preventDefault()
-            viewModel.defaultcontext = true
-            window.addEventListener('click', viewModel.checkOutsizeClick)
-            hotKeyEventListener.hotkeys.CANCEL.addListener(viewModel.disableDefaultContext)
-          })}
-        ></div>
+        <div className={cl.Scroll} onMouseDown={viewModel.mouseDown}></div>
 
         <div
           className={[
@@ -146,66 +119,6 @@ const SidePin = view(SidePinViewModel)<Props>(({ viewModel }) => {
             })}
           />
         )}
-        <div
-          className={cl.DefaultContext}
-          style={{
-            display: viewModel.defaultcontext ? 'flex' : 'none',
-            left: viewModel.viewProps.input ? '10em' : undefined,
-            right: viewModel.viewProps.input ? undefined : '10em'
-          }}
-        >
-          <div>Пин: {viewModel.viewProps.pin.globalState.title}</div>
-          {viewModel.viewProps.pin.type === 1 ? (
-            <div className={cl.Colors}>
-              {Object.keys(Colors).map((key) => (
-                <div
-                  key={key}
-                  className={cl.StatusBtn}
-                  style={{
-                    backgroundColor: (Colors[key] as Color).color,
-                    cursor: viewModel.viewProps.input ? 'pointer' : 'auto',
-                    borderColor:
-                      viewModel.viewProps.pin.globalState.color.id === key ? 'white' : undefined
-                  }}
-                  onClick={action((e) => {
-                    viewModel.viewProps.pin.globalState.colorName = key as COLORS
-                  })}
-                />
-              ))}
-            </div>
-          ) : undefined}
-          {viewModel.viewProps.pin.type !== 1 ? (
-            <input
-              value={viewModel.pinType === 0 ? '' : viewModel.pinType}
-              type="number"
-              min={2}
-              max={32}
-              className={cl.PinTitle}
-              onFocus={() => {
-                hotKeyEventListener.canSearch = false
-              }}
-              onChange={action((e) => {
-                if (/^(\d+)?$/.test(e.target.value)) viewModel.pinType = Number(e.target.value)
-              })}
-              onBlur={action(() => {
-                hotKeyEventListener.canSearch = true
-                viewModel.pinType =
-                  viewModel.pinType <= 1 ? 2 : viewModel.pinType > 32 ? 32 : viewModel.pinType
-                viewModel.viewProps.pin.type = viewModel.pinType
-              })}
-            />
-          ) : undefined}
-          <Button
-            className={cl.Button}
-            onClick={() => {
-              ;(viewModel.parent.parent.currentChip as CUSTOMChip).destroyPin(
-                viewModel.viewProps.pin
-              )
-            }}
-          >
-            Удалить
-          </Button>
-        </div>
       </div>
       {viewModel.viewProps.pin.type !== 1 ? <CompositeContext /> : undefined}
     </>

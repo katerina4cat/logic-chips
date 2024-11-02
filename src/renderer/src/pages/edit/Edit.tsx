@@ -15,8 +15,19 @@ import { Chip } from '@models/Chip'
 import AddingChip from './AddingChip'
 import Modals from './Modals'
 import { modalsStates } from './ModalsStates'
+import { ChipType } from '@models/ChipType'
+import SevenSegmentDisplay from '@renderer/components/Chip/SevenSegmentDisplay'
 
 interface Props {}
+
+export const getViewChip = (chip, preview = false, key?: number) => {
+  switch (chip.type) {
+    case ChipType.ESEGMENT:
+      return <SevenSegmentDisplay chip={chip} key={key ? key : chip.id} preview={preview} />
+    default:
+      return <ViewChip chip={chip} key={key ? key : chip.id} preview={preview} />
+  }
+}
 
 export class EditViewModel extends ViewModel<unknown, Props> {
   @observable
@@ -101,9 +112,7 @@ const Edit = view(EditViewModel)<Props>(({ viewModel }) => {
         ))}
         <WireIncompleted />
       </svg>
-      {viewModel.currentChip.subChips.map((chip) => (
-        <ViewChip chip={chip} key={chip.id} />
-      ))}
+      {viewModel.currentChip.subChips.map((chip) => getViewChip(chip))}
       <AddingChip />
       <SidePinBlock pins={viewModel.currentChip.inputs} input selfState />
       <SidePinBlock pins={viewModel.currentChip.outputs} />

@@ -1,0 +1,35 @@
+.ViewChip {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: absolute;
+  z-index: 15;
+  .Pins {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5em;
+    padding: 0.25em 0;
+  }
+  .Display {
+    padding: 0.75em;
+    display: flex;
+    align-items: flex-end;
+    flex-direction: column;
+    .RowSegments {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+    }
+    .HorisontalSegment {
+      height: 0.75em;
+      aspect-ratio: 5;
+      clip-path: polygon(10% 0, 90% 0, 100% 50%, 90% 100%, 10% 100%, 0% 50%);
+      margin: 0 0.5em;
+    }
+    .VerticalSegment {
+      width: 0.75em;
+      aspect-ratio: 1/5;
+      clip-path: polygon(50% 0, 100% 10%, 100% 90%, 50% 100%, 0 90%, 0 10%);
+    }
+  }
+}

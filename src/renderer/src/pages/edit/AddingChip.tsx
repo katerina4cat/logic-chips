@@ -1,7 +1,7 @@
 import { ViewModel, view } from '@yoskutik/react-vvm'
 import { action, makeObservable, observable, reaction } from 'mobx'
 import cl from './Edit.module.scss'
-import { EditViewModel } from './Edit'
+import { EditViewModel, getViewChip } from './Edit'
 import ViewChip from '@renderer/components/Chip/ViewChip'
 import { windowScalingMethods } from '@renderer/common/PointsLineRounding'
 import { hotKeyEventListener } from '@renderer/common/HotKeyListener'
@@ -89,9 +89,9 @@ const AddingChip = view(AddingChipViewModel)<Props>(({ viewModel }) => {
       }}
       ref={viewModel.ref}
     >
-      {new Array(viewModel.addingCount).fill(0).map((_, ind) => (
-        <ViewChip chip={viewModel.parent.addingChip!} key={ind} preview />
-      ))}
+      {new Array(viewModel.addingCount)
+        .fill(0)
+        .map((_, ind) => getViewChip(viewModel.parent.addingChip!, true, ind))}
     </div>
   )
 })
