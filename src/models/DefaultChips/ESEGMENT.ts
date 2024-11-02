@@ -2,7 +2,7 @@ import { makeObservable } from 'mobx'
 import { Chip } from '../Chip'
 import { ChipType, chipTypeInfo } from '../ChipType'
 import { Pos } from '../common/Pos'
-import { Pin } from '../Pin'
+import { Pin, PinStateInfo } from '../Pin'
 import { generateNumberID } from '@models/common/RandomId'
 
 export class ESEGMENTChip extends Chip {
@@ -14,7 +14,7 @@ export class ESEGMENTChip extends Chip {
       id,
       pos
     )
-    this.inputs.push(new Pin(0, this, 'D', 8, false))
+    this.inputs.push(new Pin(0, this, [new PinStateInfo('D')], 8, false))
     makeObservable(this)
   }
 }

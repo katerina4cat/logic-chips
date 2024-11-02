@@ -2,7 +2,7 @@ import { action, makeObservable, observable, reaction, runInAction } from 'mobx'
 import { Chip } from '../Chip'
 import { ChipType, chipTypeInfo } from '../ChipType'
 import { Pos } from '../common/Pos'
-import { Pin } from '../Pin'
+import { Pin, PinStateInfo } from '../Pin'
 import { generateNumberID } from '@models/common/RandomId'
 
 export interface IAdapterOutputSettings {
@@ -44,7 +44,16 @@ export class ADAPTERChip extends Chip {
         (pin) => pin.id === settings.id && pin.type === settings.inputID.length
       )
       if (ind !== -1) buff.push(this.outputs[ind])
-      else buff.push(new Pin(settings.id, this, settings.title, settings.inputID.length, true))
+      else
+        buff.push(
+          new Pin(
+            settings.id,
+            this,
+            [new PinStateInfo(settings.title)],
+            settings.inputID.length,
+            true
+          )
+        )
     })
     this.outputs = buff
   }
@@ -73,7 +82,7 @@ export class ADAPTERChip extends Chip {
 
   @action
   addInput = (pin: Pin) => {
-    const buff = new Pin(this.inputsID, this, pin.title, pin.type)
+    const buff = new Pin(this.inputsID, this, undefined, pin.type)
     this.inputsID += 1
     buff.linkPin(pin)
     this.inputs.push(buff)

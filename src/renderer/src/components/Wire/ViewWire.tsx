@@ -41,7 +41,7 @@ const ViewWire = view(ViewWireViewModel)<Props>(({ viewModel }) => {
         cl.Wire,
         viewModel.viewProps.wire.from.totalStates[0] === STATE.ERROR ? 'errorStroke' : ''
       ].join(' ')}
-      style={{ stroke: viewModel.viewProps.wire.from.stateColor }}
+      style={{ stroke: viewModel.viewProps.wire.from.stateColor[0] }}
       d={viewModel.data}
       onMouseEnter={() => window.addEventListener('keydown', viewModel.deleteCheck)}
       onMouseLeave={() => window.removeEventListener('keydown', viewModel.deleteCheck)}

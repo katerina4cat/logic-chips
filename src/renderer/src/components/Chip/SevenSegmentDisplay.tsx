@@ -1,5 +1,5 @@
 import { ViewModel, view } from '@yoskutik/react-vvm'
-import { action, makeObservable } from 'mobx'
+import { action, makeObservable, observable } from 'mobx'
 import cl from './SevenSegmentDisplay.module.scss'
 import { Chip } from '@models/Chip'
 import { ChipType } from '@models/ChipType'
@@ -14,7 +14,18 @@ interface Props {
   preview?: boolean
 }
 
+export enum SegmentsPins {
+  A = 0,
+  B = 1,
+  C = 2,
+  D = 3,
+  E = 4,
+  F = 5,
+  G = 6
+}
+
 export class SevenSegmentDisplayViewModel extends ViewModel<EditViewModel, Props> {
+  @observable hovered
   constructor() {
     super()
     makeObservable(this)
@@ -72,76 +83,76 @@ const SevenSegmentDisplay = view(SevenSegmentDisplayViewModel)<Props>(({ viewMod
       <div className={cl.Display}>
         <div>
           <div
-            className={cl.HorisontalSegment}
+            className={[
+              cl.HorisontalSegment,
+              viewModel.viewProps.chip.inputs[SegmentsPins.A].stateColor[1]
+            ].join(' ')}
             style={{
-              backgroundColor: getColorWithState(
-                viewModel.viewProps.chip.inputs[SegmentsPins.A].totalState,
-                viewModel.viewProps.chip.inputs[SegmentsPins.A].color
-              ),
+              backgroundColor: viewModel.viewProps.chip.inputs[SegmentsPins.A].stateColor[1],
               opacity: viewModel.hovered[SegmentsPins.A] ? 0.2 : 1
             }}
           />
           <div className={cl.RowSegments}>
             <div
-              className={cl.VerticalSegment}
+              className={[
+                cl.VerticalSegment,
+                viewModel.viewProps.chip.inputs[SegmentsPins.F].stateColor[2]
+              ].join(' ')}
               style={{
-                backgroundColor: getColorWithState(
-                  viewModel.viewProps.chip.inputs[SegmentsPins.F].totalState,
-                  viewModel.viewProps.chip.inputs[SegmentsPins.F].color
-                ),
+                backgroundColor: viewModel.viewProps.chip.inputs[SegmentsPins.F].stateColor[2],
                 opacity: viewModel.hovered[SegmentsPins.F] ? 0.2 : 1
               }}
             />
             <div
-              className={cl.VerticalSegment}
+              className={[
+                cl.VerticalSegment,
+                viewModel.viewProps.chip.inputs[SegmentsPins.B].stateColor[3]
+              ].join(' ')}
               style={{
-                backgroundColor: getColorWithState(
-                  viewModel.viewProps.chip.inputs[SegmentsPins.B].totalState,
-                  viewModel.viewProps.chip.inputs[SegmentsPins.B].color
-                ),
+                backgroundColor: viewModel.viewProps.chip.inputs[SegmentsPins.B].stateColor[3],
                 opacity: viewModel.hovered[SegmentsPins.B] ? 0.2 : 1
               }}
             />
           </div>
           <div
-            className={cl.HorisontalSegment}
+            className={[
+              cl.HorisontalSegment,
+              viewModel.viewProps.chip.inputs[SegmentsPins.G].stateColor[4]
+            ].join(' ')}
             style={{
-              backgroundColor: getColorWithState(
-                viewModel.viewProps.chip.inputs[SegmentsPins.G].totalState,
-                viewModel.viewProps.chip.inputs[SegmentsPins.G].color
-              ),
+              backgroundColor: viewModel.viewProps.chip.inputs[SegmentsPins.G].stateColor[4],
               opacity: viewModel.hovered[SegmentsPins.G] ? 0.2 : 1
             }}
           />
           <div className={cl.RowSegments}>
             <div
-              className={cl.VerticalSegment}
+              className={[
+                cl.VerticalSegment,
+                viewModel.viewProps.chip.inputs[SegmentsPins.E].stateColor[5]
+              ].join(' ')}
               style={{
-                backgroundColor: getColorWithState(
-                  viewModel.viewProps.chip.inputs[SegmentsPins.E].totalState,
-                  viewModel.viewProps.chip.inputs[SegmentsPins.E].color
-                ),
+                backgroundColor: viewModel.viewProps.chip.inputs[SegmentsPins.E].stateColor[5],
                 opacity: viewModel.hovered[SegmentsPins.E] ? 0.2 : 1
               }}
             />
             <div
-              className={cl.VerticalSegment}
+              className={[
+                cl.VerticalSegment,
+                viewModel.viewProps.chip.inputs[SegmentsPins.C].stateColor[6]
+              ].join(' ')}
               style={{
-                backgroundColor: getColorWithState(
-                  viewModel.viewProps.chip.inputs[SegmentsPins.C].totalState,
-                  viewModel.viewProps.chip.inputs[SegmentsPins.C].color
-                ),
+                backgroundColor: viewModel.viewProps.chip.inputs[SegmentsPins.C].stateColor[6],
                 opacity: viewModel.hovered[SegmentsPins.C] ? 0.2 : 1
               }}
             />
           </div>
           <div
-            className={cl.HorisontalSegment}
+            className={[
+              cl.HorisontalSegment,
+              viewModel.viewProps.chip.inputs[SegmentsPins.D].stateColor[7]
+            ].join(' ')}
             style={{
-              backgroundColor: getColorWithState(
-                viewModel.viewProps.chip.inputs[SegmentsPins.D].totalState,
-                viewModel.viewProps.chip.inputs[SegmentsPins.D].color
-              ),
+              backgroundColor: viewModel.viewProps.chip.inputs[SegmentsPins.D].stateColor[7],
               opacity: viewModel.hovered[SegmentsPins.D] ? 0.2 : 1
             }}
           />

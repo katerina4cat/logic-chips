@@ -15,6 +15,7 @@ const defaultHotKeys: AvaibleHotKey = {
 
 class HotKeyListener {
   hotkeys = defaultHotKeys
+  canSearch = true
 
   constructor() {
     window.addEventListener('unload', this.unload)
@@ -25,7 +26,7 @@ class HotKeyListener {
     window.removeEventListener('keydown', this.onKeyDown)
   }
   onKeyDown = (e: KeyboardEvent) => {
-    Object.values(this.hotkeys).forEach((hotKey) => hotKey.test(e))
+    if (this.canSearch) Object.values(this.hotkeys).forEach((hotKey) => hotKey.test(e))
   }
 }
 

@@ -97,7 +97,7 @@ const WireIncompleted = view(WireIncompletedViewModel)<Props>(({ viewModel }) =>
         cl.Wire,
         viewModel.from?.totalStates[0] === STATE.ERROR ? 'errorStroke' : ''
       ].join(' ')}
-      style={{ pointerEvents: 'none', stroke: viewModel.from?.stateColor }}
+      style={{ pointerEvents: 'none', stroke: viewModel.from?.stateColor[0] }}
       d={viewModel.data}
     />
   )

@@ -2,7 +2,7 @@ import { action, makeObservable, reaction } from 'mobx'
 import { Chip } from '../Chip'
 import { ChipType, chipTypeInfo } from '../ChipType'
 import { Pos } from '../common/Pos'
-import { Pin } from '../Pin'
+import { Pin, PinStateInfo } from '../Pin'
 import { STATE } from '../STATE'
 import { generateNumberID } from '@models/common/RandomId'
 
@@ -15,8 +15,8 @@ export class NOTChip extends Chip {
       id,
       pos
     )
-    this.inputs.push(new Pin(0, this, 'A', 1, false))
-    this.outputs.push(new Pin(1, this, 'R', 1, true))
+    this.inputs.push(new Pin(0, this, [new PinStateInfo('A')], 1, false))
+    this.outputs.push(new Pin(1, this, [new PinStateInfo('R')], 1, true))
     this.outputs[0].selfStates[0] = STATE.HIGHT
     makeObservable(this)
     this.inputs.forEach((inp) =>

@@ -6,22 +6,33 @@ import { Color, COLORS, Colors } from './common/COLORS'
 import { Chip } from './Chip'
 import { generateNumberID } from './common/RandomId'
 
+export class PinStateInfo {
+  @observable
+  title: string
+  @observable
+  colorName: COLORS
+  constructor(title: string = 'Pin', colorName: COLORS = COLORS.red) {
+    this.title = title
+    this.colorName = colorName
+    makeObservable(this)
+  }
+  @computed
+  get color() {
+    return Colors[this.colorName]
+  }
+}
+
 export class Pin {
   toSave = (): ISavePin => ({
-    title: this.title,
     y: this.pos.y,
     id: this.id,
     type: this.type,
-    color: this.color.id
+    statesInfo: this.statesInfo
   })
 
   // Кол-во состояний
   @observable
   type: number
-  @observable
-  title: string
-  @observable
-  color: Color
   id: number
   @observable
   pos: Pos
@@ -29,6 +40,10 @@ export class Pin {
   atChippos: Pos = new Pos()
   isSource: boolean
   chip: Chip
+  @observable
+  statesInfo: PinStateInfo[] = []
+  @observable
+  globalState: PinStateInfo
 
   @computed
   get globalPos() {
@@ -89,27 +104,38 @@ export class Pin {
 
   @computed
   get stateColor() {
-    if (stateInfo[this.totalStates[0]].color)
-      return stateInfo[this.totalStates[0]].color!(this.color)
-    return undefined
+    if (this.type === 1) {
+      if (stateInfo[this.totalStates[0]].color)
+        return [stateInfo[this.totalStates[0]].color!(this.statesInfo[0].color)]
+      else return [undefined]
+    } else
+      return this.totalStates.map((state, ind) => {
+        if (stateInfo[state]?.color && this.statesInfo[ind + 1])
+          return stateInfo[state].color!(this.statesInfo[ind + 1].color)
+        return undefined
+      })
   }
 
   constructor(
     id: number = generateNumberID(),
     chip: Chip,
-    title?: string,
+    statesInfo: PinStateInfo[] = [],
     type: number = 1,
     isSource: boolean = false,
-    pos: Pos = new Pos(),
-    color: Color = Colors.red
+    pos: Pos = new Pos()
   ) {
     this.type = type
-    this.title = title || 'Pin'
     this.id = id
     this.chip = chip
     this.pos = pos
     this.isSource = isSource
-    this.color = color
+    this.statesInfo = statesInfo.map(
+      (stateSave) => new PinStateInfo(stateSave.title, stateSave.colorName)
+    )
+    if (this.statesInfo.length !== (type === 1 ? 1 : type + 1))
+      for (let i = this.statesInfo.length; i < (type === 1 ? 1 : type + 1); i++)
+        this.statesInfo.push(new PinStateInfo('Pin'))
+    this.globalState = this.statesInfo[0]
     if (this.isSource) this.selfStates = new Array(this.type).fill(STATE.LOW)
     makeObservable(this)
     reaction(
@@ -117,17 +143,29 @@ export class Pin {
       () => {
         if (this.isSource)
           for (let i = 0; i < Math.abs(this.type - this.selfStates.length); i++)
-            if (this.type > this.selfStates.length) this.selfStates.push(STATE.LOW)
-            else this.selfStates.pop()
+            if (this.type > this.selfStates.length) {
+              this.selfStates.push(STATE.LOW)
+            } else {
+              this.selfStates.pop()
+            }
+        for (
+          let i = 0;
+          i < Math.abs(this.statesInfo.length - (this.type === 1 ? 1 : this.type + 1));
+          i++
+        )
+          if (this.type > statesInfo.length) {
+            this.statesInfo.push(new PinStateInfo())
+          } else {
+            this.statesInfo.pop()
+          }
       }
     )
   }
 }
 
 export interface ISavePin {
-  title: string
   y: number
   id: number
   type: number
-  color: COLORS
+  statesInfo: PinStateInfo[]
 }

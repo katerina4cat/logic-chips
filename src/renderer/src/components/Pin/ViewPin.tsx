@@ -49,7 +49,10 @@ export class ViewPinViewModel extends ViewModel<unknown, Props> {
 const ViewPin = view(ViewPinViewModel)<Props>(({ viewModel }) => {
   return (
     <div
-      style={{ backgroundColor: viewModel.viewProps.pin.stateColor, ...viewModel.viewProps.style }}
+      style={{
+        backgroundColor: viewModel.viewProps.pin.stateColor[0],
+        ...viewModel.viewProps.style
+      }}
       className={[
         viewModel.viewProps.pin.totalStates[0] !== STATE.ERROR ? '' : 'errorFill',
         cl.Pin,

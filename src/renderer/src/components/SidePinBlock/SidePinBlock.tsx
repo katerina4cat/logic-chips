@@ -1,7 +1,7 @@
 import { ViewModel, view } from '@yoskutik/react-vvm'
 import { action, computed, makeObservable, observable, reaction, runInAction } from 'mobx'
 import cl from './SidePinBlock.module.scss'
-import { Pin } from '@models/Pin'
+import { Pin, PinStateInfo } from '@models/Pin'
 import SidePin from '../Pin/SidePin'
 import { EditViewModel } from '@renderer/pages/edit/Edit'
 import { windowScalingMethods } from '@renderer/common/PointsLineRounding'
@@ -64,7 +64,7 @@ export class SidePinBlockViewModel extends ViewModel<EditViewModel, Props> {
     )
   }
   @observable
-  previewPin = new Pin(-999, this.parent.currentChip, '', 1)
+  previewPin = new Pin(-999, this.parent.currentChip, [new PinStateInfo('')], 1)
   @observable
   show = false
 }

@@ -2,7 +2,7 @@ import { action, computed, makeObservable, observable, reaction } from 'mobx'
 import { Chip, ISaveSubChip } from '../Chip'
 import { ChipType, chipTypeInfo } from '../ChipType'
 import { Pos } from '../common/Pos'
-import { Pin } from '../Pin'
+import { Pin, PinStateInfo } from '../Pin'
 import { mergeStates, STATE } from '../STATE'
 import { SIM_ERROR, SimulatingError } from '../common/SimulatingError'
 import { generateNumberID } from '@models/common/RandomId'
@@ -32,8 +32,8 @@ export class BUSChip extends Chip {
       pos
     )
     this.points = extraData.points
-    this.inputs.push(new Pin(0, this, 'STATE', extraData.type))
-    this.outputs.push(new Pin(1, this, 'OUTSTATE', extraData.type, true))
+    this.inputs.push(new Pin(0, this, [new PinStateInfo('STATE')], extraData.type))
+    this.outputs.push(new Pin(1, this, [new PinStateInfo('OUTSTATE')], extraData.type, true))
     this.outputs[0].selfStates[0] = STATE.UNDEFINED
     reaction(() => this.inputs[0].totalStates, this.calculateLogic, {
       fireImmediately: true

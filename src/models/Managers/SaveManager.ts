@@ -103,26 +103,17 @@ class SaveManager {
         new Pin(
           pinInfo.id,
           chip,
-          pinInfo.title,
+          pinInfo.statesInfo,
           pinInfo.type,
           chip.id === 0,
-          new Pos(0, pinInfo.y),
-          Colors[pinInfo.color]
+          new Pos(0, pinInfo.y)
         ),
         true
       )
     )
     chipInfo.outputs.forEach((pinInfo) =>
       chip.addPin(
-        new Pin(
-          pinInfo.id,
-          chip,
-          pinInfo.title,
-          pinInfo.type,
-          false,
-          new Pos(0, pinInfo.y),
-          Colors[pinInfo.color]
-        ),
+        new Pin(pinInfo.id, chip, pinInfo.statesInfo, pinInfo.type, false, new Pos(0, pinInfo.y)),
         false
       )
     )
