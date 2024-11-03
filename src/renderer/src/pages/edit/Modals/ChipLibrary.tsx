@@ -8,6 +8,7 @@ import { ModalsViewModel } from '../Modals'
 import Button from '@renderer/components/Button/Button'
 import { navigate } from '@renderer/App'
 import RadialMenu, { CHIP_TRANSFER } from '@renderer/components/RadialMenu/RadialMenu'
+import { hotKeyEventListener } from '@renderer/common/HotKeyListener'
 
 interface Props {}
 
@@ -45,9 +46,17 @@ export class ChipLibraryViewModel extends ViewModel<ModalsViewModel, Props> {
     saveManager.removeChip(this.selected)
     this.selected = ''
   }
+  @action
+  setCurrentWheel = (wheel: number) => {
+    this.currentWheel = wheel - 1
+  }
 }
 const ChipLibrary = view(ChipLibraryViewModel)<Props>(({ viewModel }) => {
-  if (!saveManager.currentSave) return undefined
+  if (!saveManager.currentSave || !modalsStates.states.library) {
+    hotKeyEventListener.hotkeys.RADIAL_MENU.removeListener(viewModel.setCurrentWheel)
+    return undefined
+  }
+  hotKeyEventListener.hotkeys.RADIAL_MENU.addListener(viewModel.setCurrentWheel)
   return (
     <>
       <Modal
@@ -59,14 +68,13 @@ const ChipLibrary = view(ChipLibraryViewModel)<Props>(({ viewModel }) => {
             style={{
               width: '37.5vw',
               aspectRatio: '1',
-              display: modalsStates.states.library ? 'flex' : 'none',
               zIndex: 75,
               justifyContent: 'center',
               alignItems: 'center'
             }}
           >
             <RadialMenu
-              elements={saveManager.currentSave.wheels[modalsStates.currentRadial - 1]}
+              elements={saveManager.currentSave.wheels[viewModel.currentWheel]}
               title={(v) => v}
               editable
             />

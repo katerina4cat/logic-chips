@@ -17,6 +17,7 @@ export class MenuModalViewModel extends ViewModel<ModalsViewModel, Props> {
   }
 }
 const MenuModal = view(MenuModalViewModel)<Props>(({ viewModel }) => {
+  if (!modalsStates.states.menu) return undefined
   return (
     <Modal
       className={cl.SaveModal}

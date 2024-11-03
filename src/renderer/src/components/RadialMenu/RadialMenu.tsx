@@ -6,6 +6,7 @@ import { createRef } from 'react'
 import { Pos } from '@models/common/Pos'
 import { windowScalingMethods } from '@renderer/common/PointsLineRounding'
 import { saveManager } from '@models/Managers/SaveManager'
+import RadialElementv2 from './RadialElementv2'
 
 interface Props {
   elements: any[]
@@ -37,9 +38,14 @@ export class RadialMenuViewModel extends ViewModel<unknown, Props> {
   }
   @action
   swapElement = (fromInd: number, toInd: number) => {
+    toInd %= this.viewProps.elements.length
+    toInd = toInd < 0 ? this.viewProps.elements.length + toInd : toInd
+    if (fromInd === toInd) return 0
     const buff = this.viewProps.elements[fromInd]
     this.viewProps.elements[fromInd] = this.viewProps.elements[toInd]
     this.viewProps.elements[toInd] = buff
+    saveManager.save()
+    return (toInd - fromInd) * 2
   }
   @observable
   ref = createRef<SVGSVGElement>()
@@ -52,6 +58,7 @@ export class RadialMenuViewModel extends ViewModel<unknown, Props> {
       this.viewProps.elements.find((title) => title === chipName) === undefined
     ) {
       this.viewProps.elements.push(chipName)
+      saveManager.save()
     }
   }
 }
@@ -69,8 +76,8 @@ const RadialMenu = view(RadialMenuViewModel)<Props>(({ viewModel }) => {
     >
       {viewModel.viewProps.elements.map((element, ind) => {
         return (
-          <RadialElement
-            elementIndex={ind + 1}
+          <RadialElementv2
+            elementIndex={ind}
             element={element}
             title={viewModel.viewProps.title}
             key={element}

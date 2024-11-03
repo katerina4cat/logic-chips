@@ -16,6 +16,29 @@ export class Pos {
   get lenght() {
     return Math.sqrt(this.x ** 2 + this.y ** 2)
   }
+
+  get normalized() {
+    return this.copy.multyMe(1 / this.lenght)
+  }
+
+  get angle() {
+    return Math.acos(this.x) * Math.sign(this.y)
+  }
+
+  rotate = (angle: number) => {
+    return new Pos(
+      this.x * Math.cos(angle) - this.y * Math.sin(angle),
+      this.x * Math.sin(angle) + this.y * Math.cos(angle)
+    )
+  }
+
+  rotateMe = (angle: number) => {
+    const x = this.x * Math.cos(angle) - this.y * Math.sin(angle)
+    this.y = this.x * Math.sin(angle) + this.y * Math.cos(angle)
+    this.x = x
+    return this
+  }
+
   addMe = (pos: Pos) => {
     this.x += pos.x
     this.y += pos.y

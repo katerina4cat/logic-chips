@@ -14,7 +14,7 @@ export class ChipSelectorViewModel extends ViewModel<ModalsViewModel, Props> {
   }
 }
 const ChipSelector = view(ChipSelectorViewModel)<Props>(({ viewModel }) => {
-  if (!saveManager.currentSave) return undefined
+  if (!saveManager.currentSave || !modalsStates.states.radial) return undefined
   return (
     <div
       style={{

@@ -21,6 +21,7 @@ export class SaveModalViewModel extends ViewModel<ModalsViewModel, Props> {
   }
 }
 const SaveModal = view(SaveModalViewModel)<Props>(({ viewModel }) => {
+  if (!modalsStates.states.saving) return undefined
   return (
     <Modal
       className={cl.SaveModal}

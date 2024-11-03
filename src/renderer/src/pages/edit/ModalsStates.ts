@@ -40,8 +40,11 @@ class ModalsStates {
   }
   @action
   radialHandler = (digit: number) => {
+    if (this.states.menu) return
+    if (hotKeyEventListener.hotkeys.RADIAL_MENU.listeners.length !== 1) return
     if (this.currentRadial !== digit) {
       this.currentRadial = digit
+      if (!this.states.radial) this.closeAll('radial', true)
       return
     }
     this.closeAll('radial')
