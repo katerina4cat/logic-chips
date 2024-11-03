@@ -36,7 +36,6 @@ const ChipSelector = view(ChipSelectorViewModel)<Props>(({ viewModel }) => {
       <RadialMenu
         elements={saveManager.currentSave.wheels[modalsStates.currentRadial - 1]}
         title={(v) => v}
-        editable
         onClick={viewModel.parent.parent.setAdding}
       />
     </div>

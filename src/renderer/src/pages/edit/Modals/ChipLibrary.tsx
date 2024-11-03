@@ -7,6 +7,7 @@ import cl from './ChipLibrary.module.scss'
 import { ModalsViewModel } from '../Modals'
 import Button from '@renderer/components/Button/Button'
 import { navigate } from '@renderer/App'
+import RadialMenu, { CHIP_TRANSFER } from '@renderer/components/RadialMenu/RadialMenu'
 
 interface Props {}
 
@@ -18,6 +19,8 @@ export class ChipLibraryViewModel extends ViewModel<ModalsViewModel, Props> {
   defaultChips = ['AND', 'NOT', 'TRISTATE', 'ESEGMENT', 'ADAPTER']
   @observable
   selected = ''
+  @observable
+  currentWheel = 0
   @computed
   get canDelete() {
     return (
@@ -44,12 +47,31 @@ export class ChipLibraryViewModel extends ViewModel<ModalsViewModel, Props> {
   }
 }
 const ChipLibrary = view(ChipLibraryViewModel)<Props>(({ viewModel }) => {
+  if (!saveManager.currentSave) return undefined
   return (
     <>
       <Modal
         className={cl.ChipLibrary}
         enabled={modalsStates.states.library}
         setenabled={(v) => modalsStates.closeAll('library', v)}
+        rightpanel={
+          <div
+            style={{
+              width: '37.5vw',
+              aspectRatio: '1',
+              display: modalsStates.states.library ? 'flex' : 'none',
+              zIndex: 75,
+              justifyContent: 'center',
+              alignItems: 'center'
+            }}
+          >
+            <RadialMenu
+              elements={saveManager.currentSave.wheels[modalsStates.currentRadial - 1]}
+              title={(v) => v}
+              editable
+            />
+          </div>
+        }
       >
         <h2>Список чипов</h2>
         <div className={cl.List}>
@@ -66,6 +88,11 @@ const ChipLibrary = view(ChipLibraryViewModel)<Props>(({ viewModel }) => {
                 modalsStates.closeAll('library', false)
               })}
               key={title}
+              draggable
+              onDragStart={(event) => {
+                event.dataTransfer.setData(CHIP_TRANSFER, title)
+                event.dataTransfer.dropEffect = 'move'
+              }}
             >
               {title}
             </div>
@@ -86,6 +113,11 @@ const ChipLibrary = view(ChipLibraryViewModel)<Props>(({ viewModel }) => {
                 modalsStates.closeAll('library', false)
               })}
               key={chip.title}
+              draggable
+              onDragStart={(event) => {
+                event.dataTransfer.setData(CHIP_TRANSFER, chip.title)
+                event.dataTransfer.dropEffect = 'move'
+              }}
             >
               {chip.title}
             </div>

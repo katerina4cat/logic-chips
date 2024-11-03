@@ -1,6 +1,5 @@
 import { Chip, ISaveChip, ISaveSubChip } from '@models/Chip'
-import { ChipType } from '@models/ChipType'
-import { Colors } from '@models/common/COLORS'
+import { ChipType, chipTypeInfo } from '@models/ChipType'
 import { Pos } from '@models/common/Pos'
 import { ADAPTERChip } from '@models/DefaultChips/ADAPTER'
 import { ANDChip } from '@models/DefaultChips/AND'
@@ -23,6 +22,13 @@ class SaveManager {
   }
   @observable
   currentSave?: ISaveInfo
+
+  hasChipInSave = (chipName: string) => {
+    return (
+      this.currentSave?.chips.find((chip) => chip.title === chipName) !== undefined ||
+      Object.values(chipTypeInfo).find((baseChips) => baseChips.title === chipName) !== undefined
+    )
+  }
   @observable
   loadSaveByName = (title: string) => {
     const ind = this.saves.findIndex((save) => save.title === title)

@@ -5,6 +5,7 @@ import cl from './Modal.module.scss'
 interface Props extends React.HTMLAttributes<HTMLDivElement> {
   enabled: boolean
   setenabled: (v: boolean) => void
+  rightpanel?: JSX.Element
 }
 
 export class ModalViewModel extends ViewModel<unknown, Props> {
@@ -23,6 +24,7 @@ const Modal = view(ModalViewModel)<Props>(({ viewModel }) => {
           onClick={(e) => e.stopPropagation()}
           className={[cl.ModalContent, rest.className].join(' ')}
         />
+        {viewModel.viewProps.rightpanel}
       </div>
     )
 })

@@ -5,20 +5,25 @@ import RadialElement from './RadialElement'
 import { createRef } from 'react'
 import { Pos } from '@models/common/Pos'
 import { windowScalingMethods } from '@renderer/common/PointsLineRounding'
+import { saveManager } from '@models/Managers/SaveManager'
 
 interface Props {
   elements: any[]
   title: (v: any) => string
   editable?: boolean
-  onClick: (element: string) => void
+  onClick?: (element: string) => void
 }
 
+export const CHIP_TRANSFER = 'ChipName'
+
 export class RadialMenuViewModel extends ViewModel<unknown, Props> {
-  halfElement: number
+  @computed
+  get halfElement() {
+    return Math.PI * (1 / this.viewProps.elements.length)
+  }
   constructor() {
     super()
     makeObservable(this)
-    this.halfElement = Math.PI * (1 / this.viewProps.elements.length)
   }
 
   @computed
@@ -38,10 +43,30 @@ export class RadialMenuViewModel extends ViewModel<unknown, Props> {
   }
   @observable
   ref = createRef<SVGSVGElement>()
+
+  @action
+  dropHandler = (event: React.DragEvent<SVGSVGElement>) => {
+    const chipName = event.dataTransfer.getData(CHIP_TRANSFER)
+    if (
+      saveManager.hasChipInSave(chipName) &&
+      this.viewProps.elements.find((title) => title === chipName) === undefined
+    ) {
+      this.viewProps.elements.push(chipName)
+    }
+  }
 }
 const RadialMenu = view(RadialMenuViewModel)<Props>(({ viewModel }) => {
   return (
-    <svg viewBox="0 0 100 100" className={cl.RadialMenu} ref={viewModel.ref}>
+    <svg
+      viewBox="0 0 100 100"
+      className={cl.RadialMenu}
+      ref={viewModel.ref}
+      onDrop={viewModel.dropHandler}
+      onDragOver={(ev) => {
+        ev.preventDefault()
+        ev.dataTransfer.dropEffect = 'copy'
+      }}
+    >
       {viewModel.viewProps.elements.map((element, ind) => {
         return (
           <RadialElement

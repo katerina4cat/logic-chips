@@ -9,23 +9,17 @@ interface Props {
   elementIndex: number
   element: any
   title: (v: any) => string
-  onClick: (element: string) => void
+  onClick?: (element: string) => void
 }
 
 export class RadialElementViewModel extends ViewModel<RadialMenuViewModel, Props> {
-  @computed
-  get centerPI() {
-    return this.parent.halfElement * (2 * this.viewProps.elementIndex)
-  }
-  halfY: number
   constructor() {
     super()
     makeObservable(this)
-    this.halfY = Math.sin(this.parent.halfElement)
   }
   @computed
-  get textPath() {
-    return `M50 50 L${50 + Math.cos(this.deltaAngle !== 0 ? this.deltaAngle : this.centerPI) * 50} ${50 + Math.sin(this.deltaAngle !== 0 ? this.deltaAngle : this.centerPI) * 50}`
+  get centerPI() {
+    return this.parent.halfElement * (2 * this.viewProps.elementIndex)
   }
 
   @computed
@@ -58,10 +52,16 @@ export class RadialElementViewModel extends ViewModel<RadialMenuViewModel, Props
     ]
     return `M50 50 L${points[0].x} ${points[0].y} A ${this.radius} ${this.radius} 0 0 1${points[1].x} ${points[1].y} L50 50`
   }
+
+  @computed
+  get textPath() {
+    return `M50 50 L${50 + Math.cos(this.deltaAngle !== 0 ? this.deltaAngle : this.centerPI) * 50} ${50 + Math.sin(this.deltaAngle !== 0 ? this.deltaAngle : this.centerPI) * 50}`
+  }
   @observable
   radius: number = 40
   @observable
   deltaAngle: number = 0
+  lastSwap = [-1, -1]
   @action
   calcDeltaAngle = () => {
     const vectCursor = windowScalingMethods.cursorPos.sub(this.parent.centerRadial)
@@ -72,8 +72,15 @@ export class RadialElementViewModel extends ViewModel<RadialMenuViewModel, Props
       Math.floor(
         fixAngle(this.deltaAngle - this.parent.halfElement) / (this.parent.halfElement * 2)
       ) + 1
-    if (this.viewProps.elementIndex !== imageIndex)
-      this.parent.swapElement(this.viewProps.elementIndex - 1, imageIndex - 1)
+    if (this.viewProps.elementIndex !== imageIndex) {
+      if (
+        this.lastSwap[0] !== this.viewProps.elementIndex - 1 &&
+        this.lastSwap[1] !== imageIndex - 1
+      ) {
+        this.parent.swapElement(this.viewProps.elementIndex - 1, imageIndex - 1)
+        this.lastSwap = [this.viewProps.elementIndex - 1, imageIndex - 1]
+      }
+    }
   }
   @action
   onMouseDown = () => {
@@ -91,7 +98,8 @@ export class RadialElementViewModel extends ViewModel<RadialMenuViewModel, Props
     this.isMoving = false
     window.removeEventListener('mousemove', this.calcDeltaAngle)
     window.removeEventListener('mouseup', this.onMouseUp)
-    if (Date.now() - this.downTime < 150) this.viewProps.onClick(this.viewProps.element)
+    if (Date.now() - this.downTime < 150)
+      this.viewProps.onClick && this.viewProps.onClick(this.viewProps.element)
   }
 }
 const RadialElement = view(RadialElementViewModel)<Props>(({ viewModel }) => {
@@ -111,12 +119,12 @@ const RadialElement = view(RadialElementViewModel)<Props>(({ viewModel }) => {
       />
       <path
         d={viewModel.textPath}
-        id={'selector_' + viewModel.viewProps.element + viewModel.viewProps.elementIndex}
+        id={'selector_' + viewModel.viewProps.element}
         className={cl.ElementTextPath}
       />
       <text textAnchor="middle" className={cl.ElementText}>
         <textPath
-          href={'#selector_' + viewModel.viewProps.element + viewModel.viewProps.elementIndex}
+          href={'#selector_' + viewModel.viewProps.element}
           startOffset={viewModel.radius + '%'}
         >
           {viewModel.viewProps.title(viewModel.viewProps.element)}
