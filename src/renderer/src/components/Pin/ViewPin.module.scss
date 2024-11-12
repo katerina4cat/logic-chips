@@ -6,6 +6,12 @@
   display: block;
   cursor: pointer;
 }
+.Title {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
 .CompositePin {
   border-radius: 20%;
   position: relative;

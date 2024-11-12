@@ -1,20 +1,21 @@
 import { ViewModel, view } from '@yoskutik/react-vvm'
 import { action, makeObservable } from 'mobx'
-import cl from './ViewChip.module.scss'
-import { Chip } from '@models/Chip'
+import cl from './AdapterChip.module.scss'
 import ViewPin from '../Pin/ViewPin'
 import { windowScalingMethods } from '@renderer/common/PointsLineRounding'
 import { Pos } from '@models/common/Pos'
 import { EditViewModel } from '@renderer/pages/edit/Edit'
 import { saveManager } from '@models/Managers/SaveManager'
 import { ChipType } from '@models/ChipType'
+import { ADAPTERChip } from '@models/DefaultChips/ADAPTER'
+import { Pin, PinStateInfo } from '@models/Pin'
 
 interface Props {
-  chip: Chip
+  chip: ADAPTERChip
   preview?: boolean
 }
 
-export class ViewChipViewModel extends ViewModel<EditViewModel, Props> {
+export class AdapterChipViewModel extends ViewModel<EditViewModel, Props> {
   constructor() {
     super()
     makeObservable(this)
@@ -36,11 +37,13 @@ export class ViewChipViewModel extends ViewModel<EditViewModel, Props> {
     window.removeEventListener('mouseup', this.onMouseUp)
     this.delta = new Pos()
   }
+
+  adderPin = new Pin(-1, this.viewProps.chip, [new PinStateInfo('NewInput')], -1, false)
 }
-const ViewChip = view(ViewChipViewModel)<Props>(({ viewModel }) => {
+const AdapterChip = view(AdapterChipViewModel)<Props>(({ viewModel }) => {
   return (
     <div
-      className={cl.ViewChip}
+      className={cl.AdapterChip}
       style={
         viewModel.viewProps.preview
           ? { position: 'static', backgroundColor: viewModel.viewProps.chip.color }
@@ -54,20 +57,18 @@ const ViewChip = view(ViewChipViewModel)<Props>(({ viewModel }) => {
         if (e.altKey)
           viewModel.parent.addingChip = saveManager.loadChipByName(viewModel.viewProps.chip.title)
       }}
-      onContextMenu={
-        viewModel.viewProps.chip.type === ChipType.CUSTOM
-          ? action(() => {
-              viewModel.parent.chipViewerOver.push(viewModel.parent.currentChip)
-              viewModel.parent.currentChip = viewModel.viewProps.chip
-            })
-          : undefined
-      }
+      onContextMenu={() => {
+        console.log(viewModel.viewProps.chip)
+      }}
       onMouseDown={viewModel.viewProps.preview ? undefined : viewModel.onMouseDown}
     >
       <div className={cl.Pins} style={{ transform: 'translateX(-50%)' }}>
         {viewModel.viewProps.chip.inputs.map((pin) => (
           <ViewPin pin={pin} key={pin.id} />
         ))}
+        {viewModel.viewProps.chip.displayAdderPin ? (
+          <ViewPin pin={viewModel.adderPin} key={viewModel.adderPin.id} />
+        ) : undefined}
       </div>
       <div className={cl.Title}>{viewModel.viewProps.chip.title}</div>
       <div className={cl.Pins} style={{ transform: 'translateX(50%)' }}>
@@ -79,4 +80,4 @@ const ViewChip = view(ViewChipViewModel)<Props>(({ viewModel }) => {
   )
 })
 
-export default ViewChip
+export default AdapterChip

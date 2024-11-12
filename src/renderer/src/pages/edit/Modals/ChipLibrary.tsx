@@ -9,6 +9,9 @@ import Button from '@renderer/components/Button/Button'
 import { navigate } from '@renderer/App'
 import RadialMenu, { CHIP_TRANSFER } from '@renderer/components/RadialMenu/RadialMenu'
 import { hotKeyEventListener } from '@renderer/common/HotKeyListener'
+import { Pos } from '@models/common/Pos'
+import { windowScalingMethods } from '@renderer/common/PointsLineRounding'
+import { createRef } from 'react'
 
 interface Props {}
 
@@ -50,6 +53,25 @@ export class ChipLibraryViewModel extends ViewModel<ModalsViewModel, Props> {
   setCurrentWheel = (wheel: number) => {
     this.currentWheel = wheel - 1
   }
+  @observable
+  contextPosition = new Pos()
+  @observable
+  contextText = ''
+  ref = createRef<HTMLDivElement>()
+  @action
+  onContextRadialElement = (element: string) => {
+    window.addEventListener('click', this.checkOutsizeClick)
+    this.contextPosition = windowScalingMethods.cursorPos.multy(windowScalingMethods.scale)
+    this.contextText = element
+  }
+  @action
+  checkOutsizeClick = (e: MouseEvent) => {
+    console.log('first')
+    if (!this.ref.current?.contains(e.target as Node)) {
+      this.contextText = ''
+      window.removeEventListener('click', this.checkOutsizeClick)
+    }
+  }
 }
 const ChipLibrary = view(ChipLibraryViewModel)<Props>(({ viewModel }) => {
   if (!saveManager.currentSave || !modalsStates.states.library) {
@@ -77,7 +99,22 @@ const ChipLibrary = view(ChipLibraryViewModel)<Props>(({ viewModel }) => {
               elements={saveManager.currentSave.wheels[viewModel.currentWheel]}
               title={(v) => v}
               editable
+              key={viewModel.currentWheel}
+              onContext={viewModel.onContextRadialElement}
             />
+            <div
+              className={cl.ContextRadial}
+              style={{
+                top: viewModel.contextPosition.y,
+                left: viewModel.contextPosition.x,
+                display: viewModel.contextText ? 'flex' : 'none'
+              }}
+              onClick={(e) => e.stopPropagation()}
+              ref={viewModel.ref}
+            >
+              <h5>{viewModel.contextText}</h5>
+              <Button>Удалить</Button>
+            </div>
           </div>
         }
       >

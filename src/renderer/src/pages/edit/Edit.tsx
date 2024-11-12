@@ -17,6 +17,7 @@ import Modals from './Modals'
 import { modalsStates } from './ModalsStates'
 import { ChipType } from '@models/ChipType'
 import SevenSegmentDisplay from '@renderer/components/Chip/SevenSegmentDisplay'
+import AdapterChip from '@renderer/components/Chip/AdapterChip'
 
 interface Props {}
 
@@ -24,6 +25,8 @@ export const getViewChip = (chip, preview = false, key?: number) => {
   switch (chip.type) {
     case ChipType.ESEGMENT:
       return <SevenSegmentDisplay chip={chip} key={key ? key : chip.id} preview={preview} />
+    case ChipType.ADAPTER:
+      return <AdapterChip chip={chip} key={key ? key : chip.id} preview={preview} />
     default:
       return <ViewChip chip={chip} key={key ? key : chip.id} preview={preview} />
   }

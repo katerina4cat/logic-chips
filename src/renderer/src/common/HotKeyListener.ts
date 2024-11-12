@@ -10,7 +10,8 @@ const defaultHotKeys: AvaibleHotKey = {
   CANCEL: new HotKey({ keyCodes: ['Escape'] }),
   NEW_CHIP: new HotKey({ keyCodes: ['KeyX'], ctrl: true }),
   BACK_BTN: new HotKey({ keyCodes: ['Backspace'] }),
-  UNDO: new HotKey({ keyCodes: ['KeyZ'] })
+  UNDO: new HotKey({ keyCodes: ['KeyZ'] }),
+  SWITCH_VISIBLE_TITLES: new HotKey({ keyCodes: ['KeyQ', 'Tab'] })
 }
 
 class HotKeyListener {
@@ -43,4 +44,5 @@ interface AvaibleHotKey {
   NEW_CHIP: HotKey
   BACK_BTN: HotKey
   UNDO: HotKey
+  SWITCH_VISIBLE_TITLES: HotKey
 }

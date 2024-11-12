@@ -42,6 +42,16 @@ export class Wire {
     this.id = id
     wiresIDS += 1
     this.points = points
+    if (from.type === -1 && to.type !== -1) {
+      from = new Pin(generateNumberID(), from.chip, undefined, to.type, from.isSource, from.pos)
+      if (from.isSource) from.chip.outputs.push(from)
+      else from.chip.inputs.push(from)
+    }
+    if (to.type === -1 && from.type !== -1) {
+      to = new Pin(generateNumberID(), to.chip, undefined, from.type, to.isSource, to.pos)
+      if (to.isSource) to.chip.outputs.push(to)
+      else to.chip.inputs.push(to)
+    }
     if (from.chip.type === ChipType.BUS)
       if (to.chip.type === ChipType.BUS) this.type = WireTypes.BUS_TO_BUS
       else this.type = WireTypes.BUS_TO_INPUT

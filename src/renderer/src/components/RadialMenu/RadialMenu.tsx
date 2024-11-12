@@ -1,7 +1,6 @@
 import { ViewModel, view } from '@yoskutik/react-vvm'
 import { action, computed, makeObservable, observable } from 'mobx'
 import cl from './RadialMenu.module.scss'
-import RadialElement from './RadialElement'
 import { createRef } from 'react'
 import { Pos } from '@models/common/Pos'
 import { windowScalingMethods } from '@renderer/common/PointsLineRounding'
@@ -12,7 +11,9 @@ interface Props {
   elements: any[]
   title: (v: any) => string
   editable?: boolean
-  onClick?: (element: string) => void
+  onClick?: (element: any) => void
+  onContext?: (element: any) => void
+  key: React.Key
 }
 
 export const CHIP_TRANSFER = 'ChipName'
@@ -80,8 +81,9 @@ const RadialMenu = view(RadialMenuViewModel)<Props>(({ viewModel }) => {
             elementIndex={ind}
             element={element}
             title={viewModel.viewProps.title}
-            key={element}
+            key={viewModel.viewProps.key + element}
             onClick={viewModel.viewProps.onClick}
+            onContext={viewModel.viewProps.onContext}
           />
         )
       })}

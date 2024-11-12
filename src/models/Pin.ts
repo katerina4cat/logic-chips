@@ -88,7 +88,7 @@ export class Pin {
 
   @computed
   get totalStates(): STATE[] {
-    const x = new Array(this.type).fill(STATE.UNDEFINED)
+    const x = new Array(Math.abs(this.type)).fill(STATE.UNDEFINED)
     if (this.selfStates.length !== 0)
       for (let i = 0; i < this.type; i++) x[i] = mergeState(x[i], this.selfStates[i])
     this.linkedPin.forEach((pin) => {
@@ -132,11 +132,15 @@ export class Pin {
     this.statesInfo = statesInfo.map(
       (stateSave) => new PinStateInfo(stateSave.title, stateSave.colorName)
     )
-    if (this.statesInfo.length !== (type === 1 ? 1 : type + 1))
-      for (let i = this.statesInfo.length; i < (type === 1 ? 1 : type + 1); i++)
+    if (this.statesInfo.length !== (Math.abs(this.type) === 1 ? 1 : Math.abs(this.type) + 1))
+      for (
+        let i = this.statesInfo.length;
+        i < (Math.abs(this.type) === 1 ? 1 : Math.abs(this.type) + 1);
+        i++
+      )
         this.statesInfo.push(new PinStateInfo('Pin'))
     this.globalState = this.statesInfo[0]
-    if (this.isSource) this.selfStates = new Array(this.type).fill(STATE.LOW)
+    if (this.isSource) this.selfStates = new Array(Math.abs(this.type)).fill(STATE.LOW)
     makeObservable(this)
     reaction(
       () => this.type,

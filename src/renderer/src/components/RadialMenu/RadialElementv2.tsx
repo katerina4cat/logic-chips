@@ -3,7 +3,7 @@ import { action, computed, makeObservable, observable } from 'mobx'
 import { RadialMenuViewModel } from './RadialMenu'
 import { Pos } from '@models/common/Pos'
 import cl from './RadialMenu.module.scss'
-import { windowScalingMethods, fixAngle } from '@renderer/common/PointsLineRounding'
+import { windowScalingMethods } from '@renderer/common/PointsLineRounding'
 import { createRef } from 'react'
 
 interface Props {
@@ -11,6 +11,7 @@ interface Props {
   element: any
   title: (v: any) => string
   onClick?: (element: string) => void
+  onContext?: (element: any) => void
 }
 
 export class RadialElementv2ViewModel extends ViewModel<RadialMenuViewModel, Props> {
@@ -70,26 +71,28 @@ export class RadialElementv2ViewModel extends ViewModel<RadialMenuViewModel, Pro
       this.parent.halfElement * this.parent.swapElement(this.viewProps.elementIndex, imageIndex)
   }
   @action
-  onMouseDown = () => {
-    if (this.parent.viewProps.elements.length === 1) return
+  onMouseDown = (e: React.MouseEvent<SVGPathElement, MouseEvent>) => {
+    if (e.button !== 0) return
+    this.downTime = Date.now()
+    window.addEventListener('mouseup', this.onMouseUp)
+    if (!this.parent.viewProps.editable || this.parent.viewProps.elements.length === 1) return
     this.startDeltaAngle = windowScalingMethods.cursorPos.sub(
       this.parent.centerRadial
     ).normalized.angle
-    window.addEventListener('mousemove', this.calcDeltaAngle)
-    window.addEventListener('mouseup', this.onMouseUp)
     this.isMoving = true
-    this.downTime = Date.now()
+    window.addEventListener('mousemove', this.calcDeltaAngle)
   }
   downTime: number = 0
   @action
   onMouseUp = () => {
-    this.isMoving = false
-    this.startDeltaAngle = 0
-    this.deltaAngle = 0
-    window.removeEventListener('mousemove', this.calcDeltaAngle)
     window.removeEventListener('mouseup', this.onMouseUp)
     if (Date.now() - this.downTime < 150)
       this.viewProps.onClick && this.viewProps.onClick(this.viewProps.element)
+    if (!this.parent.viewProps.editable || this.parent.viewProps.elements.length === 1) return
+    window.removeEventListener('mousemove', this.calcDeltaAngle)
+    this.isMoving = false
+    this.startDeltaAngle = 0
+    this.deltaAngle = 0
   }
   textRef = createRef<SVGTextPathElement>()
 }
@@ -106,7 +109,12 @@ const RadialElementv2 = view(RadialElementv2ViewModel)<Props>(({ viewModel }) =>
         onMouseLeave={action(() => {
           viewModel.radius = 40
         })}
-        onMouseDown={viewModel.parent.viewProps.editable ? viewModel.onMouseDown : undefined}
+        onMouseDown={viewModel.onMouseDown}
+        onContextMenu={(e) => {
+          viewModel.viewProps.onContext &&
+            viewModel.viewProps.onContext(viewModel.viewProps.element)
+          e.preventDefault()
+        }}
       />
       <path
         d={viewModel.textPath}

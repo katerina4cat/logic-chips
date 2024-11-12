@@ -8,7 +8,7 @@ interface Props {
   display: boolean
   setdisplay: (v: boolean) => void
   position: Pos
-  title?: string
+  title?: string | string[]
   children: any
 }
 
@@ -30,6 +30,8 @@ export class WindowViewModel extends ViewModel<unknown, Props> {
       }
     )
   }
+  @observable
+  currentPage = 0
   @observable
   hiden = false
   deltaClick = new Pos()
@@ -54,7 +56,7 @@ export class WindowViewModel extends ViewModel<unknown, Props> {
 const Window = view(WindowViewModel)<Props>(({ viewModel }) => {
   return (
     <div
-      className={cl.Window}
+      className={[cl.Window, viewModel.hiden ? cl.Hiden : ''].join(' ')}
       style={{
         left: `${viewModel.currentPos.x}px`,
         top: `${viewModel.currentPos.y}px`,
@@ -62,25 +64,50 @@ const Window = view(WindowViewModel)<Props>(({ viewModel }) => {
       }}
     >
       <div className={cl.Header} onMouseDown={viewModel.mouseDown}>
-        <div className={cl.Title}>{viewModel.viewProps.title}</div>
-        <div
-          className={cl.Button}
-          onClick={action(() => (viewModel.hiden = !viewModel.hiden))}
-          style={{
-            transition: 'transform 0.125s ease-in-out',
-            transform: viewModel.hiden ? 'rotate(-180deg)' : undefined,
-            fontSize: '0.75em'
-          }}
-        >
-          ▲
+        <div className={cl.PagesList}>
+          {Array.isArray(viewModel.viewProps.title) ? (
+            viewModel.viewProps.title
+              .filter((v, i) => i < 10)
+              .map((title, i) => (
+                <div
+                  className={[cl.PageTitle, viewModel.currentPage === i ? cl.CurrentPage : ''].join(
+                    ' '
+                  )}
+                  onClick={action(() => {
+                    viewModel.currentPage = i
+                  })}
+                >
+                  {title}
+                </div>
+              ))
+          ) : (
+            <div className={cl.WindowTitle}>{viewModel.viewProps.title}</div>
+          )}
         </div>
-        <div className={cl.Button} onClick={() => viewModel.viewProps.setdisplay(false)}>
-          &times;
+        <div className={cl.Buttons}>
+          <div
+            className={cl.Button}
+            onClick={action(() => (viewModel.hiden = !viewModel.hiden))}
+            style={{
+              transition: 'transform 0.125s ease-in-out',
+              transform: viewModel.hiden ? 'rotate(-180deg)' : undefined,
+              fontSize: '0.75em'
+            }}
+          >
+            ▲
+          </div>
+          <div className={cl.Button} onClick={() => viewModel.viewProps.setdisplay(false)}>
+            &times;
+          </div>
         </div>
       </div>
       <div
-        className={[cl.Content, viewModel.hiden ? cl.HidenContent : ''].join(' ')}
-        children={viewModel.viewProps.children}
+        className={[cl.Content].join(' ')}
+        children={
+          Array.isArray(viewModel.viewProps.children)
+            ? viewModel.viewProps.children[viewModel.currentPage]
+            : viewModel.viewProps.children
+        }
       />
     </div>
   )

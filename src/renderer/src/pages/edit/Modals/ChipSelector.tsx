@@ -37,6 +37,7 @@ const ChipSelector = view(ChipSelectorViewModel)<Props>(({ viewModel }) => {
         elements={saveManager.currentSave.wheels[modalsStates.currentRadial - 1]}
         title={(v) => v}
         onClick={viewModel.parent.parent.setAdding}
+        key={modalsStates.currentRadial - 1}
       />
     </div>
   )

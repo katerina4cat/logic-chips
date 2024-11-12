@@ -7,6 +7,7 @@ import { saveManager } from '@models/Managers/SaveManager'
 import { windowScalingMethods } from '@renderer/common/PointsLineRounding'
 import ViewPin from '../Pin/ViewPin'
 import { Chip } from '@models/Chip'
+import { STATE } from '@models/STATE'
 
 interface Props {
   chip: Chip
@@ -71,7 +72,12 @@ const SevenSegmentDisplay = view(SevenSegmentDisplayViewModel)<Props>(({ viewMod
       <div className={cl.Display}>
         <div className={cl.RowSegments}>
           <div
-            className={cl.HorisontalSegment}
+            className={[
+              viewModel.viewProps.chip.inputs[ESegmentElement.A].totalStates[0] === STATE.ERROR
+                ? 'errorFill'
+                : undefined,
+              cl.HorisontalSegment
+            ].join(' ')}
             style={{
               backgroundColor: viewModel.viewProps.chip.inputs[ESegmentElement.A].stateColor[0],
               opacity: viewModel.highlight[ESegmentElement.A] ? 0.2 : 1
@@ -80,14 +86,24 @@ const SevenSegmentDisplay = view(SevenSegmentDisplayViewModel)<Props>(({ viewMod
         </div>
         <div className={cl.RowSegments}>
           <div
-            className={cl.VerticalSegment}
+            className={[
+              viewModel.viewProps.chip.inputs[ESegmentElement.F].totalStates[0] === STATE.ERROR
+                ? 'errorFill'
+                : undefined,
+              cl.VerticalSegment
+            ].join(' ')}
             style={{
               backgroundColor: viewModel.viewProps.chip.inputs[ESegmentElement.F].stateColor[0],
               opacity: viewModel.highlight[ESegmentElement.F] ? 0.2 : 1
             }}
           />
           <div
-            className={cl.VerticalSegment}
+            className={[
+              viewModel.viewProps.chip.inputs[ESegmentElement.B].totalStates[0] === STATE.ERROR
+                ? 'errorFill'
+                : undefined,
+              cl.VerticalSegment
+            ].join(' ')}
             style={{
               backgroundColor: viewModel.viewProps.chip.inputs[ESegmentElement.B].stateColor[0],
               opacity: viewModel.highlight[ESegmentElement.B] ? 0.2 : 1
@@ -96,7 +112,12 @@ const SevenSegmentDisplay = view(SevenSegmentDisplayViewModel)<Props>(({ viewMod
         </div>
         <div className={cl.RowSegments}>
           <div
-            className={cl.HorisontalSegment}
+            className={[
+              viewModel.viewProps.chip.inputs[ESegmentElement.G].totalStates[0] === STATE.ERROR
+                ? 'errorFill'
+                : undefined,
+              cl.HorisontalSegment
+            ].join(' ')}
             style={{
               backgroundColor: viewModel.viewProps.chip.inputs[ESegmentElement.G].stateColor[0],
               opacity: viewModel.highlight[ESegmentElement.G] ? 0.2 : 1
@@ -105,14 +126,24 @@ const SevenSegmentDisplay = view(SevenSegmentDisplayViewModel)<Props>(({ viewMod
         </div>
         <div className={cl.RowSegments}>
           <div
-            className={cl.VerticalSegment}
+            className={[
+              viewModel.viewProps.chip.inputs[ESegmentElement.E].totalStates[0] === STATE.ERROR
+                ? 'errorFill'
+                : undefined,
+              cl.VerticalSegment
+            ].join(' ')}
             style={{
               backgroundColor: viewModel.viewProps.chip.inputs[ESegmentElement.E].stateColor[0],
               opacity: viewModel.highlight[ESegmentElement.E] ? 0.2 : 1
             }}
           />
           <div
-            className={cl.VerticalSegment}
+            className={[
+              viewModel.viewProps.chip.inputs[ESegmentElement.C].totalStates[0] === STATE.ERROR
+                ? 'errorFill'
+                : undefined,
+              cl.VerticalSegment
+            ].join(' ')}
             style={{
               backgroundColor: viewModel.viewProps.chip.inputs[ESegmentElement.C].stateColor[0],
               opacity: viewModel.highlight[ESegmentElement.C] ? 0.2 : 1
@@ -121,7 +152,12 @@ const SevenSegmentDisplay = view(SevenSegmentDisplayViewModel)<Props>(({ viewMod
         </div>
         <div className={cl.RowSegments}>
           <div
-            className={cl.HorisontalSegment}
+            className={[
+              viewModel.viewProps.chip.inputs[ESegmentElement.D].totalStates[0] === STATE.ERROR
+                ? 'errorFill'
+                : undefined,
+              cl.HorisontalSegment
+            ].join(' ')}
             style={{
               backgroundColor: viewModel.viewProps.chip.inputs[ESegmentElement.D].stateColor[0],
               opacity: viewModel.highlight[ESegmentElement.D] ? 0.2 : 1

@@ -5,7 +5,7 @@ import { Pin } from '@models/Pin'
 import { STATE } from '@models/STATE'
 import { Pos } from '@models/common/Pos'
 import { createRef } from 'react'
-import { wireConnector } from '@renderer/common/GlobalVariables'
+import { currentVaribles, wireConnector } from '@renderer/common/GlobalVariables'
 import { windowScalingMethods } from '@renderer/common/PointsLineRounding'
 import { CUSTOMChip } from '@models/DefaultChips/CUSTOM'
 import { Colors, Color, COLORS } from '@models/common/COLORS'
@@ -72,7 +72,7 @@ export class ViewPinViewModel extends ViewModel<unknown, Props> {
 }
 const ViewPin = view(ViewPinViewModel)<Props>(({ viewModel }) => {
   return (
-    <div>
+    <div style={{ position: 'relative' }}>
       <div
         style={{
           backgroundColor: viewModel.viewProps.pin.stateColor[0],
@@ -154,6 +154,17 @@ const ViewPin = view(ViewPinViewModel)<Props>(({ viewModel }) => {
           </Button>
         )}
       </div>
+      {viewModel.viewProps.pin.chip.id !== 0 && currentVaribles.SidePinTitleVisible ? (
+        <div
+          className={cl.Title}
+          style={{
+            left: viewModel.viewProps.side ? `1.25em` : undefined,
+            right: viewModel.viewProps.side ? undefined : `1.25em`
+          }}
+        >
+          {viewModel.viewProps.pin.globalState.title}
+        </div>
+      ) : undefined}
     </div>
   )
 })
