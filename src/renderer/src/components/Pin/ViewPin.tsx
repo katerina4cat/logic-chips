@@ -1,5 +1,5 @@
 import { ViewModel, view } from '@yoskutik/react-vvm'
-import { action, makeObservable, observable } from 'mobx'
+import { action, makeObservable, observable, reaction } from 'mobx'
 import cl from './ViewPin.module.scss'
 import { Pin } from '@models/Pin'
 import { STATE } from '@models/STATE'
@@ -17,6 +17,7 @@ interface Props {
   side?: boolean
   className?: string
   style?: React.CSSProperties
+  index?: number
   onMouseEnter?: () => {}
   onMouseLeave?: () => {}
 }
@@ -25,6 +26,7 @@ export class ViewPinViewModel extends ViewModel<unknown, Props> {
   constructor() {
     super()
     makeObservable(this)
+    reaction(() => this.viewProps.index, this.calcPinPosition, { requiresObservable: true })
   }
 
   @action
@@ -40,7 +42,7 @@ export class ViewPinViewModel extends ViewModel<unknown, Props> {
   }
   @action
   calcPinPosition = () => {
-    if (this.viewProps.side) {
+    if (this.viewProps.side && this.viewProps.pin.chip.id === 0) {
       const box = this.ref.current!.getBoundingClientRect()
       this.viewProps.pin.pos.x = (box.x + box.width / 2) / windowScalingMethods.scale.x
     } else {
@@ -139,6 +141,13 @@ const ViewPin = view(ViewPinViewModel)<Props>(({ viewModel }) => {
               hotKeyEventListener.canSearch = true
               viewModel.pinType =
                 viewModel.pinType <= 1 ? 2 : viewModel.pinType > 32 ? 32 : viewModel.pinType
+              if (viewModel.viewProps.pin.type !== viewModel.pinType)
+                viewModel.viewProps.pin.chip.wires
+                  .filter(
+                    (wire) =>
+                      wire.from === viewModel.viewProps.pin || wire.to === viewModel.viewProps.pin
+                  )
+                  .forEach((wire) => (viewModel.viewProps.pin.chip as CUSTOMChip).destroyWire(wire))
               viewModel.viewProps.pin.type = viewModel.pinType
             })}
           />

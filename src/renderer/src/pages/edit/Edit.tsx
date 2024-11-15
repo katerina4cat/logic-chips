@@ -1,5 +1,5 @@
 import { ViewModel, view } from '@yoskutik/react-vvm'
-import { action, makeObservable, observable, runInAction } from 'mobx'
+import { action, makeObservable, observable, reaction, runInAction } from 'mobx'
 import './global.scss'
 import { CUSTOMChip } from '@models/DefaultChips/CUSTOM'
 import ViewWire from '@renderer/components/Wire/ViewWire'
@@ -44,9 +44,15 @@ export class EditViewModel extends ViewModel<unknown, Props> {
     makeObservable(this)
     hotKeyEventListener.hotkeys.NEW_CHIP.addListener(this.newChipCreating)
     hotKeyEventListener.hotkeys.BACK_BTN.addListener(this.backViewChip)
+    window.addEventListener('beforeunload', this.saveBeforeUnload)
+  }
+  saveBeforeUnload = () => {
+    if (saveManager.currentSave) saveManager.currentSave.unsavedChip = this.currentChip.toSave()
+    saveManager.save()
   }
   @action
   newChipCreating = () => {
+    if (saveManager.currentSave) saveManager.currentSave.unsavedChip = undefined
     navigate.current(`/Edit/${saveManager.currentSave?.title}`)
     this.currentChip = new CUSTOMChip('', '#666', 0)
   }
@@ -85,9 +91,23 @@ const Edit = view(EditViewModel)<Props>(({ viewModel }) => {
       alert('Не удаётся найти это сохранение')
       return
     }
+    if (saveManager.currentSave?.unsavedChip) {
+      if (confirm('Загрузить последний редактируемый чип?'))
+        try {
+          runInAction(() => {
+            // saveManager.currentSave!.unsavedChip!
+            const buff = saveManager.loadChipByInfo(saveManager.currentSave!.unsavedChip!, {
+              id: 0
+            })
+            if (buff) viewModel.currentChip = buff
+          })
+          return
+        } catch {}
+    }
     if (chip) {
       try {
         runInAction(() => {
+          if (saveManager.currentSave) saveManager.currentSave.unsavedChip = undefined
           const buff = saveManager.loadChipByName(chip)
           if (buff) viewModel.currentChip = buff
         })

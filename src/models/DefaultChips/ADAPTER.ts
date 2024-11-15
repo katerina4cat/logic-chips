@@ -1,15 +1,30 @@
-import { action, makeObservable, observable, reaction, runInAction } from 'mobx'
-import { Chip } from '../Chip'
+import { action, makeObservable, observable, override, reaction, runInAction } from 'mobx'
+import { Chip, ISaveSubChip } from '../Chip'
 import { ChipType, chipTypeInfo } from '../ChipType'
 import { Pos } from '../common/Pos'
 import { Pin, PinStateInfo } from '../Pin'
 import { generateNumberID } from '@models/common/RandomId'
+import { COLORS } from '@models/common/COLORS'
 
-export interface IAdapterOutputSettings {
+export interface IAdapterSettings {
+  inputs: IAdapterInputsConfig[]
+  outputs: IAdapterOutputConfig[]
+}
+
+interface IAdapterInputsConfig {
+  type: number
   id: number
+}
+
+interface IAdapterOutputConfig {
+  states: IAdapterOutputState[]
   title: string
-  inputID: number[]
-  typeIndex: number[]
+}
+interface IAdapterOutputState {
+  inputID: number
+  inputIndex: number
+  title?: string
+  color: COLORS
 }
 
 export class ADAPTERChip extends Chip {
@@ -17,8 +32,8 @@ export class ADAPTERChip extends Chip {
   displayAdderPin = true
   inputsID = 0
   @observable
-  outputSettings: IAdapterOutputSettings[] = []
-  constructor(id: number = generateNumberID(), pos: Pos, data: IAdapterOutputSettings[]) {
+  outputSettings: IAdapterOutputConfig[] = []
+  constructor(id: number = generateNumberID(), pos: Pos, data: IAdapterSettings) {
     super(
       chipTypeInfo[ChipType.ADAPTER].title!,
       ChipType.ADAPTER,
@@ -26,58 +41,44 @@ export class ADAPTERChip extends Chip {
       id,
       pos
     )
-    this.inputs.forEach((inp) =>
-      reaction(() => inp.totalStates, this.calculateLogic, {
-        fireImmediately: true
-      })
+    reaction(
+      () => this.inputs.length,
+      () => {
+        this.inputs.forEach((pin) => {
+          reaction(() => pin.totalStates, this.calculateLogic, {
+            fireImmediately: true
+          })
+          reaction(() => pin.linkedPin.length, this.changeInputs, {
+            fireImmediately: true
+          })
+        })
+      },
+      { fireImmediately: true }
     )
+    if (data) this.setOutputSettings(data)
     makeObservable(this)
-    this.setOutputSettings(data)
   }
 
   @action
-  setOutputSettings = (outputSettings: IAdapterOutputSettings[]) => {
-    this.outputSettings = outputSettings
-    const buff: Pin[] = []
-    outputSettings.forEach((settings) => {
-      const ind = this.outputs.findIndex(
-        (pin) => pin.id === settings.id && pin.type === settings.inputID.length
-      )
-      if (ind !== -1) buff.push(this.outputs[ind])
-      else
-        buff.push(
-          new Pin(
-            settings.id,
-            this,
-            [new PinStateInfo(settings.title)],
-            settings.inputID.length,
-            true
-          )
-        )
+  setOutputSettings = (settings: IAdapterSettings) => {
+    this.outputSettings = settings.outputs
+    settings.inputs.forEach((inp) => {
+      this.inputs.push(new Pin(inp.id, this, undefined, inp.type, false))
     })
-    this.outputs = buff
   }
 
+  @action
+  changeInputs = () => {
+    const inputs = this.inputs.filter((pin) => pin.linkedPin.length === 0 && pin.type > 0)
+    if (inputs.length > 0) {
+      this.inputs = this.inputs.filter((pin) => !inputs.find((pinF) => pin === pinF))
+      this.calculateLogic()
+    }
+  }
+
+  @action
   calculateLogic = () => {
-    this.outputSettings.forEach((settings) => {
-      // Поиск выходного пина из настроек
-      const outPin = this.outputs.find(
-        (pin) => pin.id === settings.id && pin.type === settings.inputID.length
-      )
-      if (outPin) {
-        // Проход по всем зависимым входным пинам для найденного выходного
-        settings.inputID.forEach((inpID, ind) => {
-          const inPin = this.inputs.find((pin) => pin.id === inpID)
-          if (inPin) {
-            // Если нашёлся входной пин
-            runInAction(() => {
-              // Устанавливается состояние в списке исходя из связанного индекса входного пина
-              outPin.selfStates[ind] = inPin.totalStates[settings.typeIndex[ind]]
-            })
-          }
-        })
-      }
-    })
+    this.outputSettings.forEach((outSettings) => {})
   }
 
   @action
@@ -87,5 +88,13 @@ export class ADAPTERChip extends Chip {
     buff.linkPin(pin)
     this.inputs.push(buff)
     reaction(() => buff.totalStates, this.calculateLogic)
+  }
+
+  toSubSave = (): ISaveSubChip => {
+    const data: IAdapterSettings = {
+      inputs: this.inputs.map((inp) => ({ id: inp.id, type: inp.type })),
+      outputs: []
+    }
+    return { id: this.id, title: this.title, type: this.type, pos: this.pos, data: data }
   }
 }

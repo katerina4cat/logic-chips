@@ -1,5 +1,5 @@
 import { hotKeyEventListener } from '@renderer/common/HotKeyListener'
-import { makeObservable, observable, action } from 'mobx'
+import { makeObservable, observable, action, reaction } from 'mobx'
 
 type ModalsList = {
   saving: boolean
@@ -29,6 +29,12 @@ class ModalsStates {
       if (!this.states.menu) modalsStates.closeAll('library')
     })
     hotKeyEventListener.hotkeys.CANCEL.addListener(this.cancelHandler)
+    reaction(
+      () => this.states,
+      () => {
+        hotKeyEventListener.canSearch = !Object.values(this.states).find((v) => v)
+      }
+    )
   }
   @action
   cancelHandler = () => {

@@ -77,27 +77,7 @@ class SaveManager {
     localStorage.setItem('saves', JSON.stringify(this.saves))
   }
 
-  loadChipByName = (chipName: string, thisChipInfo?: Partial<ISaveSubChip>) => {
-    if (this.currentSave === undefined) {
-      alert('Как ты смог инициализировать сохранение чипа, без выбора сохранения?')
-      return
-    }
-    const chipInfo = this.currentSave.chips.find((chipI) => chipI.title === chipName)
-    if (chipInfo === undefined) {
-      switch (chipName) {
-        case 'NOT':
-          return new NOTChip(thisChipInfo?.id, new Pos())
-        case 'AND':
-          return new ANDChip(thisChipInfo?.id, new Pos())
-        case 'TRISTATE':
-          return new TRISTATEChip(thisChipInfo?.id, new Pos())
-        case 'ESEGMENT':
-          return new ESEGMENTChip(thisChipInfo?.id, new Pos())
-        case 'ADAPTER':
-          return new ADAPTERChip(thisChipInfo?.id, new Pos(), [])
-      }
-      throw 'Невозможно открыть такой чип'
-    }
+  loadChipByInfo = (chipInfo: ISaveChip, thisChipInfo?: Partial<ISaveSubChip>) => {
     const chip = new CUSTOMChip(
       chipInfo.title,
       chipInfo.color,
@@ -180,12 +160,37 @@ class SaveManager {
     })
     return chip
   }
+
+  loadChipByName = (chipName: string, thisChipInfo?: Partial<ISaveSubChip>) => {
+    if (this.currentSave === undefined) {
+      alert('Как ты смог инициализировать сохранение чипа, без выбора сохранения?')
+      return
+    }
+    const chipInfo = this.currentSave.chips.find((chipI) => chipI.title === chipName)
+    if (chipInfo === undefined) {
+      switch (chipName) {
+        case 'NOT':
+          return new NOTChip(thisChipInfo?.id, new Pos())
+        case 'AND':
+          return new ANDChip(thisChipInfo?.id, new Pos())
+        case 'TRISTATE':
+          return new TRISTATEChip(thisChipInfo?.id, new Pos())
+        case 'ESEGMENT':
+          return new ESEGMENTChip(thisChipInfo?.id, new Pos())
+        case 'ADAPTER':
+          return new ADAPTERChip(thisChipInfo?.id, new Pos(), thisChipInfo?.data)
+      }
+      throw 'Невозможно открыть такой чип'
+    }
+    return this.loadChipByInfo(chipInfo, thisChipInfo)
+  }
 }
 interface ISaveInfo {
   title: string
   created: number
   chips: ISaveChip[]
   wheels: string[][]
+  unsavedChip?: ISaveChip
 }
 
 export const saveManager = new SaveManager()

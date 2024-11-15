@@ -63,8 +63,8 @@ const AdapterChip = view(AdapterChipViewModel)<Props>(({ viewModel }) => {
       onMouseDown={viewModel.viewProps.preview ? undefined : viewModel.onMouseDown}
     >
       <div className={cl.Pins} style={{ transform: 'translateX(-50%)' }}>
-        {viewModel.viewProps.chip.inputs.map((pin) => (
-          <ViewPin pin={pin} key={pin.id} />
+        {viewModel.viewProps.chip.inputs.map((pin, ind) => (
+          <ViewPin pin={pin} key={pin.id} index={ind} />
         ))}
         {viewModel.viewProps.chip.displayAdderPin ? (
           <ViewPin pin={viewModel.adderPin} key={viewModel.adderPin.id} />
@@ -72,8 +72,8 @@ const AdapterChip = view(AdapterChipViewModel)<Props>(({ viewModel }) => {
       </div>
       <div className={cl.Title}>{viewModel.viewProps.chip.title}</div>
       <div className={cl.Pins} style={{ transform: 'translateX(50%)' }}>
-        {viewModel.viewProps.chip.outputs.map((pin) => (
-          <ViewPin pin={pin} key={pin.id} side />
+        {viewModel.viewProps.chip.outputs.map((pin, ind) => (
+          <ViewPin pin={pin} key={pin.id} index={ind} side />
         ))}
       </div>
     </div>
