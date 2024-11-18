@@ -95,10 +95,7 @@ const Edit = view(EditViewModel)<Props>(({ viewModel }) => {
       if (confirm('Загрузить последний редактируемый чип?'))
         try {
           runInAction(() => {
-            // saveManager.currentSave!.unsavedChip!
-            const buff = saveManager.loadChipByInfo(saveManager.currentSave!.unsavedChip!, {
-              id: 0
-            })
+            const buff = saveManager.loadChipByInfo(saveManager.currentSave!.unsavedChip!)
             if (buff) viewModel.currentChip = buff
           })
           return

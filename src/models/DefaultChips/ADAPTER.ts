@@ -4,7 +4,7 @@ import { ChipType, chipTypeInfo } from '../ChipType'
 import { Pos } from '../common/Pos'
 import { Pin, PinStateInfo } from '../Pin'
 import { generateNumberID } from '@models/common/RandomId'
-import { COLORS } from '@models/common/COLORS'
+import { Colors, COLORS } from '@models/common/COLORS'
 
 export interface IAdapterSettings {
   inputs: IAdapterInputsConfig[]
@@ -19,12 +19,13 @@ interface IAdapterInputsConfig {
 interface IAdapterOutputConfig {
   states: IAdapterOutputState[]
   title: string
+  id: number
 }
 interface IAdapterOutputState {
   inputID: number
   inputIndex: number
   title?: string
-  color: COLORS
+  color?: COLORS
 }
 
 export class ADAPTERChip extends Chip {
@@ -65,6 +66,7 @@ export class ADAPTERChip extends Chip {
     settings.inputs.forEach((inp) => {
       this.inputs.push(new Pin(inp.id, this, undefined, inp.type, false))
     })
+    this.calculateLogic()
   }
 
   @action
@@ -78,7 +80,29 @@ export class ADAPTERChip extends Chip {
 
   @action
   calculateLogic = () => {
-    this.outputSettings.forEach((outSettings) => {})
+    this.outputSettings.forEach((out) => {
+      const pinStatesInfo = out.states.map((state) => ({
+        title: state.title,
+        state: this.inputs.find((pin) => pin.id === state.inputID)?.totalStates[state.inputIndex],
+        color: state.color || COLORS.red
+      }))
+      if (pinStatesInfo.find((psta) => psta.state === undefined)) return
+      if (!this.outputs.find((pin) => pin.id === out.id))
+        this.outputs.push(
+          new Pin(
+            out.id,
+            this,
+            [
+              new PinStateInfo(out.title),
+              ...pinStatesInfo.map((state) => new PinStateInfo(state.title, state.color))
+            ],
+            out.states.length,
+            true
+          )
+        )
+      const pin = this.outputs.find((pin) => pin.id === out.id)!
+      pin.selfStates = pinStatesInfo.map((psta) => psta.state!)
+    })
   }
 
   @action

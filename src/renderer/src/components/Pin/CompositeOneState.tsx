@@ -43,36 +43,35 @@ const CompositeOneState = view(CompositeOneStateViewModel)<Props>(({ viewModel }
         onClick={
           viewModel.viewProps.selfState &&
           action(() => {
-            viewModel.viewProps.pin.selfStates[viewModel.viewProps.ind] =
-              viewModel.viewProps.pin.selfStates[viewModel.viewProps.ind] === STATE.LOW
+            viewModel.viewProps.pin.selfStates[viewModel.viewProps.ind - 1] =
+              viewModel.viewProps.pin.selfStates[viewModel.viewProps.ind - 1] === STATE.LOW
                 ? STATE.HIGHT
                 : STATE.LOW
           })
         }
         onContextMenu={action((e) => {
-          console.log(viewModel.viewProps.pin.stateColor[viewModel.viewProps.ind])
           viewModel.colorPicker = true
           window.addEventListener('click', viewModel.checkOutsizeClick)
           e.preventDefault()
         })}
         style={{
-          backgroundColor: viewModel.viewProps.pin.stateColor[viewModel.viewProps.ind]
+          backgroundColor: viewModel.viewProps.pin.stateColor[viewModel.viewProps.ind - 1]
         }}
       />
 
       <input
-        value={viewModel.viewProps.pin.statesInfo[viewModel.viewProps.ind + 1].title}
+        value={viewModel.viewProps.pin.statesInfo[viewModel.viewProps.ind]?.title}
         className={cl.PinTitle}
         onFocus={() => {
           hotKeyEventListener.canSearch = false
         }}
         onChange={action((e) => {
-          viewModel.viewProps.pin.statesInfo[viewModel.viewProps.ind + 1].title = e.target.value
+          viewModel.viewProps.pin.statesInfo[viewModel.viewProps.ind].title = e.target.value
         })}
         onBlur={action((e) => {
           hotKeyEventListener.canSearch = true
           if (e.target.value === '')
-            viewModel.viewProps.pin.statesInfo[viewModel.viewProps.ind + 1].title = 'Pin'
+            viewModel.viewProps.pin.statesInfo[viewModel.viewProps.ind].title = 'Pin'
         })}
       />
       <div
@@ -82,7 +81,7 @@ const CompositeOneState = view(CompositeOneStateViewModel)<Props>(({ viewModel }
       >
         <div>
           Пин: {viewModel.viewProps.pin.globalState.title} -{' '}
-          {viewModel.viewProps.pin.statesInfo[viewModel.viewProps.ind + 1].title}
+          {viewModel.viewProps.pin.statesInfo[viewModel.viewProps.ind]?.title}
         </div>
         <div className={cl.Colors}>
           {Object.keys(Colors).map((key) => (
@@ -92,12 +91,12 @@ const CompositeOneState = view(CompositeOneStateViewModel)<Props>(({ viewModel }
               style={{
                 backgroundColor: (Colors[key] as Color).color,
                 borderColor:
-                  viewModel.viewProps.pin.statesInfo[viewModel.viewProps.ind + 1].color.id === key
+                  viewModel.viewProps.pin.statesInfo[viewModel.viewProps.ind]?.color?.id === key
                     ? 'white'
                     : undefined
               }}
               onClick={action((e) => {
-                viewModel.viewProps.pin.statesInfo[viewModel.viewProps.ind + 1].colorName =
+                viewModel.viewProps.pin.statesInfo[viewModel.viewProps.ind]!.colorName =
                   key as COLORS
               })}
             />

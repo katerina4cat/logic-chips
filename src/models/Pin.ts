@@ -142,28 +142,23 @@ export class Pin {
     this.globalState = this.statesInfo[0]
     if (this.isSource) this.selfStates = new Array(Math.abs(this.type)).fill(STATE.LOW)
     makeObservable(this)
-    reaction(
-      () => this.type,
-      () => {
-        if (this.isSource)
-          for (let i = 0; i < Math.abs(this.type - this.selfStates.length); i++)
-            if (this.type > this.selfStates.length) {
-              this.selfStates.push(STATE.LOW)
-            } else {
-              this.selfStates.pop()
-            }
-        for (
-          let i = 0;
-          i < Math.abs(this.statesInfo.length - (this.type === 1 ? 1 : this.type + 1));
-          i++
-        )
-          if (this.type > statesInfo.length) {
-            this.statesInfo.push(new PinStateInfo())
-          } else {
-            this.statesInfo.pop()
-          }
+    reaction(() => this.type, this.updateStatesByType)
+  }
+  updateStatesByType = () => {
+    if (this.isSource)
+      for (let i = 0; i < Math.abs(this.type - this.selfStates.length); i++)
+        if (this.type > this.selfStates.length) {
+          this.selfStates.push(STATE.LOW)
+        } else {
+          this.selfStates.pop()
+        }
+    const stInfoLen = Math.abs(this.statesInfo.length - (this.type === 1 ? 1 : this.type + 1))
+    if (this.type + 1 !== this.statesInfo.length)
+      if (this.type + 1 > this.statesInfo.length) {
+        this.statesInfo.push(...new Array(stInfoLen).fill(new PinStateInfo()))
+      } else {
+        this.statesInfo.splice(this.statesInfo.length - stInfoLen)
       }
-    )
   }
 }
 

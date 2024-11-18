@@ -31,7 +31,7 @@ const CompositeContext = view(CompositeContextViewModel)<Props>(({ viewModel }) 
           : viewModel.parent.viewProps.pin.totalStates
         ).map((state, ind) => (
           <CompositeOneState
-            ind={ind}
+            ind={ind + 1}
             state={state}
             pin={viewModel.parent.viewProps.pin}
             selfState={viewModel.parent.viewProps.selfState}
