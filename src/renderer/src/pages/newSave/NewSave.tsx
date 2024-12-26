@@ -37,7 +37,7 @@ export class NewSaveViewModel extends ViewModel<unknown, Props> {
   createNewSave = () => {
     if (this.canCreateWithThisName) {
       saveManager.loadSaveByName(this.inputData.title)
-      navigate.current('/Edit')
+      navigate.current('/Edit/' + this.inputData.title)
     }
   }
 }
@@ -45,7 +45,7 @@ const NewSave = view(NewSaveViewModel)<Props>(({ viewModel }) => {
   navigate.current = useNavigate()
   return (
     <div className={cl.NewSave}>
-      <h1>Новое сохранение</h1>
+      <h1 className={cl.Title}>Новое сохранение</h1>
       <Input
         value={viewModel.inputData.title}
         name={'title'}
@@ -54,7 +54,7 @@ const NewSave = view(NewSaveViewModel)<Props>(({ viewModel }) => {
         aria-invalid={!viewModel.canCreateWithThisName}
       />
       <div className={cl.Buttons}>
-        <Button onClick={viewModel.createNewSave} className={cl.Button}>
+        <Button onClick={viewModel.createNewSave} className={cl.Button} customtype={'Submit'}>
           Создать
         </Button>
         <Button onClick={() => navigate.current(-1)} className={cl.Button}>

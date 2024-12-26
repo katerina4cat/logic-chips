@@ -62,6 +62,7 @@ const SaveModal = view(SaveModalViewModel)<Props>(({ viewModel }) => {
             modalsStates.closeAll('saving', false)
             saveManager.addOrEditCurrentSave(viewModel.parent.parent.currentChip)
           }}
+          customtype={'Submit'}
         >
           Сохранить
         </Button>

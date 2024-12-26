@@ -27,29 +27,35 @@ const MenuModal = view(MenuModalViewModel)<Props>(({ viewModel }) => {
       }}
     >
       <h2>Меню</h2>
-      <Button
-        onClick={() => {
-          modalsStates.closeAll('menu', false)
-        }}
-      >
-        Продолжить
-      </Button>
-      <Button
-        onClick={() => {
-          navigate.current('/Settings')
-          modalsStates.closeAll('menu', false)
-        }}
-      >
-        Настройки
-      </Button>
-      <Button
-        onClick={() => {
-          navigate.current('/')
-          modalsStates.closeAll('menu', false)
-        }}
-      >
-        Выйти
-      </Button>
+      <div className={cl.Buttons}>
+        <Button
+          onClick={() => {
+            modalsStates.closeAll('menu', false)
+          }}
+          className={cl.Btn}
+          customtype={'Submit'}
+        >
+          Продолжить
+        </Button>
+        <Button
+          onClick={() => {
+            navigate.current('/Options')
+            modalsStates.closeAll('menu', false)
+          }}
+          className={cl.Btn}
+        >
+          Настройки
+        </Button>
+        <Button
+          onClick={() => {
+            navigate.current('/')
+            modalsStates.closeAll('menu', false)
+          }}
+          className={cl.Btn}
+        >
+          Выйти
+        </Button>
+      </div>
     </Modal>
   )
 })

@@ -174,10 +174,14 @@ const ChipLibrary = view(ChipLibraryViewModel)<Props>(({ viewModel }) => {
               viewModel.parent.parent.setAdding(viewModel.selected)
               modalsStates.closeAll('library', false)
             })}
+            disabled={!viewModel.selected}
           >
             Добавить
           </Button>
-          <Button style={{ opacity: viewModel.canDelete ? 1 : 0.5 }} onClick={viewModel.deleteChip}>
+          <Button
+            disabled={viewModel.canDelete && viewModel.selected ? undefined : true}
+            onClick={viewModel.deleteChip}
+          >
             Удалить
           </Button>
           <Button
@@ -189,6 +193,7 @@ const ChipLibrary = view(ChipLibraryViewModel)<Props>(({ viewModel }) => {
                 modalsStates.closeAll('library', false)
               } else alert('Не удалось загрузить чип')
             })}
+            disabled={!viewModel.selected}
           >
             Изменить
           </Button>

@@ -44,6 +44,14 @@ class SaveManager {
       this.currentSave = buff
     }
   }
+  @action
+  removeSave = (saveName: string) => {
+    const ind = this.saves.findIndex((save) => save.title === saveName)
+    if (ind !== -1) {
+      this.saves.splice(ind, 1)
+      this.save()
+    }
+  }
   @computed
   get savesTitleInfo() {
     return this.saves.map((save) => ({

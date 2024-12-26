@@ -2,7 +2,12 @@ import { ViewModel, view } from '@yoskutik/react-vvm'
 import cl from './Button.module.scss'
 import React from 'react'
 
-interface Props extends React.HTMLAttributes<HTMLButtonElement> {}
+interface Props extends React.HTMLAttributes<HTMLButtonElement> {
+  disabled?: boolean
+  customtype?: BTN_TYPE
+}
+
+export type BTN_TYPE = 'Submit' | 'Extra'
 
 export class ButtonViewModel extends ViewModel<unknown, Props> {
   constructor() {
@@ -10,11 +15,21 @@ export class ButtonViewModel extends ViewModel<unknown, Props> {
   }
 }
 
+const classNames = {
+  Submit: cl.Submit,
+  Extra: cl.Extra
+}
+
 const Button = view(ButtonViewModel)<Props>(({ viewModel }) => {
   return (
     <button
       {...viewModel.viewProps}
-      className={[cl.Button, viewModel.viewProps.className].join(' ')}
+      className={[
+        cl.Button,
+        viewModel.viewProps.customtype ? classNames[viewModel.viewProps.customtype] : '',
+        viewModel.viewProps.className
+      ].join(' ')}
+      disabled={viewModel.viewProps.disabled}
     />
   )
 })

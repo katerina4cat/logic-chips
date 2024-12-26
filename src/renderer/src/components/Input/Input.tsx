@@ -2,6 +2,8 @@ import { ViewModel, view } from '@yoskutik/react-vvm'
 import { action, makeObservable, observable } from 'mobx'
 import cl from './Input.module.scss'
 import React from 'react'
+import { saveManager } from '@models/Managers/SaveManager'
+import { hotKeyEventListener } from '@renderer/common/HotKeyListener'
 
 interface Props extends React.InputHTMLAttributes<HTMLInputElement> {
   value: string
@@ -26,10 +28,12 @@ export class InputViewModel extends ViewModel<unknown, Props> {
   @action
   focus = () => {
     this.active = true
+    hotKeyEventListener.canSearch = false
   }
   @action
   blure = () => {
     this.active = false
+    hotKeyEventListener.canSearch = true
   }
 }
 const Input = view(InputViewModel)<Props>(({ viewModel }) => {

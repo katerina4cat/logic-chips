@@ -1,6 +1,51 @@
 .Button {
+  position: relative;
   padding: 0.75em;
-  background-color: var(--element-background);
+  font-size: 1em;
+  color: var(--text-base);
   border: none;
   border-radius: var(--main-border-radius);
+  background-color: #7b062b;
+  font-weight: bold;
+  cursor: pointer;
+
+  transition: background-color 0.05s ease-in-out;
+
+  &:active {
+    &::after {
+      content: '';
+      background-color: #000;
+      border-radius: var(--main-border-radius);
+      height: 100%;
+      width: 100%;
+      top: 0;
+      left: 0;
+      position: absolute;
+      opacity: 0.21;
+    }
+  }
+
+  &:disabled {
+    cursor: default;
+    pointer-events: none;
+    &::after {
+      content: '';
+      background-color: #000;
+      border-radius: var(--main-border-radius);
+      height: 100%;
+      width: 100%;
+      top: 0;
+      left: 0;
+      position: absolute;
+      opacity: 0.45;
+    }
+  }
+}
+
+.Submit {
+  background-color: #2f6036;
+}
+
+.Extra {
+  background-color: #6c5a97;
 }

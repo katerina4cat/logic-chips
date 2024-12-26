@@ -19,8 +19,10 @@ const Options = view(OptionsViewModel)<Props>(({ viewModel }) => {
   const [theme, setTheme, swapTheme] = useTheme()
   return (
     <div className={cl.Options}>
-      <h1>Настройки</h1>
-      <Button onClick={swapTheme}>{theme === 'dark' ? 'Светлая' : 'Тёмная'}</Button>
+      <h1 className={cl.Title}>Настройки</h1>
+      <Button onClick={swapTheme} customtype={'Extra'}>
+        {theme === 'dark' ? 'Светлая' : 'Тёмная'}
+      </Button>
       <Button onClick={() => navigate.current(-1)}>Назад</Button>
     </div>
   )

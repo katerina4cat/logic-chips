@@ -14,13 +14,14 @@
     cursor: pointer;
   }
   .SelectedChip {
-    background-color: #54ae2533;
+    background-color: var(--element-background);
   }
   .Buttons {
     padding-top: 2em;
     display: flex;
     justify-content: space-between;
     width: 100%;
+    font-size: 0.85em;
   }
 }
 

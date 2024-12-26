@@ -11,12 +11,13 @@
       pointer-events: none;
     }
     .Preview {
+      font-weight: 500;
       color: color-mix(in srgb, var(--text-base) 100%, #00000000 25%);
     }
     .Input {
       outline: none;
       width: 100%;
-      background-color: var(--element-background);
+      background-color: #7b062b;
       border: solid var(--element-border-color) 1px;
       border-radius: var(--main-border-radius);
       padding: 0.5em 0;

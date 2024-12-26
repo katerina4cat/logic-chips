@@ -1,5 +1,22 @@
 .Saves {
+  .Title {
+    text-align: center;
+  }
+  .HandleButtons {
+    display: flex;
+    justify-content: space-between;
+    .Buttons {
+      width: 30%;
+      font-size: 0.9em;
+    }
+  }
   display: flex;
   flex-direction: column;
   gap: 1.25em;
+  width: 60%;
+  max-width: 450px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
 }
