@@ -1,4 +1,13 @@
 .Saves {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25em;
+  width: 60%;
+  max-width: 450px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
   .Title {
     text-align: center;
   }
@@ -10,13 +19,4 @@
       font-size: 0.9em;
     }
   }
-  display: flex;
-  flex-direction: column;
-  gap: 1.25em;
-  width: 60%;
-  max-width: 450px;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
 }

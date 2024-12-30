@@ -2,7 +2,7 @@ import Modal from '@renderer/components/Modal/Modal'
 import { ViewModel, view } from '@yoskutik/react-vvm'
 import { action, computed, makeObservable, observable } from 'mobx'
 import { modalsStates } from '../ModalsStates'
-import { saveManager } from '@models/Managers/SaveManager'
+import { defaultChips, saveManager } from '@models/Managers/SaveManager'
 import cl from './ChipLibrary.module.scss'
 import { ModalsViewModel } from '../Modals'
 import Button from '@renderer/components/Button/Button'
@@ -20,7 +20,6 @@ export class ChipLibraryViewModel extends ViewModel<ModalsViewModel, Props> {
     super()
     makeObservable(this)
   }
-  defaultChips = ['AND', 'NOT', 'TRISTATE', 'ESEGMENT', 'ADAPTER']
   @observable
   selected = ''
   @observable
@@ -28,7 +27,7 @@ export class ChipLibraryViewModel extends ViewModel<ModalsViewModel, Props> {
   @computed
   get canDelete() {
     return (
-      this.defaultChips.find((chipName) => chipName === this.selected) === undefined &&
+      defaultChips.find((chipName) => chipName === this.selected) === undefined &&
       !saveManager.dependentChips(this.selected)?.length
     )
   }
@@ -40,7 +39,7 @@ export class ChipLibraryViewModel extends ViewModel<ModalsViewModel, Props> {
         ${dependent?.join('\n')}`)
       return
     }
-    if (this.defaultChips.find((chipName) => chipName === this.selected)) {
+    if (defaultChips.find((chipName) => chipName === this.selected)) {
       alert(`Этот чип невозможно удалить!
         ${dependent?.join('\n')}`)
       return
@@ -66,7 +65,6 @@ export class ChipLibraryViewModel extends ViewModel<ModalsViewModel, Props> {
   }
   @action
   checkOutsizeClick = (e: MouseEvent) => {
-    console.log('first')
     if (!this.ref.current?.contains(e.target as Node)) {
       this.contextText = ''
       window.removeEventListener('click', this.checkOutsizeClick)
@@ -120,7 +118,7 @@ const ChipLibrary = view(ChipLibraryViewModel)<Props>(({ viewModel }) => {
       >
         <h2>Список чипов</h2>
         <div className={cl.List}>
-          {viewModel.defaultChips.map((title) => (
+          {defaultChips.map((title) => (
             <div
               className={[cl.ChipButton, title === viewModel.selected ? cl.SelectedChip : undefined]
                 .filter(Boolean)

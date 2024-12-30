@@ -1,7 +1,4 @@
 .Menu {
-  .Title {
-    text-align: center;
-  }
   display: flex;
   flex-direction: column;
   gap: 1em;
@@ -11,4 +8,7 @@
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
+  .Title {
+    text-align: center;
+  }
 }

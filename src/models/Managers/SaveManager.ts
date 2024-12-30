@@ -12,6 +12,8 @@ import { Pin } from '@models/Pin'
 import { Wire } from '@models/Wire'
 import { action, computed, makeObservable, observable, reaction } from 'mobx'
 
+export const defaultChips = ['AND', 'NOT', 'TRISTATE', 'ESEGMENT']
+
 class SaveManager {
   @observable
   saves: ISaveInfo[] = []

@@ -2,6 +2,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding: 2em !important;
   .List {
     display: flex;
     flex-wrap: wrap;
@@ -22,6 +23,7 @@
     justify-content: space-between;
     width: 100%;
     font-size: 0.85em;
+    max-width: 550px;
   }
 }
 

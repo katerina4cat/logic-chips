@@ -2,7 +2,6 @@ import { ViewModel, view } from '@yoskutik/react-vvm'
 import { action, makeObservable, observable } from 'mobx'
 import cl from './Input.module.scss'
 import React from 'react'
-import { saveManager } from '@models/Managers/SaveManager'
 import { hotKeyEventListener } from '@renderer/common/HotKeyListener'
 
 interface Props extends React.InputHTMLAttributes<HTMLInputElement> {

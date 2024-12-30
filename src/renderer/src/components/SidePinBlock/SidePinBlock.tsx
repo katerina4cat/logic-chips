@@ -25,11 +25,11 @@ export class SidePinBlockViewModel extends ViewModel<EditViewModel, Props> {
     )
   }
   protected onViewMounted(): void {
-    window.addEventListener('keydown', this.keyDown)
+    // window.addEventListener('keydown', this.keyDown)
   }
   protected onViewUnmounted(): void {
-    window.removeEventListener('keydown', this.keyDown)
-    window.removeEventListener('keyup', this.keyUp)
+    // window.removeEventListener('keydown', this.keyDown)
+    // window.removeEventListener('keyup', this.keyUp)
   }
   @action
   keyDown = (e: KeyboardEvent) => {
