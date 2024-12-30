@@ -42,8 +42,6 @@ export class EditViewModel extends ViewModel<unknown, Props> {
   constructor() {
     super()
     makeObservable(this)
-    hotKeyEventListener.hotkeys.NEW_CHIP.addListener(this.newChipCreating)
-    hotKeyEventListener.hotkeys.BACK_BTN.addListener(this.backViewChip)
     window.addEventListener('beforeunload', this.saveBeforeUnload)
   }
   saveBeforeUnload = () => {
@@ -59,6 +57,11 @@ export class EditViewModel extends ViewModel<unknown, Props> {
   @action
   backViewChip = () => {
     if (this.chipViewerOver.length !== 0) this.currentChip = this.chipViewerOver.pop()!
+  }
+
+  protected onViewMounted(): void {
+    hotKeyEventListener.hotkeys.NEW_CHIP.addListener(this.newChipCreating)
+    hotKeyEventListener.hotkeys.BACK_BTN.addListener(this.backViewChip)
   }
   protected onViewUnmounted(): void {
     hotKeyEventListener.hotkeys.NEW_CHIP.removeListener(this.newChipCreating)
@@ -78,12 +81,9 @@ export class EditViewModel extends ViewModel<unknown, Props> {
     this.addingChip = saveManager.loadChipByName(name)
     modalsStates.closeAll('radial', false)
   }
-}
-const Edit = view(EditViewModel)<Props>(({ viewModel }) => {
-  navigate.current = useNavigate()
-  hotKeyEventListener
-  const { id, chip } = useParams()
-  useEffect(() => {
+
+  @action
+  checkSavedChip = (id: string | undefined, chip: string | undefined) => {
     if (id && saveManager.savesTitleInfo.findIndex((save) => save.title === id) !== -1)
       saveManager.loadSaveByName(id)
     else {
@@ -92,25 +92,34 @@ const Edit = view(EditViewModel)<Props>(({ viewModel }) => {
       return
     }
     if (saveManager.currentSave?.unsavedChip) {
-      if (confirm('Загрузить последний редактируемый чип?'))
-        try {
-          runInAction(() => {
-            const buff = saveManager.loadChipByInfo(saveManager.currentSave!.unsavedChip!)
-            if (buff) viewModel.currentChip = buff
-          })
-          return
-        } catch {}
+      modalsStates.closeAll('unsavedConfirm', true)
     }
     if (chip) {
       try {
         runInAction(() => {
           if (saveManager.currentSave) saveManager.currentSave.unsavedChip = undefined
           const buff = saveManager.loadChipByName(chip)
-          if (buff) viewModel.currentChip = buff
+          if (buff) this.currentChip = buff
         })
       } catch {}
     }
-  }, [])
+  }
+  @action
+  loadUnsavedChip = () => {
+    try {
+      runInAction(() => {
+        const buff = saveManager.loadChipByInfo(saveManager.currentSave!.unsavedChip!)
+        if (buff) this.currentChip = buff
+      })
+      return
+    } catch {}
+  }
+}
+const Edit = view(EditViewModel)<Props>(({ viewModel }) => {
+  navigate.current = useNavigate()
+  hotKeyEventListener
+  const { id, chip } = useParams()
+  useEffect(() => viewModel.checkSavedChip(id, chip), [])
   return (
     <div style={{ width: '100%', height: '200%', position: 'relative' }}>
       <svg

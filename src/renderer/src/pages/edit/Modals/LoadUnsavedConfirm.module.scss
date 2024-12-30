@@ -1,0 +1,12 @@
+.Modal {
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  .Buttons {
+    display: flex;
+    justify-content: space-between;
+    .Button {
+      width: 33%;
+    }
+  }
+}

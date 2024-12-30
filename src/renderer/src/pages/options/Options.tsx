@@ -23,6 +23,7 @@ const Options = view(OptionsViewModel)<Props>(({ viewModel }) => {
       <Button onClick={swapTheme} customtype={'Extra'}>
         {theme === 'dark' ? 'Светлая' : 'Тёмная'}
       </Button>
+      <Button onClick={() => navigate.current('/Options/Hotkeys')}>Горячии клавиши</Button>
       <Button onClick={() => navigate.current(-1)}>Назад</Button>
     </div>
   )

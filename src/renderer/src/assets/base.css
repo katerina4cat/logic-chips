@@ -1,21 +1,38 @@
 html[data-theme='light'] {
-  --background: #e6e1f2;
-  --text-base: #323133;
+  --pin-filed-bg: #999a98;
+  --focus-element-border-color: #9a949e;
+  --acent-background: #bd003c;
+
   --element-background: #cfbff6;
-  --pin-filed-bg: #353536;
+
+  --element-first-bg: #b20038;
+  --element-submit-bg: #2f6036;
+  --element-extra-bg: #6c5a97;
+
+  --text-base: #323133;
+  --background: #dddedb;
+  --text-element: #cfc0af;
 }
 
 html[data-theme='dark'] {
-  --background: #222124;
-  --text-base: #b5a28d;
-  --element-background: #6f648b;
   --element-border-color: #444;
   --focus-element-border-color: #9a949e;
   --acent-background: #343;
+
   --pin-filed-bg: #353536;
+
+  --element-background: #6f648b;
+
+  --element-first-bg: #7b062b;
+  --element-submit-bg: #2f6036;
+  --element-extra-bg: #6c5a97;
+
+  --background: #222124;
+  --text-base: #b5a28d;
+  --text-element: #b5a28d;
 }
 html {
-  --compose: #8c49ff;
+  --compose: #8c49ff; /*Композитный пин*/
   --main-border-radius: 6px;
   --min-border-radius: 4px;
 }

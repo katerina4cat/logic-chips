@@ -6,6 +6,7 @@ type ModalsList = {
   radial: boolean
   library: boolean
   menu: boolean
+  unsavedConfirm: boolean
 }
 
 class ModalsStates {
@@ -18,7 +19,8 @@ class ModalsStates {
       saving: false,
       radial: false,
       library: false,
-      menu: false
+      menu: false,
+      unsavedConfirm: false
     }
     makeObservable(this)
     hotKeyEventListener.hotkeys.RADIAL_MENU.addListener(this.radialHandler)

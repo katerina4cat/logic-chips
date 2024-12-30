@@ -2,7 +2,6 @@ import { HotKey, HotKeyWithDigit } from './HotKey'
 
 const defaultHotKeys: AvaibleHotKey = {
   RADIAL_MENU: new HotKeyWithDigit({ keyCodes: [/Digit[1-9]/], alt: true }),
-  EDIT_RADIAL_MENU: new HotKey({ keyCodes: ['KeyA'] }),
   SAVE: new HotKey({ keyCodes: ['KeyS'], ctrl: true }),
   LIBRARY: new HotKey({ keyCodes: ['KeyA'], ctrl: true }),
   ADDING_CHIPS_ADD: new HotKey({ keyCodes: ['ArrowUp', 'ArrowRight'] }),
@@ -12,6 +11,37 @@ const defaultHotKeys: AvaibleHotKey = {
   BACK_BTN: new HotKey({ keyCodes: ['Backspace'] }),
   UNDO: new HotKey({ keyCodes: ['KeyZ'] }),
   SWITCH_VISIBLE_TITLES: new HotKey({ keyCodes: ['KeyQ', 'Tab'] })
+}
+
+interface HotkeyInfo {
+  title: string
+  digit?: true
+  desc?: string
+}
+
+export const hotkeyInfo: { [key in keyof AvaibleHotKey]: HotkeyInfo } = {
+  RADIAL_MENU: { title: 'Радиальное меню', desc: '', digit: true },
+  SAVE: { title: 'Сохранение чипа', desc: '' },
+  LIBRARY: { title: 'Открыть библиотеку чипов', desc: '' },
+  ADDING_CHIPS_ADD: { title: 'Увеличить кол-во добавляемых чипов', desc: '' },
+  ADDING_CHIPS_SUB: { title: 'Уменьшить кол-во добавляемых чипов', desc: '' },
+  CANCEL: {
+    title: 'Отмена текущего действия',
+    desc: 'Используется для отмены протягивания провода, установки чипов, закрытия модальных окон.'
+  },
+  NEW_CHIP: {
+    title: 'Создать новый чип',
+    desc: 'Создаёт новый чип, очищая при этом всё поле редактора.'
+  },
+  BACK_BTN: {
+    title: 'Выйти из вложенного просмотра назад',
+    desc: 'Выходит на уровень ниже из просматриваемого чипа.'
+  },
+  UNDO: { title: 'Отменить последнюю опорную точку провода', desc: '' },
+  SWITCH_VISIBLE_TITLES: {
+    title: 'Вкл./Выкл. отображение подписей пинов',
+    desc: 'Включение/Отключение отображения боковых подписей пинов чипов внутри редактора.'
+  }
 }
 
 class HotKeyListener {
@@ -35,7 +65,6 @@ export const hotKeyEventListener = new HotKeyListener()
 
 interface AvaibleHotKey {
   RADIAL_MENU: HotKeyWithDigit
-  EDIT_RADIAL_MENU: HotKey
   SAVE: HotKey
   LIBRARY: HotKey
   ADDING_CHIPS_ADD: HotKey

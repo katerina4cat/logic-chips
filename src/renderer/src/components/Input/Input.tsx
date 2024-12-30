@@ -49,13 +49,7 @@ const Input = view(InputViewModel)<Props>(({ viewModel }) => {
           onChange={viewModel.onChange}
         />
         <div
-          className={`${cl.Placeholder} ${!viewModel.value && !viewModel.active ? cl.Preview : ''}`}
-          style={{
-            fontSize: viewModel.value || viewModel.active ? '0.95em' : '1.2em',
-            transform:
-              viewModel.value || viewModel.active ? 'translateY(-100%)' : 'translateY(-50%)',
-            top: viewModel.value || viewModel.active ? 0 : '50%'
-          }}
+          className={`${cl.Placeholder} ${viewModel.value || viewModel.active ? cl.PlaceholderTop : cl.PlaceholderBottom}`}
         >
           {viewModel.viewProps.placeholder}
         </div>

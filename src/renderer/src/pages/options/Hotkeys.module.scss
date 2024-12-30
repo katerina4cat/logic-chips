@@ -1,0 +1,41 @@
+.Hotkeys {
+  display: flex;
+  flex-direction: column;
+  width: 60%;
+  max-width: 900px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  gap: 1.25em;
+  .Title {
+    text-align: center;
+  }
+  .List {
+    display: flex;
+    flex-direction: column;
+    .HotkeyInfo {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.35em 0.2em;
+      &:nth-child(even) {
+        background-color: color-mix(in srgb, var(--text-element) 5%, var(--background));
+      }
+      .Title {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        .Hint {
+          margin-left: 0.25em;
+          height: 1em;
+          width: 1em;
+          border-radius: 50%;
+          background-color: var(--text-element);
+          color: var(--background);
+          line-height: 1em;
+        }
+      }
+    }
+  }
+}

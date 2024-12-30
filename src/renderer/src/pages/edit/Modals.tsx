@@ -5,6 +5,7 @@ import SaveModal from './Modals/SaveModal'
 import ChipSelector from './Modals/ChipSelector'
 import ChipLibrary from './Modals/ChipLibrary'
 import MenuModal from './Modals/MenuModal'
+import LoadUnsavedConfirm from './Modals/LoadUnsavedConfirm'
 
 interface Props {}
 
@@ -21,6 +22,7 @@ const Modals = view(ModalsViewModel)<Props>(({ viewModel }) => {
       <SaveModal />
       <ChipLibrary />
       <MenuModal />
+      <LoadUnsavedConfirm />
     </>
   )
 })
