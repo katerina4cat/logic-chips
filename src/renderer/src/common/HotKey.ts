@@ -1,3 +1,45 @@
+import { makeObservable, observable } from 'mobx'
+
+export interface HotKeysInfo {
+  keyCode: string | RegExp
+  alt?: boolean
+  ctrl?: boolean
+  shift?: boolean
+}
+
+const dict = {
+  ArrowUp: '↑',
+  ArrowDown: '↓',
+  ArrowLeft: '←',
+  ArrowRight: '→',
+  Backquote: '~',
+  NumpadDecimal: 'Num .',
+  NumpadMultiply: 'Num *',
+  NumpadDivide: 'Num /',
+  NumpadSubtract: 'Num -',
+  NumpadAdd: 'Num +',
+  Equal: '=',
+  Minus: '-',
+  Backslash: '\\',
+  Slash: '/',
+  Comma: '<',
+  Period: '>',
+  BracketLeft: '[',
+  BracketRight: ']'
+}
+
+export const beautifyKeyCode = (keyCode?: string | RegExp) => {
+  if (!keyCode) return ''
+  if (keyCode instanceof RegExp) {
+    return beautifyKeyCode(keyCode.source)
+  }
+  if (keyCode.startsWith('Key')) return keyCode.substring(3)
+  if (keyCode in dict) return dict[keyCode]
+  if (keyCode.startsWith('Numpad')) return keyCode.replace('Numpad', 'Num ')
+  if (keyCode.startsWith('Digit')) return keyCode.replace('Digit', '')
+  return keyCode
+}
+
 export class HotKey {
   listeners: ((data?: any) => boolean | void)[] = []
   addListener = (listener: (data?: any) => boolean | void) => {
@@ -9,53 +51,39 @@ export class HotKey {
     if (ind !== -1) this.listeners.splice(ind, 1)
   }
 
-  keyCodes: (string | RegExp)[]
-  alt: boolean
-  ctrl: boolean
-  shift: boolean
-  constructor(obj: {
-    keyCodes: (string | RegExp)[]
-    alt?: boolean
-    ctrl?: boolean
-    shift?: boolean
-  }) {
-    this.keyCodes = obj.keyCodes
-    this.alt = obj.alt || false
-    this.ctrl = obj.ctrl || false
-    this.shift = obj.shift || false
+  @observable
+  keys: HotKeysInfo[] = []
+  constructor(keys: HotKeysInfo[]) {
+    this.keys = keys.map((key) => ({
+      keyCode:
+        key.keyCode instanceof RegExp
+          ? key.keyCode
+          : key.keyCode.startsWith('RegExp')
+            ? RegExp(key.keyCode.substring(6))
+            : key.keyCode,
+      alt: !!key.alt,
+      ctrl: !!key.ctrl,
+      shift: !!key.shift
+    }))
+    makeObservable(this)
   }
 
   test = (event: KeyboardEvent) => {
-    if (event.altKey === this.alt && event.ctrlKey === this.ctrl && event.shiftKey === this.shift)
-      if (
-        this.keyCodes.findIndex((code) =>
-          code instanceof RegExp ? code.test(event.code) : code === event.code
-        ) !== -1
-      ) {
-        let isAnyCompleted = false
-        this.listeners.forEach((listener) => {
-          const res = listener()
-          if (res === undefined || res) isAnyCompleted = true
-        })
-        if (isAnyCompleted) event.preventDefault()
-      }
-  }
-}
-
-export class HotKeyWithDigit extends HotKey {
-  override test = (event: KeyboardEvent) => {
-    if (event.altKey === this.alt && event.ctrlKey === this.ctrl && event.shiftKey === this.shift)
-      if (
-        this.keyCodes.findIndex((code) =>
-          code instanceof RegExp ? code.test(event.code) : code === event.code
-        ) !== -1
-      ) {
-        let isAnyCompleted = false
-        this.listeners.forEach((listener) => {
-          const res = listener(Number(/\d+/.exec(event.code)))
-          if (res === undefined || res) isAnyCompleted = true
-        })
-        if (isAnyCompleted) event.preventDefault()
-      }
+    const index = this.keys.findIndex((key) =>
+      key.keyCode instanceof RegExp ? key.keyCode.test(event.code) : key.keyCode === event.code
+    )
+    if (
+      index !== -1 &&
+      this.keys[index].alt === event.altKey &&
+      this.keys[index].ctrl === event.ctrlKey &&
+      this.keys[index].shift === event.shiftKey
+    ) {
+      this.listeners.forEach((listener) => {
+        const res = listener(Number(/\d+/.exec(event.code)))
+        if (res === undefined || res) {
+          event.preventDefault()
+        }
+      })
+    }
   }
 }

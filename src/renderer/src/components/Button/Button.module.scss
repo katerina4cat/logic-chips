@@ -14,6 +14,7 @@
     transform: scale(1.025);
     &::after {
       content: '';
+      pointer-events: none;
       background-color: #000;
       border-radius: var(--main-border-radius);
       height: 100%;

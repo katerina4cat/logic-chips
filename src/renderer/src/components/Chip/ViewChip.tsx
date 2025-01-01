@@ -51,8 +51,7 @@ const ViewChip = view(ViewChipViewModel)<Props>(({ viewModel }) => {
             }
       }
       onClick={(e) => {
-        if (e.altKey)
-          viewModel.parent.addingChip = saveManager.loadChipByName(viewModel.viewProps.chip.title)
+        if (e.altKey) viewModel.parent.setAdding(viewModel.viewProps.chip.title)
       }}
       onContextMenu={
         viewModel.viewProps.chip.type === ChipType.CUSTOM

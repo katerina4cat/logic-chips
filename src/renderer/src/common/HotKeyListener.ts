@@ -1,16 +1,17 @@
-import { HotKey, HotKeyWithDigit } from './HotKey'
+import { makeObservable, observable } from 'mobx'
+import { HotKey, HotKeysInfo } from './HotKey'
 
-const defaultHotKeys: AvaibleHotKey = {
-  RADIAL_MENU: new HotKeyWithDigit({ keyCodes: [/Digit[1-9]/], alt: true }),
-  SAVE: new HotKey({ keyCodes: ['KeyS'], ctrl: true }),
-  LIBRARY: new HotKey({ keyCodes: ['KeyA'], ctrl: true }),
-  ADDING_CHIPS_ADD: new HotKey({ keyCodes: ['ArrowUp', 'ArrowRight'] }),
-  ADDING_CHIPS_SUB: new HotKey({ keyCodes: ['ArrowLeft', 'ArrowDown'] }),
-  CANCEL: new HotKey({ keyCodes: ['Escape'] }),
-  NEW_CHIP: new HotKey({ keyCodes: ['KeyX'], ctrl: true }),
-  BACK_BTN: new HotKey({ keyCodes: ['Backspace'] }),
-  UNDO: new HotKey({ keyCodes: ['KeyZ'] }),
-  SWITCH_VISIBLE_TITLES: new HotKey({ keyCodes: ['KeyQ', 'Tab'] })
+const defaultHotKey: { [key in keyof AvaibleHotKey]: HotKeysInfo[] } = {
+  RADIAL_MENU: [{ keyCode: /Digit[1-9]/, alt: true }],
+  SAVE: [{ keyCode: 'KeyS', ctrl: true }],
+  LIBRARY: [{ keyCode: 'KeyA', ctrl: true }],
+  ADDING_CHIPS_ADD: [{ keyCode: 'ArrowRight' }, { keyCode: 'ArrowUp' }],
+  ADDING_CHIPS_SUB: [{ keyCode: 'ArrowLeft' }, { keyCode: 'ArrowDown' }],
+  CANCEL: [{ keyCode: 'Escape' }],
+  NEW_CHIP: [{ keyCode: 'KeyX', ctrl: true }],
+  BACK_BTN: [{ keyCode: 'Backspace' }],
+  UNDO: [{ keyCode: 'KeyZ' }],
+  SWITCH_VISIBLE_TITLES: [{ keyCode: 'KeyQ' }, { keyCode: 'Tab' }]
 }
 
 interface HotkeyInfo {
@@ -45,12 +46,45 @@ export const hotkeyInfo: { [key in keyof AvaibleHotKey]: HotkeyInfo } = {
 }
 
 class HotKeyListener {
-  hotkeys = defaultHotKeys
+  @observable
+  hotkeys!: AvaibleHotKey
   canSearch = true
 
+  saveCurrentSettings = () => {
+    const buffHK = {}
+    Object.keys(defaultHotKey).forEach((hotkeyName) => {
+      buffHK[hotkeyName] = this.hotkeys[hotkeyName].keys
+      buffHK[hotkeyName] = buffHK[hotkeyName].map(
+        (key: HotKeysInfo): HotKeysInfo => ({
+          ...key,
+          keyCode: key.keyCode instanceof RegExp ? 'RegExp' + key.keyCode.source : key.keyCode
+        })
+      )
+    })
+    localStorage.setItem('hotkeys', JSON.stringify(buffHK))
+    this.load()
+  }
+
+  load = () => {
+    const savedHotkeys = JSON.parse(localStorage.getItem('hotkeys') || '[]') as unknown as {
+      [key in string]: HotKeysInfo[]
+    }
+    const buffHK = {}
+    Object.keys(defaultHotKey).forEach((hotkeyName) => {
+      let keys = {}
+      if (hotkeyName in savedHotkeys) keys = savedHotkeys[hotkeyName]
+      else keys = defaultHotKey[hotkeyName]
+
+      buffHK[hotkeyName] = new HotKey(keys as HotKeysInfo[])
+    }) as any
+    this.hotkeys = buffHK as AvaibleHotKey
+  }
+
   constructor() {
+    this.load()
     window.addEventListener('unload', this.unload)
     window.addEventListener('keydown', this.onKeyDown)
+    makeObservable(this)
   }
   unload = () => {
     window.removeEventListener('unload', this.unload)
@@ -64,7 +98,7 @@ class HotKeyListener {
 export const hotKeyEventListener = new HotKeyListener()
 
 interface AvaibleHotKey {
-  RADIAL_MENU: HotKeyWithDigit
+  RADIAL_MENU: HotKey
   SAVE: HotKey
   LIBRARY: HotKey
   ADDING_CHIPS_ADD: HotKey
