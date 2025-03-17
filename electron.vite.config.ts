@@ -17,6 +17,10 @@ export default defineConfig({
         '@models': resolve('src/models')
       }
     },
-    plugins: [react({ tsDecorators: true }), svgr()]
+    plugins: [react({ tsDecorators: true }), svgr()],
+    server: {
+      host: '0.0.0.0',
+      port: 5173
+    }
   }
 })

@@ -7,12 +7,13 @@ import { BUSChip } from '@models/DefaultChips/BUS'
 import { CUSTOMChip } from '@models/DefaultChips/CUSTOM'
 import { ESEGMENTChip } from '@models/DefaultChips/ESEGMENT'
 import { NOTChip } from '@models/DefaultChips/NOT'
+import { ORChip } from '@models/DefaultChips/OR'
 import { TRISTATEChip } from '@models/DefaultChips/TRISTATE'
 import { Pin } from '@models/Pin'
 import { Wire } from '@models/Wire'
 import { action, computed, makeObservable, observable, reaction } from 'mobx'
 
-export const defaultChips = ['AND', 'NOT', 'TRISTATE', 'ESEGMENT']
+export const defaultChips = ['AND', 'OR', 'NOT', 'TRISTATE', 'ESEGMENT']
 
 class SaveManager {
   @observable
@@ -31,15 +32,46 @@ class SaveManager {
       Object.values(chipTypeInfo).find((baseChips) => baseChips.title === chipName) !== undefined
     )
   }
-  @observable
+
+  @action
+  primarySelecting = (title: string) => {
+    if (!this.currentSave) return
+
+    const ind = this.currentSave.primaryChips.findIndex((el) => el === title)
+    if (ind === -1) this.currentSave.primaryChips.push(title)
+    else this.currentSave.primaryChips.splice(ind, 1)
+    this.save()
+  }
+  primaryCalc(source: string) {
+    if (!source) return []
+    if (!this.hasChipInSave(source)) return []
+    const chip = this.loadChipByName(source)
+    const res: { [key: string]: number } = {}
+    chip?.subChips.forEach((schip) => {
+      if (this.currentSave?.primaryChips.includes(schip.title))
+        if (res[schip.title]) res[schip.title] += 1
+        else res[schip.title] = 1
+      else
+        this.primaryCalc(schip.title).forEach((r) => {
+          if (res[r[0]]) res[r[0]] += r[1]
+          else res[r[0]] = r[1]
+        })
+    })
+    return Object.entries(res)
+  }
+
+  @action
   loadSaveByName = (title: string) => {
     const ind = this.saves.findIndex((save) => save.title === title)
-    if (ind !== -1) this.currentSave = this.saves[ind]
-    else {
-      const buff = {
+    if (ind !== -1) {
+      this.currentSave = this.saves[ind]
+      if (this.currentSave?.primaryChips === undefined) this.currentSave.primaryChips = defaultChips
+    } else {
+      const buff: ISaveInfo = {
         title: title,
         created: Date.now(),
         chips: [],
+        primaryChips: defaultChips,
         wheels: [['AND', 'NOT', 'TRISTATE'], [], [], [], [], [], [], [], []]
       }
       this.saves.push(buff)
@@ -67,9 +99,13 @@ class SaveManager {
       .filter((chip) => chip.subChips.find((subChip) => subChip.title === chipName))
       .map((chip) => chip.title)
   }
-  removeChip = (chipName: string) => {
-    this.currentSave!.chips =
-      this.currentSave?.chips.filter((chip) => chip.title !== chipName) || []
+  removeChip = (title: string) => {
+    if (!this.currentSave) return
+    this.currentSave.chips = this.currentSave?.chips.filter((chip) => chip.title !== title) || []
+
+    const ind = this.currentSave.primaryChips.findIndex((el) => el === title)
+    if (ind === -1) this.currentSave.primaryChips.push(title)
+    else this.currentSave.primaryChips.splice(ind, 1)
     this.save()
   }
   addOrEditCurrentSave = (chip: Chip) => {
@@ -121,6 +157,9 @@ class SaveManager {
           break
         case ChipType.AND:
           addingChip = new ANDChip(subChipInfo.id, new Pos(subChipInfo.pos.x, subChipInfo.pos.y))
+          break
+        case ChipType.OR:
+          addingChip = new ORChip(subChipInfo.id, new Pos(subChipInfo.pos.x, subChipInfo.pos.y))
           break
         case ChipType.ESEGMENT:
           addingChip = new ESEGMENTChip(
@@ -183,6 +222,8 @@ class SaveManager {
           return new NOTChip(thisChipInfo?.id, new Pos())
         case 'AND':
           return new ANDChip(thisChipInfo?.id, new Pos())
+        case 'OR':
+          return new ORChip(thisChipInfo?.id, new Pos())
         case 'TRISTATE':
           return new TRISTATEChip(thisChipInfo?.id, new Pos())
         case 'ESEGMENT':
@@ -199,6 +240,7 @@ interface ISaveInfo {
   title: string
   created: number
   chips: ISaveChip[]
+  primaryChips: string[]
   wheels: string[][]
   unsavedChip?: ISaveChip
 }

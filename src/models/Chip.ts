@@ -10,8 +10,8 @@ export class Chip {
     title: this.title,
     color: this.color,
     subChips: this.subChips.map((chip) => chip.toSubSave()),
-    inputs: this.inputs.map((pin) => pin.toSave()),
-    outputs: this.outputs.map((pin) => pin.toSave()),
+    inputs: this.inputs.sort((a, b) => a.pos.y - b.pos.y).map((pin) => pin.toSave()),
+    outputs: this.outputs.sort((a, b) => a.pos.y - b.pos.y).map((pin) => pin.toSave()),
     wires: this.wires.map((wire) => wire.toSave())
   })
   toSubSave = (): ISaveSubChip => ({

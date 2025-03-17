@@ -1,5 +1,5 @@
 import { ViewModel, view } from '@yoskutik/react-vvm'
-import { action, makeObservable } from 'mobx'
+import { action, makeObservable, observable } from 'mobx'
 import cl from './ViewChip.module.scss'
 import { Chip } from '@models/Chip'
 import ViewPin from '../Pin/ViewPin'
@@ -8,6 +8,8 @@ import { Pos } from '@models/common/Pos'
 import { EditViewModel } from '@renderer/pages/edit/Edit'
 import { saveManager } from '@models/Managers/SaveManager'
 import { ChipType } from '@models/ChipType'
+import Button from '../Button/Button'
+import { CUSTOMChip } from '@models/DefaultChips/CUSTOM'
 
 interface Props {
   chip: Chip
@@ -15,6 +17,8 @@ interface Props {
 }
 
 export class ViewChipViewModel extends ViewModel<EditViewModel, Props> {
+  @observable
+  context = false
   constructor() {
     super()
     makeObservable(this)
@@ -25,6 +29,15 @@ export class ViewChipViewModel extends ViewModel<EditViewModel, Props> {
   }
   delta = new Pos()
   onMouseDown = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    if (e.button === 1) {
+      this.viewProps.chip.type === ChipType.CUSTOM
+        ? action(() => {
+            this.parent.chipViewerOver.push(this.parent.currentChip)
+            this.parent.currentChip = this.viewProps.chip
+          })
+        : undefined
+      return
+    }
     this.delta = new Pos(e.pageX, e.pageY)
       .div(windowScalingMethods.scale)
       .sub(this.viewProps.chip.pos)
@@ -53,14 +66,9 @@ const ViewChip = view(ViewChipViewModel)<Props>(({ viewModel }) => {
       onClick={(e) => {
         if (e.altKey) viewModel.parent.setAdding(viewModel.viewProps.chip.title)
       }}
-      onContextMenu={
-        viewModel.viewProps.chip.type === ChipType.CUSTOM
-          ? action(() => {
-              viewModel.parent.chipViewerOver.push(viewModel.parent.currentChip)
-              viewModel.parent.currentChip = viewModel.viewProps.chip
-            })
-          : undefined
-      }
+      onContextMenu={action(() => {
+        viewModel.context = !viewModel.context
+      })}
       onMouseDown={viewModel.viewProps.preview ? undefined : viewModel.onMouseDown}
     >
       <div className={cl.Pins} style={{ transform: 'translateX(-50%)' }}>
@@ -73,6 +81,17 @@ const ViewChip = view(ViewChipViewModel)<Props>(({ viewModel }) => {
         {viewModel.viewProps.chip.outputs.map((pin) => (
           <ViewPin pin={pin} key={pin.id} side />
         ))}
+      </div>
+      <div className={cl.Context} style={{ display: viewModel.context ? undefined : 'none' }}>
+        <div className={cl.Title}>Чип: {viewModel.viewProps.chip.title}</div>
+        <Button
+          onClick={() =>
+            (viewModel.parent.currentChip as CUSTOMChip).destroyChip(viewModel.viewProps.chip)
+          }
+          className={cl.Btn}
+        >
+          Удалить
+        </Button>
       </div>
     </div>
   )

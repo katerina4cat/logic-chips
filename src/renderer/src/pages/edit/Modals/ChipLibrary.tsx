@@ -1,6 +1,6 @@
 import Modal from '@renderer/components/Modal/Modal'
 import { ViewModel, view } from '@yoskutik/react-vvm'
-import { action, computed, makeObservable, observable } from 'mobx'
+import { action, computed, makeObservable, observable, runInAction } from 'mobx'
 import { modalsStates } from '../ModalsStates'
 import { defaultChips, saveManager } from '@models/Managers/SaveManager'
 import cl from './ChipLibrary.module.scss'
@@ -20,6 +20,8 @@ export class ChipLibraryViewModel extends ViewModel<ModalsViewModel, Props> {
     super()
     makeObservable(this)
   }
+  @observable
+  requirementsModal = false
   @observable
   selected = ''
   @observable
@@ -120,12 +122,22 @@ const ChipLibrary = view(ChipLibraryViewModel)<Props>(({ viewModel }) => {
         <div className={cl.List}>
           {defaultChips.map((title) => (
             <div
-              className={[cl.ChipButton, title === viewModel.selected ? cl.SelectedChip : undefined]
+              className={[
+                cl.ChipButton,
+                title === viewModel.selected ? cl.SelectedChip : undefined,
+                saveManager?.currentSave?.primaryChips.includes(title) ? cl.PrimaryChips : undefined
+              ]
                 .filter(Boolean)
                 .join(' ')}
-              onClick={action(() => {
-                viewModel.selected = title
-              })}
+              onMouseDown={(e) => {
+                if (e.button === 1) {
+                  saveManager.primarySelecting(title)
+                  return
+                }
+                runInAction(() => {
+                  viewModel.selected = title
+                })
+              }}
               onDoubleClick={action(() => {
                 viewModel.parent.parent.setAdding(title)
                 modalsStates.closeAll('library', false)
@@ -144,13 +156,22 @@ const ChipLibrary = view(ChipLibraryViewModel)<Props>(({ viewModel }) => {
             <div
               className={[
                 cl.ChipButton,
-                chip.title === viewModel.selected ? cl.SelectedChip : undefined
+                chip.title === viewModel.selected ? cl.SelectedChip : undefined,
+                saveManager?.currentSave?.primaryChips.includes(chip.title)
+                  ? cl.PrimaryChips
+                  : undefined
               ]
                 .filter(Boolean)
                 .join(' ')}
-              onClick={action(() => {
-                viewModel.selected = chip.title
-              })}
+              onMouseDown={(e) => {
+                if (e.button === 1) {
+                  saveManager.primarySelecting(chip.title)
+                  return
+                }
+                runInAction(() => {
+                  viewModel.selected = chip.title
+                })
+              }}
               onDoubleClick={action(() => {
                 viewModel.parent.parent.setAdding(chip.title)
                 modalsStates.closeAll('library', false)
@@ -204,6 +225,47 @@ const ChipLibrary = view(ChipLibraryViewModel)<Props>(({ viewModel }) => {
             Новый чип
           </Button>
         </div>
+        <Button
+          onClick={action(() => {
+            if (viewModel.selected) viewModel.requirementsModal = true
+          })}
+          customtype="Extra"
+          disabled={
+            !viewModel.selected || saveManager.currentSave.primaryChips.includes(viewModel.selected)
+          }
+          className={cl.Btn}
+        >
+          Расчитать затраты
+        </Button>
+        <Modal
+          enabled={viewModel.requirementsModal}
+          setenabled={action((v: boolean) => {
+            viewModel.requirementsModal = v
+          })}
+          className={cl.PrimaryModal}
+        >
+          <div className={cl.Title}>Рачёт дочерних чипов для: {viewModel.selected}</div>
+          <table className={cl.PrimaryList}>
+            <tr>
+              <th>Чип</th>
+              <th>Кол-во</th>
+            </tr>
+            {saveManager.primaryCalc(viewModel.selected).map((res) => (
+              <tr>
+                <td>{res[0]}</td>
+                <td>{res[1]}</td>
+              </tr>
+            ))}
+          </table>
+          <Button
+            onClick={action(() => {
+              viewModel.requirementsModal = false
+            })}
+            customtype="Submit"
+          >
+            Ок
+          </Button>
+        </Modal>
       </Modal>
     </>
   )

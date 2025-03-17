@@ -22,6 +22,7 @@ html[data-theme='dark'] {
   --pin-filed-bg: #353536;
 
   --element-background: #6f648b;
+  --context-background: #6f648b77;
 
   --element-first-bg: #7b062b;
   --element-submit-bg: #2f6036;

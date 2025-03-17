@@ -64,7 +64,7 @@ export class CUSTOMChip extends Chip {
     this.wires
       .filter((wire) => wire.from.chip === chip || wire.to.chip === chip)
       .forEach((wire) => this.destroyWire(wire))
-    this.subChips.slice(ind, 1)
+    this.subChips.splice(ind, 1)
   }
 
   @action

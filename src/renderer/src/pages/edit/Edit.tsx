@@ -41,6 +41,8 @@ export class EditViewModel extends ViewModel<unknown, Props> {
   addingChip?: Chip
   constructor() {
     super()
+    modalsStates.closeAll('menu', false)
+    hotKeyEventListener.canSearch = true
     makeObservable(this)
     window.addEventListener('beforeunload', this.saveBeforeUnload)
   }

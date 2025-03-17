@@ -23,7 +23,7 @@ export class NewSaveViewModel extends ViewModel<unknown, Props> {
   @observable
   handleInput = (event: React.ChangeEvent<HTMLInputElement>) => {
     this.inputData[event.target.name] = event.target.value
-    return event.target.value
+    return this.inputData[event.target.name]
   }
 
   @computed
@@ -45,7 +45,7 @@ const NewSave = view(NewSaveViewModel)<Props>(({ viewModel }) => {
   navigate.current = useNavigate()
   return (
     <div className={cl.NewSave}>
-      <h1 className={cl.Title}>Новое сохранение</h1>
+      <h1 className={cl.Title}>Создать сохранение</h1>
       <Input
         value={viewModel.inputData.title}
         name={'title'}

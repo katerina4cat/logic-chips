@@ -1,8 +1,8 @@
 .ChipLibrary {
   display: flex;
   flex-direction: column;
+  gap: 1.25em;
   align-items: center;
-  padding: 2em !important;
   .List {
     display: flex;
     flex-wrap: wrap;
@@ -15,15 +15,57 @@
     cursor: pointer;
   }
   .SelectedChip {
-    background-color: var(--element-background);
+    background-color: color-mix(in srgb, var(--element-background) 87.5%, transparent 12.5%);
+  }
+  .PrimaryChips {
+    border-color: var(--element-submit-bg);
+    border-width: 2px;
+  }
+  .SelectedChip.PrimaryChips {
+    background-color: color-mix(in srgb, var(--element-background) 50%, transparent 50%);
   }
   .Buttons {
-    padding-top: 2em;
     display: flex;
     justify-content: space-between;
     width: 100%;
     font-size: 0.85em;
     max-width: 550px;
+  }
+  .Btn {
+    font-size: 0.85em;
+  }
+  .PrimaryModal {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 1.75em;
+    .Title {
+      font-size: 1.25em;
+      font-weight: bold;
+    }
+    .PrimaryList {
+      border-collapse: collapse;
+      tr:nth-child(even) {
+        background-color: color-mix(in srgb, var(--element-background) 25%, transparent 100%);
+      }
+      &:has(tr) {
+        th {
+          background-color: color-mix(in srgb, var(--element-first-bg) 12.5%, transparent 100%);
+          font-weight: bold;
+        }
+        &:has(td),
+        &:has(th) {
+          width: 12em;
+          text-align: start;
+          text-indent: 0.75em;
+        }
+        td:nth-child(2) {
+          text-align: end;
+          padding-right: 0.75em;
+        }
+      }
+    }
   }
 }
 

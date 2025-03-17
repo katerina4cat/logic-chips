@@ -4,8 +4,6 @@ import { Pin } from './Pin'
 import { ChipType } from './ChipType'
 import { BUSChip } from './DefaultChips/BUS'
 import { generateNumberID } from './common/RandomId'
-import { ANDChip } from './DefaultChips/AND'
-import { NOTChip } from './DefaultChips/NOT'
 
 const enum WireTypes {
   DEFAULT,
@@ -89,6 +87,7 @@ export class Wire {
     makeObservable(this)
   }
 
+  @action
   completeLink = () => {
     if (this.completed) return
     if (this.type === WireTypes.BUS_TO_BUS) {

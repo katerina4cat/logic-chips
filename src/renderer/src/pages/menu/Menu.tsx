@@ -18,8 +18,8 @@ const Menu = view(MenuViewModel)<Props>(({ viewModel }) => {
   return (
     <div className={cl.Menu}>
       <h1 className={cl.Title}>LogicChip</h1>
-      <Button onClick={() => navigate.current('/NewGame')}>Новая игра</Button>
-      <Button onClick={() => navigate.current('/Saves')}>Загрузить игру</Button>
+      <Button onClick={() => navigate.current('/NewGame')}>Новое сохранение</Button>
+      <Button onClick={() => navigate.current('/Saves')}>Загрузить сохранение</Button>
       <Button onClick={() => navigate.current('/Options')}>Настройки</Button>
     </div>
   )

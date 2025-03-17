@@ -84,14 +84,21 @@ class HotKeyListener {
     this.load()
     window.addEventListener('unload', this.unload)
     window.addEventListener('keydown', this.onKeyDown)
+    window.addEventListener('keyup', this.onKeyUp)
+    window.addEventListener('keypress', this.onKeyUp)
     makeObservable(this)
   }
   unload = () => {
     window.removeEventListener('unload', this.unload)
     window.removeEventListener('keydown', this.onKeyDown)
+    window.removeEventListener('keyup', this.onKeyUp)
+    window.removeEventListener('keypress', this.onKeyUp)
+  }
+  onKeyUp = (e: KeyboardEvent) => {
+    if (this.canSearch) Object.values(this.hotkeys).forEach((hotKey) => hotKey.test(e))
   }
   onKeyDown = (e: KeyboardEvent) => {
-    if (this.canSearch) Object.values(this.hotkeys).forEach((hotKey) => hotKey.test(e))
+    if (this.canSearch) Object.values(this.hotkeys).forEach((hotKey) => hotKey.test(e, true))
   }
 }
 

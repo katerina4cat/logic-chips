@@ -1,6 +1,7 @@
 export const enum ChipType {
   CUSTOM,
   AND,
+  OR,
   NOT,
   TRISTATE,
   ESEGMENT,
@@ -16,6 +17,7 @@ interface IChipTypeInfo {
 export const chipTypeInfo: { [key in ChipType]: IChipTypeInfo } = {
   [ChipType.CUSTOM]: {},
   [ChipType.AND]: { title: 'AND', color: '#267ab2' },
+  [ChipType.OR]: { title: 'OR', color: '#1fb03a' },
   [ChipType.NOT]: { title: 'NOT', color: '#8c1f1a' },
   [ChipType.TRISTATE]: { title: 'TRISTATE', color: '#262626' },
   [ChipType.ESEGMENT]: { title: 'ESEGMENT', color: '#242529' },

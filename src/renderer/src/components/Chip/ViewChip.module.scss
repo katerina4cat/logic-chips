@@ -14,4 +14,19 @@
     pointer-events: none;
     padding: 0.25em;
   }
+  .Context {
+    position: absolute;
+    right: 0;
+    top: 25%;
+    transform: translateX(115%);
+    background-color: var(--context-background);
+    padding: 1.15em;
+    border-radius: var(--main-border-radius);
+    .Title {
+      width: max-content;
+    }
+    .Btn {
+      font-size: 0.75em;
+    }
+  }
 }
