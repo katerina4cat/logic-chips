@@ -12,6 +12,7 @@ import { hotKeyEventListener } from '@renderer/common/HotKeyListener'
 import { Pos } from '@models/common/Pos'
 import { windowScalingMethods } from '@renderer/common/PointsLineRounding'
 import { createRef } from 'react'
+import { RemoveElement } from '@models/common/RemoveFromArray'
 
 interface Props {}
 
@@ -72,6 +73,13 @@ export class ChipLibraryViewModel extends ViewModel<ModalsViewModel, Props> {
       window.removeEventListener('click', this.checkOutsizeClick)
     }
   }
+  @action
+  removeElementFromWheel = () => {
+    if (saveManager.currentSave?.wheels[this.currentWheel])
+      RemoveElement(saveManager.currentSave?.wheels[this.currentWheel], this.contextText)
+    this.contextText = ''
+    window.removeEventListener('click', this.checkOutsizeClick)
+  }
 }
 const ChipLibrary = view(ChipLibraryViewModel)<Props>(({ viewModel }) => {
   if (!saveManager.currentSave || !modalsStates.states.library) {
@@ -113,7 +121,7 @@ const ChipLibrary = view(ChipLibraryViewModel)<Props>(({ viewModel }) => {
               ref={viewModel.ref}
             >
               <h5>{viewModel.contextText}</h5>
-              <Button>Удалить</Button>
+              <Button onClick={viewModel.removeElementFromWheel}>Удалить</Button>
             </div>
           </div>
         }

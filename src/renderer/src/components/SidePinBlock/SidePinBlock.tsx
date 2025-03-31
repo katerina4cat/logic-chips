@@ -83,7 +83,7 @@ const SidePinBlock = view(SidePinBlockViewModel)<Props>(({ viewModel }) => {
             viewModel.show = false
           })
         }
-        onClick={viewModel.addPin}
+        onClick={!viewModel.parent.insideChip ? viewModel.addPin : undefined}
       ></div>
       {viewModel.viewProps.pins.map((pin) => (
         <SidePin
@@ -93,7 +93,7 @@ const SidePinBlock = view(SidePinBlockViewModel)<Props>(({ viewModel }) => {
           key={pin.id}
         />
       ))}
-      {viewModel.show && (
+      {viewModel.show && !viewModel.parent.insideChip && (
         <SidePin pin={viewModel.previewPin} input={viewModel.viewProps.input} isPreview />
       )}
     </div>

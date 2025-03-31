@@ -39,11 +39,12 @@ class ModalsStates {
     )
   }
   @action
-  cancelHandler = () => {
+  cancelHandler = (data: string) => {
     this.closeAll(
       'menu',
       !Object.values(this.states).find((state) => state) &&
-        hotKeyEventListener.hotkeys.CANCEL.listeners.length === 1
+        hotKeyEventListener.hotkeys.CANCEL.listeners.length === 1 &&
+        data !== 'None'
     )
   }
   @action

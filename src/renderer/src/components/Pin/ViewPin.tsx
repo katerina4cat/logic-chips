@@ -11,6 +11,9 @@ import { CUSTOMChip } from '@models/DefaultChips/CUSTOM'
 import { Colors, Color, COLORS } from '@models/common/COLORS'
 import { hotKeyEventListener } from '@renderer/common/HotKeyListener'
 import Button from '../Button/Button'
+import { ViewChipViewModel } from '../Chip/ViewChip'
+import { EditViewModel } from '@renderer/pages/edit/Edit'
+import { SidePinViewModel } from './SidePin'
 
 interface Props {
   pin: Pin
@@ -22,7 +25,7 @@ interface Props {
   onMouseLeave?: () => {}
 }
 
-export class ViewPinViewModel extends ViewModel<unknown, Props> {
+export class ViewPinViewModel extends ViewModel<ViewChipViewModel | SidePinViewModel, Props> {
   constructor() {
     super()
     makeObservable(this)
@@ -42,7 +45,7 @@ export class ViewPinViewModel extends ViewModel<unknown, Props> {
   }
   @action
   calcPinPosition = () => {
-    if (this.viewProps.side && this.viewProps.pin.chip.id === 0) {
+    if (this.viewProps.side && (this.parent as any).moovingPin !== undefined) {
       const box = this.ref.current!.getBoundingClientRect()
       this.viewProps.pin.pos.x = (box.x + box.width / 2) / windowScalingMethods.scale.x
     } else {
@@ -61,7 +64,7 @@ export class ViewPinViewModel extends ViewModel<unknown, Props> {
   checkOutsizeClick = (e: MouseEvent) => {
     if (!this.ref.current?.contains(e.target as Node)) {
       this.defaultcontext = false
-      window.removeEventListener('click', this.checkOutsizeClick)
+      window.removeEventListener('mousedown', this.checkOutsizeClick)
     }
   }
   @action
@@ -91,7 +94,7 @@ const ViewPin = view(ViewPinViewModel)<Props>(({ viewModel }) => {
         onContextMenu={action((e) => {
           e.preventDefault()
           viewModel.defaultcontext = true
-          window.addEventListener('click', viewModel.checkOutsizeClick)
+          window.addEventListener('mousedown', viewModel.checkOutsizeClick)
           hotKeyEventListener.hotkeys.CANCEL.addListener(viewModel.disableDefaultContext)
         })}
         onMouseEnter={viewModel.viewProps.onMouseEnter}

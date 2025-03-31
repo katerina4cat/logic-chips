@@ -1,5 +1,5 @@
 import { ViewModel, view } from '@yoskutik/react-vvm'
-import { action, makeObservable, observable, reaction, runInAction } from 'mobx'
+import { action, computed, makeObservable, observable, reaction, runInAction } from 'mobx'
 import './global.scss'
 import { CUSTOMChip } from '@models/DefaultChips/CUSTOM'
 import ViewWire from '@renderer/components/Wire/ViewWire'
@@ -35,6 +35,10 @@ export const getViewChip = (chip, preview = false, key?: number) => {
 export class EditViewModel extends ViewModel<unknown, Props> {
   @observable
   currentChip: Chip = new CUSTOMChip('', undefined, 0)
+  @computed
+  get insideChip() {
+    return this.chipViewerOver.length !== 0
+  }
   @observable
   chipViewerOver: Chip[] = []
   @observable
@@ -47,7 +51,10 @@ export class EditViewModel extends ViewModel<unknown, Props> {
     window.addEventListener('beforeunload', this.saveBeforeUnload)
   }
   saveBeforeUnload = () => {
-    if (saveManager.currentSave) saveManager.currentSave.unsavedChip = this.currentChip.toSave()
+    if (saveManager.currentSave)
+      if (this.chipViewerOver.length == 0)
+        saveManager.currentSave.unsavedChip = this.currentChip.toSave()
+      else saveManager.currentSave.unsavedChip = this.chipViewerOver[0].toSave()
     saveManager.save()
   }
   @action
@@ -55,6 +62,12 @@ export class EditViewModel extends ViewModel<unknown, Props> {
     if (saveManager.currentSave) saveManager.currentSave.unsavedChip = undefined
     navigate.current(`/Edit/${saveManager.currentSave?.title}`)
     this.currentChip = new CUSTOMChip('', '#666', 0)
+  }
+  @action
+  forwardViewChip = (chip: Chip) => {
+    hotKeyEventListener.hotkeys.CANCEL.execute({ code: 'None' })
+    this.chipViewerOver.push(this.currentChip)
+    this.currentChip = chip
   }
   @action
   backViewChip = () => {
@@ -78,6 +91,7 @@ export class EditViewModel extends ViewModel<unknown, Props> {
   }
   @action
   setAdding = (name: string) => {
+    if (this.insideChip) return
     hotKeyEventListener.hotkeys.CANCEL.addListener(this.clearAdding)
     hotKeyEventListener.hotkeys.BACK_BTN.addListener(this.clearAdding)
     this.addingChip = saveManager.loadChipByName(name)
@@ -148,6 +162,22 @@ const Edit = view(EditViewModel)<Props>(({ viewModel }) => {
       <SidePinBlock pins={viewModel.currentChip.inputs} input selfState />
       <SidePinBlock pins={viewModel.currentChip.outputs} />
       <Modals />
+      {viewModel.insideChip && (
+        <div
+          style={{
+            display: 'flex',
+            position: 'fixed',
+            left: '2.5em',
+            bottom: '0.5em',
+            fontSize: '1em',
+            fontWeight: 'bold'
+          }}
+        >
+          {viewModel.chipViewerOver.map((chip) => (
+            <div>{(chip.title || '(NewChip)') + ' >'}</div>
+          ))}
+        </div>
+      )}
     </div>
   )
 })

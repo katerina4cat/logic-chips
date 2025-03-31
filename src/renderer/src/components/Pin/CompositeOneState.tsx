@@ -26,7 +26,7 @@ export class CompositeOneStateViewModel extends ViewModel<CompositeContextViewMo
   checkOutsizeClick = (e: MouseEvent) => {
     if (!this.ref.current?.contains(e.target as Node)) {
       this.colorPicker = false
-      window.removeEventListener('click', this.checkOutsizeClick)
+      window.removeEventListener('mousedown', this.checkOutsizeClick)
     }
   }
   ref = createRef<HTMLDivElement>()
@@ -51,7 +51,7 @@ const CompositeOneState = view(CompositeOneStateViewModel)<Props>(({ viewModel }
         }
         onContextMenu={action((e) => {
           viewModel.colorPicker = true
-          window.addEventListener('click', viewModel.checkOutsizeClick)
+          window.addEventListener('mousedown', viewModel.checkOutsizeClick)
           e.preventDefault()
         })}
         style={{

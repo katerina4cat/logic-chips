@@ -1,6 +1,6 @@
 import { ViewModel, view } from '@yoskutik/react-vvm'
 import { action, makeObservable, observable, reaction } from 'mobx'
-import cl from './Edit.module.scss'
+import cl from './AddingChip.module.scss'
 import { EditViewModel, getViewChip } from './Edit'
 import ViewChip from '@renderer/components/Chip/ViewChip'
 import { windowScalingMethods } from '@renderer/common/PointsLineRounding'

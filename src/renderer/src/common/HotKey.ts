@@ -68,6 +68,17 @@ export class HotKey {
     makeObservable(this)
   }
 
+  execute = (event?: Partial<KeyboardEvent>) => {
+    this.listeners.forEach((listener) => {
+      const res = listener(
+        event?.code === 'None' ? event.code : Number(/\d+/.exec(event?.code || ''))
+      )
+      if (res === undefined || res) {
+        event?.preventDefault && event?.preventDefault()
+      }
+    })
+  }
+
   test = (event: KeyboardEvent, withRun: boolean = false) => {
     const index = this.keys.findIndex((key) =>
       key.keyCode instanceof RegExp ? key.keyCode.test(event.code) : key.keyCode === event.code
@@ -79,13 +90,7 @@ export class HotKey {
       this.keys[index].shift === event.shiftKey
     ) {
       event.preventDefault()
-      if (withRun)
-        this.listeners.forEach((listener) => {
-          const res = listener(Number(/\d+/.exec(event.code)))
-          if (res === undefined || res) {
-            event.preventDefault()
-          }
-        })
+      if (withRun) this.execute(event)
     }
   }
 }

@@ -6,10 +6,10 @@ import ViewPin from '../Pin/ViewPin'
 import { windowScalingMethods } from '@renderer/common/PointsLineRounding'
 import { Pos } from '@models/common/Pos'
 import { EditViewModel } from '@renderer/pages/edit/Edit'
-import { saveManager } from '@models/Managers/SaveManager'
 import { ChipType } from '@models/ChipType'
 import Button from '../Button/Button'
 import { CUSTOMChip } from '@models/DefaultChips/CUSTOM'
+import { useRef } from 'react'
 
 interface Props {
   chip: Chip
@@ -23,19 +23,16 @@ export class ViewChipViewModel extends ViewModel<EditViewModel, Props> {
     super()
     makeObservable(this)
   }
+  ref = useRef<HTMLDivElement>(null)
   @action
   onMouseMove = () => {
     this.viewProps.chip.pos = windowScalingMethods.cursorPos.copy.sub(this.delta)
   }
   delta = new Pos()
+  @action
   onMouseDown = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    if (e.button === 1) {
-      this.viewProps.chip.type === ChipType.CUSTOM
-        ? action(() => {
-            this.parent.chipViewerOver.push(this.parent.currentChip)
-            this.parent.currentChip = this.viewProps.chip
-          })
-        : undefined
+    if (e.button === 1 && this.viewProps.chip.type === ChipType.CUSTOM) {
+      this.parent.forwardViewChip(this.viewProps.chip)
       return
     }
     this.delta = new Pos(e.pageX, e.pageY)
@@ -48,6 +45,13 @@ export class ViewChipViewModel extends ViewModel<EditViewModel, Props> {
     window.removeEventListener('mousemove', this.onMouseMove)
     window.removeEventListener('mouseup', this.onMouseUp)
     this.delta = new Pos()
+  }
+  @action
+  checkOutsizeClick = (e: MouseEvent) => {
+    if (!this.ref.current?.contains(e.target as Node)) {
+      this.context = false
+      window.removeEventListener('mousedown', this.checkOutsizeClick)
+    }
   }
 }
 const ViewChip = view(ViewChipViewModel)<Props>(({ viewModel }) => {
@@ -66,8 +70,10 @@ const ViewChip = view(ViewChipViewModel)<Props>(({ viewModel }) => {
       onClick={(e) => {
         if (e.altKey) viewModel.parent.setAdding(viewModel.viewProps.chip.title)
       }}
-      onContextMenu={action(() => {
+      onContextMenu={action((e) => {
         viewModel.context = !viewModel.context
+        window.addEventListener('mousedown', viewModel.checkOutsizeClick)
+        e.preventDefault()
       })}
       onMouseDown={viewModel.viewProps.preview ? undefined : viewModel.onMouseDown}
     >
@@ -82,7 +88,11 @@ const ViewChip = view(ViewChipViewModel)<Props>(({ viewModel }) => {
           <ViewPin pin={pin} key={pin.id} side />
         ))}
       </div>
-      <div className={cl.Context} style={{ display: viewModel.context ? undefined : 'none' }}>
+      <div
+        className={cl.Context}
+        ref={viewModel.ref}
+        style={{ display: viewModel.context ? undefined : 'none' }}
+      >
         <div className={cl.Title}>Чип: {viewModel.viewProps.chip.title}</div>
         <Button
           onClick={() =>

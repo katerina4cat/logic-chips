@@ -29,8 +29,9 @@ export class SidePinViewModel extends ViewModel<SidePinBlockViewModel, Props> {
   }
   @action
   changeState = () => {
-    this.viewProps.pin.selfStates[0] =
-      this.viewProps.pin.selfStates[0] === STATE.LOW ? STATE.HIGHT : STATE.LOW
+    if (!this.parent.parent.insideChip)
+      this.viewProps.pin.selfStates[0] =
+        this.viewProps.pin.selfStates[0] === STATE.LOW ? STATE.HIGHT : STATE.LOW
   }
   moovingPin = false
   @action
@@ -83,7 +84,8 @@ const SidePin = view(SidePinViewModel)<Props>(({ viewModel }) => {
           }
           style={{
             backgroundColor: viewModel.viewProps.pin.stateColor[0],
-            cursor: viewModel.viewProps.input ? 'pointer' : 'auto'
+            cursor:
+              viewModel.viewProps.input && !viewModel.parent.parent.insideChip ? 'pointer' : 'auto'
           }}
         >
           {viewModel.viewProps.pin.type !== 1 ? (
